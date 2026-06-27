@@ -1,0 +1,131 @@
+/* Mobile Toggle Button */
+.mobile-toggle {
+  display: block;
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 1000;
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  box-shadow: var(--shadow-sm);
+
+  @media (min-width: 768px) {
+    display: none;
+  }
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -280px; /* Hide off-screen on mobile */
+  width: 280px;
+  height: 100vh;
+  background-color: var(--surface-color);
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  transition: transform var(--transition-normal);
+  z-index: 999;
+
+  &.open {
+    transform: translateX(280px);
+  }
+
+  @media (min-width: 768px) {
+    left: 0; /* Always show on desktop */
+    transform: none;
+    z-index: 100;
+  }
+
+  .sidebar-header {
+    padding: 1.5rem 2rem;
+    
+    .logo {
+      font-family: var(--font-heading);
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      
+      span {
+        color: var(--primary-color);
+      }
+    }
+  }
+
+  .sidebar-nav {
+    padding: 1rem 1.5rem;
+    flex: 1;
+    overflow-y: auto;
+
+    .nav-section {
+      margin-bottom: 2rem;
+
+      .section-title {
+        display: block;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--text-secondary);
+        font-weight: 600;
+        margin-bottom: 0.75rem;
+        padding-left: 0.5rem;
+      }
+
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
+        color: var(--text-secondary);
+        font-weight: 500;
+        margin-bottom: 0.25rem;
+        transition: all var(--transition-fast);
+
+        .icon {
+          font-size: 1.25rem;
+        }
+
+        &:hover {
+          background-color: var(--bg-color);
+          color: var(--text-primary);
+        }
+
+        &.active {
+          background-color: rgba(59, 130, 246, 0.1);
+          color: var(--primary-color);
+          font-weight: 600;
+        }
+
+        &.logout {
+          margin-top: 1rem;
+          &:hover {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--danger-color);
+          }
+        }
+      }
+    }
+  }
+}
+
+.mobile-overlay {
+  display: block;
+  position: fixed;
+  top: 0; left: 0; right: -100vw; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: -1;
+  opacity: 0;
+  animation: fadeIn 0.3s forwards;
+
+  @media (min-width: 768px) {
+    display: none;
+  }
+}
+
+@keyframes fadeIn {
+  to { opacity: 1; }
+}

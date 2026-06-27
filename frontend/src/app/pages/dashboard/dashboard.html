@@ -1,0 +1,109 @@
+<div class="dashboard-container">
+  
+  <!-- Welcome Banner -->
+  <header class="welcome-banner">
+    <div class="banner-content">
+      <h1>Welcome back, {{ userName }} 👋</h1>
+      <p>You're on a 5-day learning streak. Keep the fire burning!</p>
+    </div>
+  </header>
+
+  <div class="dashboard-grid">
+    <!-- Cột trái (Chiếm diện tích lớn) -->
+    <div class="main-column">
+      
+      <!-- Continue Learning Hero Card -->
+      <section class="continue-learning">
+        <div class="section-title">
+          <h2>Continue Learning</h2>
+          <a href="#" class="view-all">View History</a>
+        </div>
+        
+        <div class="hero-card">
+          <div class="hero-image">
+            <div class="play-overlay">
+              <svg viewBox="0 0 24 24" width="32" height="32" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            </div>
+          </div>
+          <div class="hero-info">
+            <span class="badge">Mini-Story</span>
+            <h3>A Kiss (Original English)</h3>
+            <p>Lesson 1 • A.J. Hoge</p>
+            
+            <div class="progress-section">
+              <div class="progress-labels">
+                <span>Progress</span>
+                <span>65%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 65%;"></div>
+              </div>
+            </div>
+
+            <button class="btn-primary resume-btn">Resume Lesson</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Recommended Courses -->
+      <section class="recommended">
+        <div class="section-title">
+          <h2>Recommended for You</h2>
+          <a routerLink="/app/explore" class="view-all">Explore All</a>
+        </div>
+        
+        <div class="horizontal-scroll">
+          @for (course of recommendedCourses; track course.id) {
+            <div class="course-card">
+              <div class="course-cover" [style.backgroundColor]="course.color">
+                <span class="level-tag">{{ course.level }}</span>
+              </div>
+              <div class="course-info">
+                <h4>{{ course.title }}</h4>
+                <p>30 Lessons</p>
+              </div>
+            </div>
+          }
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Cột phải (Sidebar nhỏ chứa báo cáo) -->
+    <div class="side-column">
+      
+      <!-- Weekly Goal Chart -->
+      <section class="weekly-goal">
+        <h3>Weekly Goal</h3>
+        <p class="subtitle">Daily target: 30 mins</p>
+        
+        <div class="chart-container">
+          @for (stat of weeklyData; track stat.day) {
+            <div class="bar-wrapper">
+              <!-- Cột hiển thị số phút thực tế. Nếu >= 30 thì màu xanh, ngược lại màu primary -->
+              <div class="bar" 
+                   [style.height]="(stat.minutes > 60 ? 100 : (stat.minutes / 60) * 100) + '%'"
+                   [class.success]="stat.minutes >= stat.target"
+                   [class.empty]="stat.minutes === 0">
+              </div>
+              <span class="day-label">{{ stat.day }}</span>
+            </div>
+          }
+        </div>
+        
+        <div class="goal-summary">
+          <div class="stat-box">
+            <span class="stat-value">150</span>
+            <span class="stat-label">Total Mins</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-value">3</span>
+            <span class="stat-label">Goals Met</span>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+</div>

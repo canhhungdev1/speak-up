@@ -1,0 +1,98 @@
+.topbar {
+  display: flex;
+  justify-content: flex-end; /* Align to right on mobile by default */
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background-color: var(--surface-color);
+  border-bottom: 1px solid var(--border-color);
+  position: sticky;
+  top: 0;
+  z-index: 90;
+
+  @media (min-width: 768px) {
+    justify-content: space-between; /* Space out on desktop */
+  }
+
+  .search-bar {
+    display: none; /* Hide search on mobile to save space */
+    
+    @media (min-width: 768px) {
+      display: flex;
+      align-items: center;
+      background-color: var(--bg-color);
+      border: 1px solid var(--border-color);
+      border-radius: 2rem;
+      padding: 0.5rem 1rem;
+      width: 300px;
+      color: var(--text-secondary);
+
+      input {
+        background: transparent;
+        border: none;
+        outline: none;
+        color: var(--text-primary);
+        font-family: var(--font-body);
+        margin-left: 0.5rem;
+        width: 100%;
+        
+        &::placeholder {
+          color: var(--text-secondary);
+        }
+      }
+    }
+  }
+
+  .topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    .streak {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      background: rgba(245, 158, 11, 0.1);
+      padding: 0.4rem 0.75rem;
+      border-radius: 2rem;
+      
+      .fire-icon { font-size: 1.1rem; }
+      .streak-count {
+        color: #d97706;
+        font-weight: 600;
+        font-size: 0.875rem;
+        display: none; /* Thu gọn chữ trên mobile */
+        @media (min-width: 480px) { display: inline; }
+      }
+    }
+
+    .icon-btn {
+      color: var(--text-secondary);
+      padding: 0.5rem;
+      border-radius: 50%;
+      transition: background-color var(--transition-fast), color var(--transition-fast);
+      display: flex;
+      
+      &:hover {
+        background-color: var(--bg-color);
+        color: var(--primary-color);
+      }
+    }
+
+    .user-profile {
+      cursor: pointer;
+      
+      .avatar {
+        width: 36px;
+        height: 36px;
+        background-color: var(--primary-color);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: 600;
+        font-size: 1rem;
+      }
+    }
+  }
+}

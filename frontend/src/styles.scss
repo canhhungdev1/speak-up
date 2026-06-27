@@ -1,1 +1,103 @@
-/* You can add global styles to this file, and also import other style files */
+/* ==========================================================================
+   DESIGN SYSTEM & VARIABLES
+   ========================================================================== */
+
+:root {
+  /* HỆ MÀU LIGHT MODE (Mặc định) */
+  --bg-color: #f8fafc;        /* Slate 50 - Nền tổng thể */
+  --surface-color: #ffffff;   /* Trắng - Nền của card, header */
+  --text-primary: #0f172a;    /* Slate 900 - Chữ chính */
+  --text-secondary: #475569;  /* Slate 600 - Chữ phụ, mô tả */
+  --border-color: #e2e8f0;    /* Slate 200 - Viền */
+
+  /* Màu chức năng (Giữ nguyên cho cả 2 mode hoặc điều chỉnh nhẹ) */
+  --primary-color: #3b82f6;   /* Blue 500 */
+  --primary-hover: #2563eb;   /* Blue 600 */
+  --success-color: #10b981;   /* Emerald 500 */
+  --danger-color: #ef4444;    /* Red 500 */
+
+  /* BÓNG ĐỔ (SHADOWS) */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+
+  /* TYPOGRAPHY */
+  --font-heading: 'Outfit', sans-serif;
+  --font-body: 'Inter', sans-serif;
+
+  /* CHUYỂN ĐỘNG (TRANSITIONS) */
+  --transition-fast: 0.15s ease-in-out;
+  --transition-normal: 0.3s ease-in-out;
+}
+
+/* HỆ MÀU DARK MODE */
+[data-theme='dark'] {
+  --bg-color: #0f172a;        /* Slate 900 */
+  --surface-color: #1e293b;   /* Slate 800 */
+  --text-primary: #f8fafc;    /* Slate 50 */
+  --text-secondary: #94a3b8;  /* Slate 400 */
+  --border-color: #334155;    /* Slate 700 */
+  
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.5);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.4);
+}
+
+/* ==========================================================================
+   RESET & GLOBAL STYLES
+   ========================================================================== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  line-height: 1.6;
+  transition: background-color var(--transition-normal), color var(--transition-normal);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  line-height: 1.2;
+  font-weight: 600;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  font-family: var(--font-heading);
+  border: none;
+  background: none;
+}
+
+/* ==========================================================================
+   UTILITY CLASSES (Hỗ trợ layout nhanh)
+   ========================================================================== */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
+  
+  &:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-2px);
+  }
+}

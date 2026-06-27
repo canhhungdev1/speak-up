@@ -1,0 +1,161 @@
+<div class="player-container">
+  
+  <!-- Header / Navigation -->
+  <header class="player-header">
+    <a routerLink="/app/course/1" class="back-btn">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M15 18l-6-6 6-6"/>
+      </svg>
+      Back to Course
+    </a>
+    
+    <div class="lesson-meta">
+      <h2>{{ lessonTitle }}</h2>
+      
+      <!-- Chỗ này làm mock tab switcher để test 3 giao diện -->
+      <div class="demo-tabs">
+        <button [class.active]="lessonType === 'audio'" (click)="setLessonType('audio')">Main Audio</button>
+        <button [class.active]="lessonType === 'vocab'" (click)="setLessonType('vocab')">Vocabulary</button>
+        <button [class.active]="lessonType === 'story'" (click)="setLessonType('story')">Mini-Story</button>
+      </div>
+
+    </div>
+
+    <!-- Settings -->
+    <button class="settings-btn">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="3"></circle>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+      </svg>
+    </button>
+  </header>
+
+  <!-- MAIN CONTENT AREA (Render theo từng Mode) -->
+  <main class="content-area">
+    <div class="content-wrapper">
+
+      <!-- MODE 1: MAIN AUDIO (Article View) -->
+      @if (lessonType === 'audio') {
+        <div class="article-view">
+          <div class="article-header">
+            <h3>Original Article</h3>
+            <button class="toggle-text-btn" (click)="toggleArticleText()">
+              @if (showArticleText) { Hide Text } @else { Show Text }
+            </button>
+          </div>
+          
+          @if (showArticleText) {
+            <div class="article-body">
+              <p>{{ articleText }}</p>
+            </div>
+          } @else {
+            <div class="hidden-state">
+              <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <line x1="2" y1="2" x2="22" y2="22"></line>
+              </svg>
+              <p>Text is hidden so you can focus on listening.</p>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- MODE 2: VOCABULARY -->
+      @if (lessonType === 'vocab') {
+        <div class="vocab-view">
+          <h3>New Words & Phrases</h3>
+          <div class="vocab-list">
+            @for (item of vocabList; track item.word) {
+              <div class="vocab-card">
+                <div class="word-header">
+                  <h4>{{ item.word }}</h4>
+                  <span class="phonetic">{{ item.phonetic }}</span>
+                </div>
+                <p class="meaning">{{ item.meaning }}</p>
+                <div class="example">
+                  <span class="label">Example:</span>
+                  <p>"{{ item.example }}"</p>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- MODE 3: MINI-STORY / POV (Karaoke Transcript) -->
+      @if (lessonType === 'story') {
+        <div class="transcript-view">
+          @for (line of transcript; track line.time) {
+            <div class="transcript-line" [class.active]="line.isActive">
+              <span class="time-stamp">{{ line.time }}</span>
+              <p>{{ line.text }}</p>
+            </div>
+          }
+        </div>
+      }
+
+    </div>
+  </main>
+
+  <!-- Global Sticky Audio Player -->
+  <aside class="sticky-player glassmorphism">
+    <div class="player-inner">
+      <div class="progress-bar-container">
+        <div class="progress-bar">
+          <div class="progress-fill" [style.width.%]="progress">
+            <div class="scrubber"></div>
+          </div>
+        </div>
+        <div class="time-info">
+          <span>00:12</span>
+          <span>08:45</span>
+        </div>
+      </div>
+
+      <div class="player-controls">
+        <!-- Cột trái: Tốc độ -->
+        <div class="control-group speed-control">
+          <button class="btn-text">1.0x</button>
+        </div>
+
+        <!-- Cột giữa: Nút điều khiển -->
+        <div class="control-group main-controls">
+          <button class="ctrl-btn round-btn">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="11 19 2 12 11 5"></polyline><polyline points="22 19 13 12 22 5"></polyline>
+            </svg>
+          </button>
+
+          <button class="ctrl-btn play-pause-btn" (click)="togglePlay()">
+            @if (isPlaying) {
+              <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
+                <rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect>
+              </svg>
+            } @else {
+              <svg viewBox="0 0 24 24" width="32" height="32" fill="currentColor">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+            }
+          </button>
+
+          <button class="ctrl-btn round-btn">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="13 19 22 12 13 5"></polyline><polyline points="2 19 11 12 2 5"></polyline>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Cột phải: Volume -->
+        <div class="control-group volume-control">
+          <button class="ctrl-btn">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+</div>

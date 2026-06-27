@@ -1,0 +1,29 @@
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.main-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0; /* Ngăn chặn overflow nội dung grid/flex bên trong */
+  
+  /* Chừa chỗ cho sidebar trên màn hình lớn */
+  @media (min-width: 768px) {
+    margin-left: 280px;
+  }
+}
+
+.content-area {
+  flex: 1;
+  padding: 1.5rem;
+  background-color: var(--bg-color);
+  overflow-y: auto;
+  
+  /* Padding top cho nút menu mobile */
+  @media (max-width: 767px) {
+    padding-top: 2rem;
+  }
+}

@@ -1,0 +1,311 @@
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding-bottom: 2rem;
+}
+
+/* Welcome Banner */
+.welcome-banner {
+  background: linear-gradient(135deg, var(--primary-color), #8b5cf6);
+  border-radius: 1rem;
+  padding: 2rem;
+  color: white;
+  box-shadow: var(--shadow-md);
+
+  .banner-content {
+    h1 {
+      font-size: 1.75rem;
+      margin-bottom: 0.5rem;
+    }
+    p {
+      opacity: 0.9;
+      font-size: 1rem;
+    }
+  }
+}
+
+/* Grid Layout */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+
+  @media (min-width: 1024px) {
+    grid-template-columns: 2.5fr 1fr; /* Cột trái to, cột phải nhỏ */
+  }
+}
+
+.main-column {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  min-width: 0; /* Ngăn chặn stretch ngang phá vỡ grid */
+}
+
+/* Tiêu đề mục */
+.section-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+
+  h2 {
+    font-size: 1.25rem;
+    color: var(--text-primary);
+  }
+
+  .view-all {
+    font-size: 0.875rem;
+    color: var(--primary-color);
+    font-weight: 500;
+    &:hover { text-decoration: underline; }
+  }
+}
+
+/* Continue Learning Hero Card */
+.hero-card {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--surface-color);
+  border-radius: 1rem;
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+
+  @media (min-width: 640px) {
+    flex-direction: row;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+
+  .hero-image {
+    background: linear-gradient(45deg, #10b981, #3b82f6);
+    height: 160px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    @media (min-width: 640px) {
+      width: 240px;
+      height: auto;
+    }
+
+    .play-overlay {
+      width: 48px;
+      height: 48px;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(4px);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      transition: transform var(--transition-fast);
+      cursor: pointer;
+
+      &:hover {
+        transform: scale(1.1);
+        background: rgba(255, 255, 255, 0.3);
+      }
+    }
+  }
+
+  .hero-info {
+    padding: 1.5rem;
+    flex: 1;
+
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      background-color: rgba(59, 130, 246, 0.1);
+      color: var(--primary-color);
+      border-radius: 1rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+
+    h3 {
+      font-size: 1.25rem;
+      margin-bottom: 0.25rem;
+      color: var(--text-primary);
+    }
+
+    p {
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .progress-section {
+      margin-bottom: 1.25rem;
+
+      .progress-labels {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+        margin-bottom: 0.5rem;
+      }
+
+      .progress-bar {
+        height: 6px;
+        background-color: var(--border-color);
+        border-radius: 3px;
+        overflow: hidden;
+
+        .progress-fill {
+          height: 100%;
+          background-color: var(--primary-color);
+          border-radius: 3px;
+        }
+      }
+    }
+
+    .resume-btn {
+      width: 100%;
+      @media (min-width: 640px) { width: auto; }
+    }
+  }
+}
+
+/* Recommended Courses (Horizontal Scroll) */
+.horizontal-scroll {
+  display: flex;
+  gap: 1.5rem;
+  overflow-x: auto;
+  padding-bottom: 1rem;
+  /* Ẩn scrollbar trên Chrome/Safari */
+  &::-webkit-scrollbar { display: none; }
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+
+  .course-card {
+    min-width: 200px;
+    background-color: var(--surface-color);
+    border-radius: 1rem;
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform var(--transition-fast);
+
+    &:hover {
+      transform: translateY(-4px);
+    }
+
+    .course-cover {
+      height: 120px;
+      padding: 1rem;
+      display: flex;
+      align-items: flex-start;
+
+      .level-tag {
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(4px);
+        color: white;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.5rem;
+        font-size: 0.75rem;
+        font-weight: 500;
+      }
+    }
+
+    .course-info {
+      padding: 1rem;
+      
+      h4 {
+        font-size: 1rem;
+        color: var(--text-primary);
+        margin-bottom: 0.25rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      p {
+        color: var(--text-secondary);
+        font-size: 0.875rem;
+      }
+    }
+  }
+}
+
+/* Weekly Goal Chart */
+.side-column {
+  .weekly-goal {
+    background-color: var(--surface-color);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    border: 1px solid var(--border-color);
+
+    h3 { font-size: 1.25rem; margin-bottom: 0.25rem; color: var(--text-primary); }
+    .subtitle { color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 2rem; }
+
+    .chart-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      height: 150px;
+      margin-bottom: 2rem;
+      border-bottom: 1px dashed var(--border-color);
+      padding-bottom: 0.5rem;
+
+      .bar-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        height: 100%;
+        justify-content: flex-end;
+        width: 12%;
+
+        .bar {
+          width: 100%;
+          border-radius: 4px;
+          background-color: var(--primary-color);
+          min-height: 4px; /* Default cho 0 phút */
+          transition: height 1s ease-out;
+
+          &.success { background-color: var(--success-color); }
+          &.empty { background-color: var(--border-color); }
+        }
+
+        .day-label {
+          font-size: 0.75rem;
+          color: var(--text-secondary);
+        }
+      }
+    }
+
+    .goal-summary {
+      display: flex;
+      gap: 1rem;
+
+      .stat-box {
+        flex: 1;
+        background: var(--bg-color);
+        padding: 1rem;
+        border-radius: 0.75rem;
+        text-align: center;
+
+        .stat-value {
+          display: block;
+          font-size: 1.5rem;
+          font-weight: 700;
+          font-family: var(--font-heading);
+          color: var(--text-primary);
+        }
+
+        .stat-label {
+          font-size: 0.75rem;
+          color: var(--text-secondary);
+        }
+      }
+    }
+  }
+}

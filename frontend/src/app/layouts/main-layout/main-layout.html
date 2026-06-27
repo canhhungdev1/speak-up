@@ -1,0 +1,15 @@
+<div class="app-layout">
+  <!-- Sidebar bên trái -->
+  <app-sidebar></app-sidebar>
+
+  <!-- Khu vực nội dung chính bên phải -->
+  <div class="main-wrapper">
+    <!-- Thanh Topbar ở trên cùng -->
+    <app-topbar></app-topbar>
+
+    <!-- Nội dung thay đổi (Dashboard, Explore, etc.) -->
+    <main class="content-area">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

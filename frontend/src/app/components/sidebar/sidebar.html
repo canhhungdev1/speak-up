@@ -1,0 +1,51 @@
+<!-- Mobile Hamburger Button -->
+<button class="mobile-toggle" (click)="toggleMobileMenu()">
+  <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+    @if (isMobileMenuOpen) {
+      <path d="M18 6L6 18M6 6l12 12" />
+    } @else {
+      <path d="M3 12h18M3 6h18M3 18h18" />
+    }
+  </svg>
+</button>
+
+<aside class="sidebar" [class.open]="isMobileMenuOpen">
+  <div class="sidebar-header">
+    <div class="logo">Speak<span>Up</span></div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-section">
+      <span class="section-title">Menu</span>
+      <a routerLink="/app/dashboard" routerLinkActive="active" class="nav-item">
+        <span class="icon">🏠</span>
+        <span>Dashboard</span>
+      </a>
+      <a routerLink="/app/explore" routerLinkActive="active" class="nav-item">
+        <span class="icon">📚</span>
+        <span>Explore Courses</span>
+      </a>
+      <a routerLink="/app/progress" routerLinkActive="active" class="nav-item">
+        <span class="icon">📈</span>
+        <span>My Progress</span>
+      </a>
+    </div>
+
+    <div class="nav-section">
+      <span class="section-title">Settings</span>
+      <a routerLink="/app/profile" routerLinkActive="active" class="nav-item">
+        <span class="icon">👤</span>
+        <span>Profile</span>
+      </a>
+      <a routerLink="/auth" class="nav-item logout">
+        <span class="icon">🚪</span>
+        <span>Log Out</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Đóng menu trên mobile khi click ra ngoài -->
+  @if (isMobileMenuOpen) {
+    <div class="mobile-overlay" (click)="toggleMobileMenu()"></div>
+  }
+</aside>

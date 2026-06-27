@@ -1,0 +1,92 @@
+<div class="course-detail-container">
+  
+  <!-- Back Button -->
+  <a routerLink="/app/explore" class="back-btn">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M19 12H5M12 19l-7-7 7-7"/>
+    </svg>
+    Back to Explore
+  </a>
+
+  <!-- Course Header (Hero Banner) -->
+  <header class="course-header" [style.borderTopColor]="course.color">
+    <div class="header-info">
+      <span class="level-badge" [style.backgroundColor]="course.color">{{ course.level }}</span>
+      <h1>{{ course.title }}</h1>
+      <p class="description">{{ course.description }}</p>
+      
+      <!-- Progress Bar -->
+      <div class="progress-container">
+        <div class="progress-labels">
+          <span>Overall Progress</span>
+          <span>{{ course.progress }}%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" [style.width.%]="course.progress" [style.backgroundColor]="course.color"></div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Trang trí hình học -->
+    <div class="header-visual">
+      <div class="circle" [style.backgroundColor]="course.color"></div>
+    </div>
+  </header>
+
+  <!-- Accordion List (Lesson Sets) -->
+  <section class="lesson-sets">
+    <h2>Course Content ({{ course.totalLessons }} Lessons)</h2>
+
+    <div class="accordion-container">
+      @for (set of lessonSets; track set.id) {
+        <div class="accordion-item" [class.open]="set.isOpen">
+          
+          <!-- Accordion Header -->
+          <div class="accordion-header" (click)="toggleAccordion(set)">
+            <div class="set-title">
+              <h3>{{ set.title }}</h3>
+              <span class="lesson-count">{{ set.lessons.length }} Lessons</span>
+            </div>
+            <div class="chevron">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9l6 6 6-6"/>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Accordion Body (Nội dung) -->
+          @if (set.isOpen) {
+            <div class="accordion-body">
+              <ul class="lesson-list">
+                @for (lesson of set.lessons; track lesson.id) {
+                  <li class="lesson-item" [class.completed]="lesson.completed">
+                    <div class="lesson-icon">{{ getIconForType(lesson.type) }}</div>
+                    
+                    <div class="lesson-info">
+                      <h4>{{ lesson.title }}</h4>
+                      <span class="duration">{{ lesson.duration }}</span>
+                    </div>
+
+                    <!-- Nút Play -->
+                    <a [routerLink]="['/app/lesson', lesson.id]" class="play-btn">
+                      @if (lesson.completed) {
+                        <svg class="check-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--success-color)" stroke-width="3">
+                          <path d="M20 6L9 17l-5-5"/>
+                        </svg>
+                      } @else {
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                          <path d="M8 5v14l11-7z"/>
+                        </svg>
+                      }
+                    </a>
+                  </li>
+                }
+              </ul>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </section>
+
+</div>

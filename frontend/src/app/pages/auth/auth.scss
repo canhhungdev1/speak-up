@@ -1,0 +1,209 @@
+.auth-container {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* Nửa trái (Chỉ hiện trên màn hình lớn) */
+.auth-visual {
+  display: none;
+  flex: 1;
+  background-color: #0f172a; /* Dark Mode Color */
+  color: white;
+  position: relative;
+  overflow: hidden;
+
+  @media (min-width: 1024px) {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 4rem;
+  }
+
+  .visual-content {
+    position: relative;
+    z-index: 10;
+    max-width: 480px;
+
+    .logo {
+      font-family: var(--font-heading);
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 4rem;
+      
+      span {
+        color: var(--primary-color);
+      }
+    }
+
+    h1 {
+      font-size: 3rem;
+      line-height: 1.2;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(135deg, #ffffff, #94a3b8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    p {
+      font-size: 1.125rem;
+      color: #94a3b8;
+      line-height: 1.8;
+      margin-bottom: 3rem;
+      font-style: italic;
+    }
+
+    .testimonial {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+
+      .avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: linear-gradient(45deg, var(--primary-color), var(--success-color));
+      }
+
+      h4 { font-size: 1rem; margin-bottom: 0.25rem; }
+      span { font-size: 0.875rem; color: #64748b; }
+    }
+  }
+
+  .visual-overlay {
+    position: absolute;
+    top: 0; right: 0; bottom: 0; left: 0;
+    background-image: radial-gradient(circle at 100% 0%, rgba(59, 130, 246, 0.15) 0%, transparent 50%);
+    pointer-events: none;
+  }
+}
+
+/* Nửa phải (Form) */
+.auth-form-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  background-color: var(--bg-color);
+}
+
+.auth-form-container {
+  width: 100%;
+  max-width: 400px;
+
+  .form-header {
+    text-align: center;
+    margin-bottom: 2rem;
+
+    h2 { font-size: 2rem; margin-bottom: 0.5rem; }
+    p { color: var(--text-secondary); }
+  }
+
+  /* Nút Google */
+  .btn-oauth {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    transition: background-color var(--transition-fast);
+
+    &:hover { background-color: var(--border-color); }
+  }
+
+  /* Thanh phân cách */
+  .divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 2rem 0;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+
+    &::before, &::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    span { padding: 0 1rem; }
+  }
+
+  /* Form */
+  .form-group {
+    margin-bottom: 1.5rem;
+
+    label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+    }
+
+    .label-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+
+      label { margin-bottom: 0; }
+      .forgot-link {
+        font-size: 0.875rem;
+        color: var(--primary-color);
+        font-weight: 500;
+        &:hover { text-decoration: underline; }
+      }
+    }
+
+    input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border-color);
+      border-radius: 0.5rem;
+      background-color: var(--surface-color);
+      color: var(--text-primary);
+      font-size: 1rem;
+      font-family: var(--font-body);
+      transition: border-color var(--transition-fast);
+
+      &:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+      }
+    }
+  }
+
+  .btn-submit {
+    width: 100%;
+    padding: 0.875rem;
+    font-size: 1rem;
+    margin-top: 1rem;
+  }
+
+  /* Nút chuyển đổi (Switch mode) */
+  .switch-mode {
+    text-align: center;
+    margin-top: 2rem;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+
+    .btn-switch {
+      color: var(--primary-color);
+      font-weight: 600;
+      font-size: 0.95rem;
+      &:hover { text-decoration: underline; }
+    }
+  }
+}
