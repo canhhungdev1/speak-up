@@ -33,22 +33,64 @@ The girl turns, gets off the bike, and looks at him.`;
   // 2. Chế độ Vocabulary
   vocabList = [
     { 
-      word: 'Expensive', 
-      phonetic: '/ɪkˈspensɪv/', 
-      meaning: 'Costing a lot of money.', 
-      example: 'It was a very expensive car.' 
+      word: 'big hitter', 
+      type: 'idiom',
+      meaning: 'someone who can hit a baseball very far (ie. a strong hitter)' 
     },
     { 
-      word: 'Huge', 
-      phonetic: '/hjuːdʒ/', 
-      meaning: 'Extremely large.', 
-      example: 'It was a huge, blue, fast car.' 
+      word: 'to try out (for)', 
+      type: 'verb',
+      meaning: 'to try to get a job (usually used in sports or other performance jobs)' 
     },
     { 
-      word: 'Ignore', 
-      phonetic: '/ɪɡˈnɔːr/', 
-      meaning: 'To pay no attention to something or someone.', 
-      example: 'She ignores him and keeps going.' 
+      word: 'direct flight', 
+      type: 'noun',
+      meaning: 'a flight with no stops, (an airplane trip with no stops)' 
+    },
+    { 
+      word: 'to reject', 
+      type: 'verb',
+      meaning: 'to say "no" to, to refuse' 
+    },
+    { 
+      word: '"come on"', 
+      type: 'idiom',
+      meaning: '"hurry", "do [something] now" -- (always used as a command)' 
+    },
+    { 
+      word: 'get a grip', 
+      type: 'idiom',
+      meaning: 'control your emotions, calm down (be calm), control yourself' 
+    },
+    { 
+      word: 'to find out', 
+      type: 'verb',
+      meaning: 'to learn, to discover (new information)' 
+    },
+    { 
+      word: 'impressed with', 
+      type: 'adj',
+      meaning: 'think (someone/something) is great' 
+    },
+    { 
+      word: 'hitter', 
+      type: 'noun',
+      meaning: 'a person who hits' 
+    },
+    { 
+      word: 'to hire', 
+      type: 'verb',
+      meaning: 'to give a job (to someone)' 
+    },
+    { 
+      word: 'home run', 
+      type: 'noun/idiom',
+      meaning: 'the biggest hit in baseball, (idiom) a very big success' 
+    },
+    { 
+      word: 'a raise', 
+      type: 'noun',
+      meaning: 'a pay increase, an increase in money (for a job)' 
     }
   ];
 

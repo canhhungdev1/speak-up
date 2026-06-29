@@ -1,7 +1,9 @@
 .app-layout {
   display: flex;
-  min-height: 100vh;
+  height: 100vh; /* Khóa chặt chiều cao bằng màn hình */
+  height: 100dvh; /* Tương thích tốt hơn trên Mobile */
   width: 100%;
+  overflow: hidden; /* Ngăn chặn cuộn toàn bộ trang web */
 }
 
 .main-wrapper {

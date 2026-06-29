@@ -6,7 +6,7 @@
       <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M15 18l-6-6 6-6"/>
       </svg>
-      Back to Course
+      <span class="btn-text">Back to Course</span>
     </a>
     
     <div class="lesson-meta">
@@ -63,18 +63,18 @@
       <!-- MODE 2: VOCABULARY -->
       @if (lessonType === 'vocab') {
         <div class="vocab-view">
-          <h3>New Words & Phrases</h3>
+          <h3>Vocabulary & Phrases</h3>
+          <p class="vocab-subtitle">Listen to the audio and review the meanings of these new words and phrases.</p>
+          
           <div class="vocab-list">
             @for (item of vocabList; track item.word) {
-              <div class="vocab-card">
+              <div class="vocab-card glass-panel">
                 <div class="word-header">
-                  <h4>{{ item.word }}</h4>
-                  <span class="phonetic">{{ item.phonetic }}</span>
+                  <h4 class="word">{{ item.word }}</h4>
+                  <span class="word-type">{{ item.type }}</span>
                 </div>
-                <p class="meaning">{{ item.meaning }}</p>
-                <div class="example">
-                  <span class="label">Example:</span>
-                  <p>"{{ item.example }}"</p>
+                <div class="meaning-box">
+                  <p class="meaning">{{ item.meaning }}</p>
                 </div>
               </div>
             }
