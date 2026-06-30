@@ -1,0 +1,35 @@
+paths:
+  /courses:
+    get:
+      summary: Lấy danh sách khóa học
+      tags:
+        - Courses
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id: { type: string }
+                    title: { type: string }
+                    level: { type: string }
+                    cover_image_url: { type: string }
+
+  /lessons/{id}:
+    get:
+      summary: Lấy chi tiết bài học
+      tags:
+        - Lessons
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Trả về URL audio và Transcript (JSON).

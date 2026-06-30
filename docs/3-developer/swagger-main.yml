@@ -1,0 +1,30 @@
+openapi: 3.0.0
+info:
+  title: SpeakUp API Documentation
+  description: RESTful API for SpeakUp App (Effortless English Platform)
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000/api/v1
+    description: Local Development Server
+
+paths:
+  # Auth Feature
+  /auth/login:
+    $ref: './auth/api-spec.yml#/paths/~1auth~1login'
+    
+  # Courses Feature
+  /courses:
+    $ref: './courses/api-spec.yml#/paths/~1courses'
+  /lessons/{id}:
+    $ref: './courses/api-spec.yml#/paths/~1lessons~1{id}'
+    
+  # Progress Feature
+  /progress/sync:
+    $ref: './progress/api-spec.yml#/paths/~1progress~1sync'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

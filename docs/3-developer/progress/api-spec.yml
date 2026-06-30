@@ -1,0 +1,21 @@
+paths:
+  /progress/sync:
+    post:
+      summary: Đồng bộ tiến độ nghe của học viên
+      tags:
+        - Progress
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                lesson_id: { type: string }
+                last_position: { type: integer, description: "Số giây audio đang nghe dở" }
+                is_completed: { type: boolean }
+      responses:
+        '200':
+          description: Cập nhật thành công.

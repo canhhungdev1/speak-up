@@ -1,0 +1,23 @@
+paths:
+  /auth/login:
+    post:
+      summary: Nhận diện và đồng bộ User từ Supabase Auth
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                auth_provider_id:
+                  type: string
+                  description: UUID được cấp bởi Supabase
+                email:
+                  type: string
+                full_name:
+                  type: string
+      responses:
+        '200':
+          description: Đăng nhập/Đồng bộ thành công. Trả về thông tin User.
