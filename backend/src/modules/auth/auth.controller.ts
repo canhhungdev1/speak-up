@@ -1,4 +1,23 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Post, UseGuards, Request, Body } from '@nestjs/common';
+import { AuthService } from './auth.service';
+import { JwtAuthGuard } from '../../core/guards/jwt-auth.guard';
 
 @Controller('auth')
-export class AuthController {}
+export class AuthController {
+  constructor(private readonly authService: AuthService) {}
+
+  @Post('sync')
+  @UseGuards(JwtAuthGuard)
+  async syncUser(@Request() req, @Body() body: { full_name: string; avatar_url?: string }) {
+    // Nhờ có JwtAuthGuard, thông tin giải mã từ Token sẽ nằm trong req.user
+    const { userId, email } = req.user;
+    
+    // Gọi Service để lưu vào Local Database
+    return this.authService.syncUser({
+      auth_provider_id: userId,
+      email: email,
+      full_name: body.full_name,
+      avatar_url: body.avatar_url,
+    });
+  }
+}
