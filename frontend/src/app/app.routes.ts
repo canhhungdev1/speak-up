@@ -6,6 +6,7 @@ import { Dashboard } from './pages/dashboard/dashboard';
 import { Explore } from './pages/explore/explore';
 import { CourseDetail } from './pages/course-detail/course-detail';
 import { LessonPlayer } from './pages/lesson-player/lesson-player';
+import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   { path: '', component: Landing },
@@ -13,6 +14,7 @@ export const routes: Routes = [
   { 
     path: 'app', 
     component: MainLayout,
+    canActivate: [authGuard],
     children: [
       { path: 'dashboard', component: Dashboard },
       { path: 'explore', component: Explore },

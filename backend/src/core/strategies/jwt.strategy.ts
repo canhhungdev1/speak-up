@@ -6,10 +6,14 @@ import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(private configService: ConfigService) {
+    const secret = configService.get<string>('SUPABASE_JWT_SECRET') || 'default_secret';
+    // Đảm bảo secret không có dấu nháy kép thừa
+    const cleanSecret = secret.replace(/^"|"$/g, '');
+    
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: configService.get<string>('SUPABASE_JWT_SECRET') || configService.get<string>('SUPABASE_KEY') || 'default_secret',
+      secretOrKey: cleanSecret, // Dùng cleanSecret để tránh lỗi nháy kép
     });
   }
 

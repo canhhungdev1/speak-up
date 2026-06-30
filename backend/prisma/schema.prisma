@@ -8,11 +8,11 @@ datasource db {
 
 model User {
   id               String   @id @default(uuid())
-  auth_provider_id String   @unique // Trỏ tới UID của Supabase Auth
+  authProviderId   String   @unique @map("auth_provider_id") // Trỏ tới UID của Supabase Auth
   email            String   @unique
-  full_name        String
-  avatar_url       String?
-  created_at       DateTime @default(now())
+  fullName         String   @map("full_name")
+  avatarUrl        String?  @map("avatar_url")
+  createdAt        DateTime @default(now()) @map("created_at")
 
   progress UserProgress[]
 
@@ -24,8 +24,8 @@ model Course {
   title           String
   description     String?
   level           String
-  cover_image_url String?
-  created_at      DateTime @default(now())
+  coverImageUrl   String?  @map("cover_image_url")
+  createdAt       DateTime @default(now()) @map("created_at")
 
   lessonSets LessonSet[]
 
@@ -34,12 +34,12 @@ model Course {
 
 model LessonSet {
   id          String   @id @default(uuid())
-  course_id   String
+  courseId    String   @map("course_id")
   title       String
-  order_index Int
-  created_at  DateTime @default(now())
+  orderIndex  Int      @map("order_index")
+  createdAt   DateTime @default(now()) @map("created_at")
 
-  course  Course   @relation(fields: [course_id], references: [id])
+  course  Course   @relation(fields: [courseId], references: [id])
   lessons Lesson[]
 
   @@map("lesson_sets")
@@ -54,14 +54,14 @@ enum LessonType {
 
 model Lesson {
   id              String     @id @default(uuid())
-  lesson_set_id   String
+  lessonSetId     String     @map("lesson_set_id")
   type            LessonType
   title           String
-  audio_url       String?
-  transcript_json Json? // Lưu mảng các câu thoại và thời gian
-  created_at      DateTime   @default(now())
+  audioUrl        String?    @map("audio_url")
+  transcriptJson  Json?      @map("transcript_json") // Lưu mảng các câu thoại và thời gian
+  createdAt       DateTime   @default(now()) @map("created_at")
 
-  lessonSet LessonSet      @relation(fields: [lesson_set_id], references: [id])
+  lessonSet LessonSet      @relation(fields: [lessonSetId], references: [id])
   progress  UserProgress[]
 
   @@map("lessons")
@@ -75,16 +75,16 @@ enum ProgressStatus {
 
 model UserProgress {
   id            String         @id @default(uuid())
-  user_id       String
-  lesson_id     String
+  userId        String         @map("user_id")
+  lessonId      String         @map("lesson_id")
   status        ProgressStatus @default(NOT_STARTED)
-  last_position Int            @default(0) // Số giây đang nghe dở
-  updated_at    DateTime       @updatedAt
-  created_at    DateTime       @default(now())
+  lastPosition  Int            @default(0) @map("last_position") // Số giây đang nghe dở
+  updatedAt     DateTime       @updatedAt @map("updated_at")
+  createdAt     DateTime       @default(now()) @map("created_at")
 
-  user   User   @relation(fields: [user_id], references: [id])
-  lesson Lesson @relation(fields: [lesson_id], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
+  lesson Lesson @relation(fields: [lessonId], references: [id])
 
-  @@unique([user_id, lesson_id]) // Một user chỉ có 1 tiến độ cho 1 bài học
+  @@unique([userId, lessonId]) // Một user chỉ có 1 tiến độ cho 1 bài học
   @@map("user_progress")
 }

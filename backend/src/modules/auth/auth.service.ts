@@ -2,10 +2,10 @@ import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../../infrastructure/prisma/prisma.service';
 
 interface SyncUserDto {
-  auth_provider_id: string;
+  authProviderId: string;
   email: string;
-  full_name: string;
-  avatar_url?: string;
+  fullName: string;
+  avatarUrl?: string | null;
 }
 
 @Injectable()
@@ -21,17 +21,17 @@ export class AuthService {
     // - Nếu tìm thấy user có email này -> Cập nhật thông tin mới nhất
     // - Nếu chưa có -> Tạo mới user
     const user = await this.prisma.user.upsert({
-      where: { auth_provider_id: data.auth_provider_id },
+      where: { authProviderId: data.authProviderId },
       update: {
         email: data.email,
-        full_name: data.full_name,
-        avatar_url: data.avatar_url,
+        fullName: data.fullName,
+        avatarUrl: data.avatarUrl,
       },
       create: {
-        auth_provider_id: data.auth_provider_id,
+        authProviderId: data.authProviderId,
         email: data.email,
-        full_name: data.full_name,
-        avatar_url: data.avatar_url,
+        fullName: data.fullName,
+        avatarUrl: data.avatarUrl,
       },
     });
 
