@@ -1,0 +1,90 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id               String   @id @default(uuid())
+  auth_provider_id String   @unique // Trỏ tới UID của Supabase Auth
+  email            String   @unique
+  full_name        String
+  avatar_url       String?
+  created_at       DateTime @default(now())
+
+  progress UserProgress[]
+
+  @@map("users")
+}
+
+model Course {
+  id              String   @id @default(uuid())
+  title           String
+  description     String?
+  level           String
+  cover_image_url String?
+  created_at      DateTime @default(now())
+
+  lessonSets LessonSet[]
+
+  @@map("courses")
+}
+
+model LessonSet {
+  id          String   @id @default(uuid())
+  course_id   String
+  title       String
+  order_index Int
+  created_at  DateTime @default(now())
+
+  course  Course   @relation(fields: [course_id], references: [id])
+  lessons Lesson[]
+
+  @@map("lesson_sets")
+}
+
+enum LessonType {
+  MAIN_AUDIO
+  VOCABULARY
+  MINI_STORY
+  POV
+}
+
+model Lesson {
+  id              String     @id @default(uuid())
+  lesson_set_id   String
+  type            LessonType
+  title           String
+  audio_url       String?
+  transcript_json Json? // Lưu mảng các câu thoại và thời gian
+  created_at      DateTime   @default(now())
+
+  lessonSet LessonSet      @relation(fields: [lesson_set_id], references: [id])
+  progress  UserProgress[]
+
+  @@map("lessons")
+}
+
+enum ProgressStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  COMPLETED
+}
+
+model UserProgress {
+  id            String         @id @default(uuid())
+  user_id       String
+  lesson_id     String
+  status        ProgressStatus @default(NOT_STARTED)
+  last_position Int            @default(0) // Số giây đang nghe dở
+  updated_at    DateTime       @updatedAt
+  created_at    DateTime       @default(now())
+
+  user   User   @relation(fields: [user_id], references: [id])
+  lesson Lesson @relation(fields: [lesson_id], references: [id])
+
+  @@unique([user_id, lesson_id]) // Một user chỉ có 1 tiến độ cho 1 bài học
+  @@map("user_progress")
+}

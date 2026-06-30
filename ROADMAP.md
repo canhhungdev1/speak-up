@@ -27,9 +27,9 @@ Xây dựng nền móng kiến trúc Frontend và thiết kế toàn bộ giao d
 ## Phase 2: Database & Backend Core (Đang thực hiện ⏳)
 Xây dựng trái tim xử lý nghiệp vụ, API và cơ sở dữ liệu độc lập.
 
-- [ ] Cấu hình Local Database bằng Docker (PostgreSQL).
-- [ ] Khởi tạo dự án NestJS (Thư mục `/backend`).
-- [ ] Thiết lập Prisma ORM & Schema (`users`, `courses`, `lessons`, `progress`).
+- [x] Cấu hình Local Database bằng Docker (PostgreSQL).
+- [x] Khởi tạo dự án NestJS (Thư mục `/backend`).
+- [x] Thiết lập Prisma ORM & Schema (`users`, `courses`, `lessons`, `progress`).
 - [ ] Tích hợp Supabase Auth Guard vào NestJS để xác thực người dùng.
 - [ ] Phát triển các Modules & API cốt lõi:
   - [ ] Auth Module (Đồng bộ User).
