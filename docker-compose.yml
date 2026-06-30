@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: speakup_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: speakup_admin
+      POSTGRES_PASSWORD: secretpassword
+      POSTGRES_DB: speakup_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - speakup_pgdata:/var/lib/postgresql/data
+
+volumes:
+  speakup_pgdata:
