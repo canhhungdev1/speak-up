@@ -1,0 +1,61 @@
+<div class="admin-container">
+  <div class="admin-header">
+    <div class="header-title">
+      <h1>Create New Course</h1>
+      <p>Add a new course to your curriculum</p>
+    </div>
+  </div>
+
+  <div class="form-card">
+    <form [formGroup]="courseForm" (ngSubmit)="onSubmit()">
+      
+      <!-- Title -->
+      <div class="form-group">
+        <label for="title">Course Title <span class="required">*</span></label>
+        <input type="text" id="title" formControlName="title" placeholder="e.g. IELTS Listening Mastery"
+               [class.is-invalid]="courseForm.controls.title.invalid && courseForm.controls.title.touched">
+        @if (courseForm.controls.title.invalid && courseForm.controls.title.touched) {
+          <div class="error-msg">Title is required (min 3 characters).</div>
+        }
+      </div>
+
+      <!-- Description -->
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea id="description" formControlName="description" rows="4" placeholder="Briefly describe what students will learn..."></textarea>
+      </div>
+
+      <!-- Level -->
+      <div class="form-group">
+        <label for="level">Difficulty Level <span class="required">*</span></label>
+        <select id="level" formControlName="level">
+          <option value="Beginner">Beginner</option>
+          <option value="Intermediate">Intermediate</option>
+          <option value="Advanced">Advanced</option>
+        </select>
+      </div>
+
+      <!-- Cover Image -->
+      <div class="form-group">
+        <label for="coverImageUrl">Cover Image URL</label>
+        <input type="text" id="coverImageUrl" formControlName="coverImageUrl" placeholder="https://example.com/image.jpg">
+      </div>
+
+      <!-- Alerts -->
+      @if (errorMessage) {
+        <div class="alert alert-error">{{ errorMessage }}</div>
+      }
+      @if (successMessage) {
+        <div class="alert alert-success">{{ successMessage }}</div>
+      }
+
+      <!-- Actions -->
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" routerLink="/admin/dashboard">Cancel</button>
+        <button type="submit" class="btn btn-primary" [disabled]="isSubmitting">
+          {{ isSubmitting ? 'Creating...' : 'Create Course' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

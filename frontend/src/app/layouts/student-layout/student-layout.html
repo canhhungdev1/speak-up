@@ -1,0 +1,14 @@
+<div class="app-layout">
+  <!-- Thay vì dùng chung, nay dùng riêng Student Sidebar -->
+  <app-student-sidebar></app-student-sidebar>
+
+  <div class="main-wrapper">
+    <!-- Thanh Topbar ở trên cùng -->
+    <app-topbar></app-topbar>
+
+    <!-- Nội dung thay đổi (Dashboard, Explore, etc.) -->
+    <main class="content-area">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

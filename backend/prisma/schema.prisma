@@ -6,12 +6,18 @@ datasource db {
   provider = "postgresql"
 }
 
+enum Role {
+  STUDENT
+  ADMIN
+}
+
 model User {
   id               String   @id @default(uuid())
   authProviderId   String   @unique @map("auth_provider_id") // Trỏ tới UID của Supabase Auth
   email            String   @unique
   fullName         String   @map("full_name")
   avatarUrl        String?  @map("avatar_url")
+  role             Role     @default(STUDENT)
   createdAt        DateTime @default(now()) @map("created_at")
 
   progress UserProgress[]

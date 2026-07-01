@@ -19,7 +19,7 @@
   <!-- Courses Grid -->
   <div class="courses-grid">
     @for (course of filteredCourses; track course.id) {
-      <a [routerLink]="['/app/course', course.id]" class="course-card" style="text-decoration: none; color: inherit;">
+      <a [routerLink]="['/student/course', course.id]" class="course-card" style="text-decoration: none; color: inherit;">
         <!-- Ảnh Cover (Dùng màu gradient làm placeholder) -->
         <div class="card-cover" [style.background]="'linear-gradient(135deg, ' + course.color + ', #1e293b)'">
           <span class="level-badge">{{ course.level }}</span>

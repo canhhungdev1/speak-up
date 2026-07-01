@@ -1,4 +1,4 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, inject, signal, NgZone } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { createClient, SupabaseClient, User } from '@supabase/supabase-js';
 import { environment } from '../../../environments/environment';
@@ -12,9 +12,11 @@ export class AuthService {
   private supabase: SupabaseClient;
   private http = inject(HttpClient);
   private router = inject(Router);
+  private ngZone = inject(NgZone);
 
   // Signals để UI có thể track state dễ dàng
   currentUser = signal<User | null>(null);
+  userProfile = signal<any>(null);
   isLoading = signal<boolean>(true);
   
   // Lưu token vào RAM (hoặc có thể dùng localStorage)
@@ -27,6 +29,23 @@ export class AuthService {
 
   get token(): string | null {
     return this.accessToken;
+  }
+
+  async getSession() {
+    return await this.supabase.auth.getSession();
+  }
+
+  async waitForAuthReady(): Promise<void> {
+    if (!this.isLoading()) return;
+    
+    return new Promise(resolve => {
+      const check = setInterval(() => {
+        if (!this.isLoading()) {
+          clearInterval(check);
+          resolve();
+        }
+      }, 50);
+    });
   }
 
   private setupAuthListener() {
@@ -42,9 +61,17 @@ export class AuthService {
         if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {
           await this.syncUserWithBackend();
           
-          // Tự động chuyển hướng vào Dashboard nếu đang bị kẹt ở trang đăng nhập
-          if (this.router.url.includes('/auth')) {
-            this.router.navigate(['/app/dashboard']);
+          // Tự động chuyển hướng vào Dashboard nếu chưa ở trong app
+          const currentUrl = this.router.url;
+          if (!currentUrl.includes('/student/') && !currentUrl.includes('/admin/')) {
+            const role = this.userProfile()?.role || 'STUDENT';
+            this.ngZone.run(() => {
+              if (role === 'ADMIN') {
+                this.router.navigate(['/admin/dashboard']);
+              } else {
+                this.router.navigate(['/student/dashboard']);
+              }
+            });
           }
         }
       } else {
@@ -61,7 +88,7 @@ export class AuthService {
     const { error } = await this.supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: window.location.origin + '/app/dashboard' // Chuyển về dashboard sau khi login
+        redirectTo: window.location.origin // Redirect về root để AuthState listener tự xử lý role
       }
     });
 
@@ -89,10 +116,11 @@ export class AuthService {
   private async syncUserWithBackend() {
     try {
       // Vì Interceptor sẽ tự động lấy token từ this.token, chúng ta chỉ cần gọi API
-      await firstValueFrom(
+      const res: any = await firstValueFrom(
         this.http.post(`${environment.apiUrl}/auth/sync`, {})
       );
-      console.log('Đồng bộ user với backend thành công!');
+      this.userProfile.set(res.user);
+      console.log('Đồng bộ user với backend thành công!', res.user);
     } catch (error) {
       console.error('Lỗi khi đồng bộ user với backend:', error);
     }
