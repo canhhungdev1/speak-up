@@ -23,6 +23,9 @@ export class JwtAuthGuard implements CanActivate {
     try {
       const { data, error } = await this.supabaseService.getClient().auth.getUser(token);
 
+      console.log('DATA Google: ', data);
+      
+
       if (error || !data.user) {
         fs.appendFileSync(logPath, `\n[${new Date().toISOString()}] LỖI: Token không hợp lệ. Error từ Supabase: ${JSON.stringify(error)}. Token: ${token}\n`);
         throw new UnauthorizedException('Token không hợp lệ');
@@ -33,6 +36,8 @@ export class JwtAuthGuard implements CanActivate {
         userId: data.user.id,
         email: data.user.email,
         role: data.user.role,
+        fullName: data.user.user_metadata.full_name,
+        avatarUrl: data.user.user_metadata.avatar_url
       };
 
       return true;

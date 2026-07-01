@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject, computed } from '@angular/core';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-topbar',
@@ -8,7 +9,12 @@ import { Component, OnInit } from '@angular/core';
   styleUrl: './topbar.scss'
 })
 export class Topbar implements OnInit {
-  userName = 'Student';
+  private authService = inject(AuthService);
+  
+  user = this.authService.currentUser;
+  userName = computed(() => this.user()?.user_metadata?.['full_name'] || this.user()?.email?.split('@')[0] || 'Student');
+  avatarUrl = computed(() => this.user()?.user_metadata?.['avatar_url'] || null);
+
   streakDays = 5;
   isDarkMode = false;
 

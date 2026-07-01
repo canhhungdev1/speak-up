@@ -93,6 +93,19 @@
         font-weight: 600;
         font-size: 1rem;
       }
+      
+      .avatar-image {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid var(--border-color);
+        transition: transform var(--transition-fast);
+        
+        &:hover {
+          transform: scale(1.05);
+        }
+      }
     }
   }
 }

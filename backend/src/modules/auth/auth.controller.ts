@@ -9,18 +9,16 @@ export class AuthController {
   @Post('sync')
   @UseGuards(JwtAuthGuard)
   async syncUser(@Request() req, @Body() body: { fullName: string; avatarUrl?: string }) {
-    // Nhờ có JwtAuthGuard, thông tin giải mã từ Token sẽ nằm trong req.user
-    const { userId, email } = req.user;
-    
-    // Đảm bảo có full_name (fallback về email nếu undefined)
-    const fullName = body.fullName || email.split('@')[0];
 
+    // Nhờ có JwtAuthGuard, thông tin giải mã từ Token sẽ nằm trong req.user
+    const { userId, email, fullName, avatarUrl } = req.user;
+    
     // Gọi Service để lưu vào Local Database
     return this.authService.syncUser({
       authProviderId: userId,
       email: email,
       fullName: fullName,
-      avatarUrl: body.avatarUrl || null,
+      avatarUrl: avatarUrl
     });
   }
 }

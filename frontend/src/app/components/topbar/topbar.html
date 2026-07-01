@@ -47,9 +47,13 @@
 
     <!-- User Profile -->
     <div class="user-profile">
-      <div class="avatar">
-        {{ userName.charAt(0) }}
-      </div>
+      @if (avatarUrl()) {
+        <img [src]="avatarUrl()" alt="User Avatar" class="avatar-image">
+      } @else {
+        <div class="avatar">
+          {{ userName().charAt(0).toUpperCase() }}
+        </div>
+      }
     </div>
   </div>
 </header>
