@@ -52,7 +52,7 @@ export class CoursesService {
           orderBy: { orderIndex: 'asc' },
           include: {
             lessons: {
-              orderBy: { createdAt: 'asc' },
+              orderBy: { orderIndex: 'asc' },
             },
           },
         },
@@ -64,5 +64,49 @@ export class CoursesService {
     }
 
     return course;
+  }
+
+  async createLessonSet(courseId: string, data: { title: string; orderIndex: number }) {
+    return this.prisma.lessonSet.create({
+      data: {
+        courseId,
+        title: data.title,
+        orderIndex: data.orderIndex,
+      },
+    });
+  }
+
+  async createLesson(lessonSetId: string, data: { title: string; type: any; orderIndex: number }) {
+    return this.prisma.lesson.create({
+      data: {
+        lessonSetId,
+        title: data.title,
+        type: data.type,
+        orderIndex: data.orderIndex,
+      },
+    });
+  }
+
+  async reorderLessonSets(courseId: string, updates: { id: string; orderIndex: number }[]) {
+    // Thực hiện trong một transaction để đảm bảo toàn vẹn dữ liệu
+    return this.prisma.$transaction(
+      updates.map(update =>
+        this.prisma.lessonSet.update({
+          where: { id: update.id },
+          data: { orderIndex: update.orderIndex },
+        })
+      )
+    );
+  }
+
+  async reorderLessons(lessonSetId: string, updates: { id: string; orderIndex: number }[]) {
+    return this.prisma.$transaction(
+      updates.map(update =>
+        this.prisma.lesson.update({
+          where: { id: update.id },
+          data: { orderIndex: update.orderIndex },
+        })
+      )
+    );
   }
 }

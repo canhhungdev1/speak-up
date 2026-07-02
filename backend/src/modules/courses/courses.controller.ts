@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Put, Body, Param, UseGuards } from '@nestjs/common';
 import { CoursesService, CreateCourseDto } from './courses.service';
 import { JwtAuthGuard } from '../../core/guards/jwt-auth.guard';
 import { RolesGuard } from '../../core/guards/roles.guard';
@@ -26,5 +26,45 @@ export class CoursesController {
   @UseGuards(JwtAuthGuard)
   getCourseById(@Param('id') id: string) {
     return this.coursesService.getCourseById(id);
+  }
+
+  @Post(':id/lesson-sets')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  createLessonSet(
+    @Param('id') id: string,
+    @Body() data: { title: string; orderIndex: number }
+  ) {
+    return this.coursesService.createLessonSet(id, data);
+  }
+
+  @Post('lesson-sets/:setId/lessons')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  createLesson(
+    @Param('setId') setId: string,
+    @Body() data: { title: string; type: any; orderIndex: number }
+  ) {
+    return this.coursesService.createLesson(setId, data);
+  }
+
+  @Put(':id/lesson-sets/reorder')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  reorderLessonSets(
+    @Param('id') id: string,
+    @Body() updates: { id: string; orderIndex: number }[]
+  ) {
+    return this.coursesService.reorderLessonSets(id, updates);
+  }
+
+  @Put('lesson-sets/:setId/lessons/reorder')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  reorderLessons(
+    @Param('setId') setId: string,
+    @Body() updates: { id: string; orderIndex: number }[]
+  ) {
+    return this.coursesService.reorderLessons(setId, updates);
   }
 }

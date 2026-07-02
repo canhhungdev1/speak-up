@@ -65,6 +65,7 @@ model Lesson {
   title           String
   audioUrl        String?    @map("audio_url")
   transcriptJson  Json?      @map("transcript_json") // Lưu mảng các câu thoại và thời gian
+  orderIndex      Int        @default(0) @map("order_index")
   createdAt       DateTime   @default(now()) @map("created_at")
 
   lessonSet LessonSet      @relation(fields: [lessonSetId], references: [id])

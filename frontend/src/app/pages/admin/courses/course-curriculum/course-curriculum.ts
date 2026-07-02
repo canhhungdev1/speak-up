@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { DragDropModule, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { CourseService, Course, LessonSet, Lesson } from '../../../../core/services/course.service';
 
 @Component({
   selector: 'app-course-curriculum',
@@ -12,39 +13,13 @@ import { DragDropModule, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-
   styleUrl: './course-curriculum.scss'
 })
 export class CourseCurriculum implements OnInit {
+  private route = inject(ActivatedRoute);
+  private courseService = inject(CourseService);
+  private cdr = inject(ChangeDetectorRef);
+
   courseId: string | null = null;
-
-  // Mock data for UI development
-  lessonSets = [
-    {
-      id: 'set-1',
-      title: 'Day 1: A Kiss',
-      orderIndex: 1,
-      isExpanded: true,
-      lessons: [
-        { id: 'l1', title: 'A Kiss - Audio Article', type: 'MAIN_AUDIO', orderIndex: 1 },
-        { id: 'l2', title: 'A Kiss - Vocabulary', type: 'VOCABULARY', orderIndex: 2 },
-        { id: 'l3', title: 'A Kiss - Mini Story', type: 'MINI_STORY', orderIndex: 3 },
-        { id: 'l4', title: 'A Kiss - POV', type: 'POV', orderIndex: 4 }
-      ]
-    },
-    {
-      id: 'set-2',
-      title: 'Day 2: Bubba\'s Food',
-      orderIndex: 2,
-      isExpanded: false,
-      lessons: [
-        { id: 'l5', title: 'Bubba\'s Food - Audio Article', type: 'MAIN_AUDIO', orderIndex: 1 },
-        { id: 'l6', title: 'Bubba\'s Food - Mini Story', type: 'MINI_STORY', orderIndex: 2 }
-      ]
-    }
-  ];
-
-  constructor(private route: ActivatedRoute) {}
-
-  ngOnInit(): void {
-    this.courseId = this.route.snapshot.paramMap.get('id');
-  }
+  course: Course | null = null;
+  lessonSets: LessonSet[] = [];
 
   // Modal States
   isSetModalOpen = false;
@@ -56,12 +31,70 @@ export class CourseCurriculum implements OnInit {
   currentLessonSetId: string | null = null;
   isEditLesson = false;
 
+  ngOnInit(): void {
+    this.courseId = this.route.snapshot.paramMap.get('id');
+    if (this.courseId) {
+      this.loadCurriculum();
+    }
+  }
+
+  loadCurriculum() {
+    if (!this.courseId) return;
+    this.courseService.getCourseById(this.courseId).subscribe({
+      next: (course) => {
+        this.course = course;
+        this.lessonSets = (course.lessonSets || []).map(set => ({
+          ...set,
+          isExpanded: true
+        }));
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error('Failed to load curriculum', err)
+    });
+  }
+
   dropLessonSet(event: CdkDragDrop<any[]>) {
+    if (event.previousIndex === event.currentIndex) return;
+    
     moveItemInArray(this.lessonSets, event.previousIndex, event.currentIndex);
+    
+    // Update orderIndex in UI
+    const updates = this.lessonSets.map((set, index) => {
+      set.orderIndex = index + 1;
+      return { id: set.id!, orderIndex: set.orderIndex };
+    });
+
+    // Save to backend
+    if (this.courseId) {
+      this.courseService.reorderLessonSets(this.courseId, updates).subscribe({
+        next: () => console.log('Reordered sets successfully'),
+        error: (err) => {
+          console.error('Failed to reorder sets', err);
+          alert('Failed to save new order');
+        }
+      });
+    }
   }
 
   dropLesson(event: CdkDragDrop<any[]>, set: any) {
+    if (event.previousIndex === event.currentIndex) return;
+
     moveItemInArray(set.lessons, event.previousIndex, event.currentIndex);
+
+    // Update orderIndex in UI
+    const updates = set.lessons.map((lesson: any, index: number) => {
+      lesson.orderIndex = index + 1;
+      return { id: lesson.id, orderIndex: lesson.orderIndex };
+    });
+
+    // Save to backend
+    this.courseService.reorderLessons(set.id, updates).subscribe({
+      next: () => console.log('Reordered lessons successfully'),
+      error: (err) => {
+        console.error('Failed to reorder lessons', err);
+        alert('Failed to save new order');
+      }
+    });
   }
 
   toggleSet(set: any) {
@@ -80,7 +113,7 @@ export class CourseCurriculum implements OnInit {
   }
 
   saveLessonSet() {
-    if (!this.currentSet.title) {
+    if (!this.currentSet.title || !this.courseId) {
       alert('Please enter set title');
       return;
     }
@@ -91,16 +124,23 @@ export class CourseCurriculum implements OnInit {
       if (index > -1) {
         this.lessonSets[index].title = this.currentSet.title;
       }
+      this.closeSetModal();
     } else {
-      this.lessonSets.push({
-        id: 'set-' + Date.now(),
+      this.courseService.createLessonSet(this.courseId, {
         title: this.currentSet.title,
-        orderIndex: this.currentSet.orderIndex,
-        isExpanded: true,
-        lessons: []
+        orderIndex: this.currentSet.orderIndex
+      }).subscribe({
+        next: (createdSet) => {
+          this.lessonSets.push({ ...createdSet, isExpanded: true, lessons: [] });
+          this.closeSetModal();
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          console.error('Failed to create lesson set', err);
+          alert('Failed to create lesson set');
+        }
       });
     }
-    this.closeSetModal();
   }
 
   editLessonSet(set: any, event: Event) {
@@ -125,7 +165,7 @@ export class CourseCurriculum implements OnInit {
     this.currentLesson = { 
       title: '', 
       type: 'MAIN_AUDIO', 
-      orderIndex: (set?.lessons.length || 0) + 1,
+      orderIndex: (set?.lessons?.length || 0) + 1,
       content: { textHtml: '' }
     };
     this.isLessonModalOpen = true;
@@ -177,27 +217,39 @@ export class CourseCurriculum implements OnInit {
     }
 
     const set = this.lessonSets.find(s => s.id === this.currentLessonSetId);
-    if (!set) return;
+    if (!set || !set.id) return;
 
     if (this.isEditLesson) {
-      const index = set.lessons.findIndex(l => l.id === this.currentLesson.id);
+      const index = set.lessons!.findIndex(l => l.id === this.currentLesson.id);
       if (index > -1) {
-        set.lessons[index] = { ...this.currentLesson };
+        set.lessons![index] = { ...this.currentLesson };
       }
+      this.closeLessonModal();
     } else {
-      set.lessons.push({
-        id: 'lesson-' + Date.now(),
-        ...this.currentLesson
+      this.courseService.createLesson(set.id, {
+        title: this.currentLesson.title,
+        type: this.currentLesson.type,
+        orderIndex: this.currentLesson.orderIndex
+      }).subscribe({
+        next: (createdLesson) => {
+          if (!set.lessons) set.lessons = [];
+          set.lessons.push(createdLesson);
+          this.closeLessonModal();
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          console.error('Failed to create lesson', err);
+          alert('Failed to create lesson');
+        }
       });
     }
-    this.closeLessonModal();
   }
 
   deleteLesson(lesson: any, setId: string) {
     if(confirm('Are you sure you want to delete this lesson?')) {
       const set = this.lessonSets.find(s => s.id === setId);
       if (set) {
-        set.lessons = set.lessons.filter(l => l.id !== lesson.id);
+        set.lessons = (set.lessons || []).filter(l => l.id !== lesson.id);
       }
     }
   }

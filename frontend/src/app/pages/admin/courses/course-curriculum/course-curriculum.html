@@ -39,7 +39,7 @@
             </svg>
           </div>
           <h2>{{ set.title }}</h2>
-          <span class="badge badge-neutral">{{ set.lessons.length }} Lessons</span>
+          <span class="badge badge-neutral">{{ set.lessons?.length || 0 }} Lessons</span>
         </div>
         <div class="set-actions">
           <button class="btn btn-icon btn-ghost" title="Edit Set" (click)="editLessonSet(set, $event)">
@@ -59,7 +59,7 @@
 
       <!-- Lesson Set Body (List of Lessons) -->
       <div class="set-body" *ngIf="set.isExpanded">
-        <div class="lesson-list" cdkDropList [cdkDropListData]="set.lessons" (cdkDropListDropped)="dropLesson($event, set)">
+        <div class="lesson-list" cdkDropList [cdkDropListData]="set.lessons || []" (cdkDropListDropped)="dropLesson($event, set)">
           <div class="lesson-item" *ngFor="let lesson of set.lessons" cdkDrag>
             <div class="drag-handle" cdkDragHandle>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -76,14 +76,14 @@
               <span class="lesson-title">{{ lesson.title }}</span>
             </div>
             <div class="lesson-actions">
-              <button class="btn btn-sm btn-ghost" (click)="editLesson(lesson, set.id)">Edit</button>
-              <button class="btn btn-sm btn-ghost text-danger" (click)="deleteLesson(lesson, set.id)">Delete</button>
+              <button class="btn btn-sm btn-ghost" (click)="editLesson(lesson, set.id!)">Edit</button>
+              <button class="btn btn-sm btn-ghost text-danger" (click)="deleteLesson(lesson, set.id!)">Delete</button>
             </div>
           </div>
         </div>
         
         <div class="add-lesson-row">
-          <button class="btn btn-outline btn-sm" (click)="openAddLesson(set.id)">
+          <button class="btn btn-outline btn-sm" (click)="openAddLesson(set.id!)">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <line x1="12" y1="5" x2="12" y2="19"></line>
               <line x1="5" y1="12" x2="19" y2="12"></line>
