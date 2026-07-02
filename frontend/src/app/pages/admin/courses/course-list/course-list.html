@@ -118,8 +118,10 @@
       </div>
       
       <div class="modal-footer">
-        <button class="btn btn-ghost" (click)="closeCreateModal()">Cancel</button>
-        <button class="btn btn-primary" (click)="saveCourse()">Save Course</button>
+        <button class="btn btn-ghost" (click)="closeCreateModal()" [disabled]="isSaving">Cancel</button>
+        <button class="btn btn-primary" (click)="saveCourse()" [disabled]="isSaving">
+          {{ isSaving ? 'Saving...' : 'Save Course' }}
+        </button>
       </div>
     </div>
   </div>

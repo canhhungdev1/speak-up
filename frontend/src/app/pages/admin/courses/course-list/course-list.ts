@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { CourseService, Course } from '../../../../core/services/course.service';
 
 @Component({
   selector: 'app-course-list',
@@ -10,40 +11,40 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './course-list.html',
   styleUrl: './course-list.scss'
 })
-export class CourseList {
-  // Mock data for UI development
-  courses = [
-    {
-      id: 'test-course',
-      title: 'Original Effortless English',
-      level: 'Beginner',
-      lessonSetsCount: 30,
-      createdAt: new Date('2023-01-01')
-    },
-    {
-      id: 'flow-english',
-      title: 'Flow English',
-      level: 'Intermediate',
-      lessonSetsCount: 15,
-      createdAt: new Date('2023-05-15')
-    },
-    {
-      id: 'power-english',
-      title: 'Power English',
-      level: 'Advanced',
-      lessonSetsCount: 40,
-      createdAt: new Date('2023-08-20')
-    }
-  ];
+export class CourseList implements OnInit {
+  private courseService = inject(CourseService);
+  private cdr = inject(ChangeDetectorRef);
 
+  courses: Course[] = [];
+  
   // Modal state
   isCreateModalOpen = false;
+  isSaving = false;
   
   newCourse = {
     title: '',
     level: 'Beginner',
     description: ''
   };
+
+  ngOnInit() {
+    this.loadCourses();
+  }
+
+  loadCourses() {
+    console.log('Đang gọi API GET /courses...');
+    this.courseService.getAllCourses().subscribe({
+      next: (data) => {
+        console.log('Dữ liệu courses nhận được:', data);
+        this.courses = data;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Failed to load courses', err);
+        alert('Failed to load courses from backend.');
+      }
+    });
+  }
 
   openCreateModal() {
     this.isCreateModalOpen = true;
@@ -52,6 +53,7 @@ export class CourseList {
   closeCreateModal() {
     this.isCreateModalOpen = false;
     this.newCourse = { title: '', level: 'Beginner', description: '' };
+    this.isSaving = false;
   }
 
   saveCourse() {
@@ -60,21 +62,30 @@ export class CourseList {
       return;
     }
     
-    this.courses.unshift({
-      id: 'new-course-' + Date.now(),
+    this.isSaving = true;
+    this.courseService.createCourse({
       title: this.newCourse.title,
       level: this.newCourse.level,
-      lessonSetsCount: 0,
-      createdAt: new Date()
+      description: this.newCourse.description
+    }).subscribe({
+      next: (createdCourse) => {
+        this.courses.unshift(createdCourse);
+        this.closeCreateModal();
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Failed to create course', err);
+        alert('Failed to create course. Please try again.');
+        this.isSaving = false;
+        this.cdr.detectChanges();
+      }
     });
-    
-    this.closeCreateModal();
-    alert('Course created successfully!');
   }
 
   deleteCourse(course: any) {
     if(confirm('Are you sure you want to delete this course?')) {
       alert('Deleted ' + course.title);
+      // Implement delete API later
     }
   }
 }

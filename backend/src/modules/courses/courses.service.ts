@@ -13,7 +13,7 @@ export class CoursesService {
   constructor(private prisma: PrismaService) {}
 
   async createCourse(data: CreateCourseDto) {
-    return this.prisma.course.create({
+    const course = await this.prisma.course.create({
       data: {
         title: data.title,
         description: data.description,
@@ -21,12 +21,27 @@ export class CoursesService {
         coverImageUrl: data.coverImageUrl,
       },
     });
+    
+    return {
+      ...course,
+      lessonSetsCount: 0
+    };
   }
 
   async getAllCourses() {
-    return this.prisma.course.findMany({
+    const courses = await this.prisma.course.findMany({
       orderBy: { createdAt: 'desc' },
+      include: {
+        _count: {
+          select: { lessonSets: true }
+        }
+      }
     });
+
+    return courses.map(course => ({
+      ...course,
+      lessonSetsCount: course._count.lessonSets
+    }));
   }
 
   async getCourseById(id: string) {
