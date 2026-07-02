@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject, computed } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -9,7 +10,29 @@ import { RouterLink } from '@angular/router';
   styleUrl: './dashboard.scss'
 })
 export class Dashboard {
-  userName = 'John Doe';
+  authService = inject(AuthService);
+  
+  // Lấy tên từ Supabase session metadata hoặc User profile
+  userName = computed(() => {
+    const user = this.authService.currentUser();
+    return user?.user_metadata?.['full_name'] || user?.email?.split('@')[0] || 'Student';
+  });
+
+  // Lấy lời chào dựa theo thời gian thực
+  get greeting(): string {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good morning';
+    if (hour < 18) return 'Good afternoon';
+    return 'Good evening';
+  }
+
+  // Xác định buổi để đổi hình nền
+  get timeOfDay(): string {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'morning';
+    if (hour < 18) return 'afternoon';
+    return 'evening';
+  }
   
   // Dummy data for Weekly Chart
   weeklyData = [

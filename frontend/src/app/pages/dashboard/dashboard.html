@@ -1,9 +1,37 @@
 <div class="dashboard-container">
   
   <!-- Welcome Banner -->
-  <header class="welcome-banner">
+  <header class="welcome-banner" [class]="timeOfDay">
+    <!-- Decorative Background -->
+    <div class="banner-decorations">
+      <div class="glow-orb orb-1"></div>
+      <div class="glow-orb orb-2"></div>
+      
+      <!-- Time-based Icon (Sun/Moon) using SVG -->
+      <div class="time-icon-bg">
+        @if (timeOfDay === 'morning' || timeOfDay === 'afternoon') {
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        }
+        @if (timeOfDay === 'evening') {
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        }
+      </div>
+    </div>
+
     <div class="banner-content">
-      <h1>Welcome back, {{ userName }} 👋</h1>
+      <h1>{{ greeting }}, {{ userName() }}</h1>
       <p>You're on a 5-day learning streak. Keep the fire burning!</p>
     </div>
   </header>
