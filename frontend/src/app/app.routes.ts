@@ -36,8 +36,12 @@ export const routes: Routes = [
     children: [
       { path: 'dashboard', component: Dashboard }, // Tạm thời dùng chung Dashboard, có thể tách sau
       { 
-        path: 'courses/new', 
-        loadComponent: () => import('./pages/admin/courses/course-create/course-create').then(m => m.CourseCreate) 
+        path: 'courses', 
+        loadComponent: () => import('./pages/admin/courses/course-list/course-list').then(m => m.CourseList) 
+      },
+      { 
+        path: 'courses/:id/curriculum', 
+        loadComponent: () => import('./pages/admin/courses/course-curriculum/course-curriculum').then(m => m.CourseCurriculum) 
       },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]

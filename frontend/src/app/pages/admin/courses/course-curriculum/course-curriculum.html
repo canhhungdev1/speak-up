@@ -1,0 +1,218 @@
+<div class="admin-page-container">
+  <div class="page-header">
+    <div class="header-left">
+      <a routerLink="/admin/dashboard" class="back-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        Back to Dashboard
+      </a>
+      <h1>Course Curriculum</h1>
+      <p>Manage lesson sets and lessons for the course.</p>
+    </div>
+    <div class="header-right">
+      <button class="btn btn-primary" (click)="openAddLessonSet()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        Add Lesson Set
+      </button>
+    </div>
+  </div>
+
+  <div class="curriculum-container" cdkDropList [cdkDropListData]="lessonSets" (cdkDropListDropped)="dropLessonSet($event)">
+    <div class="lesson-set-card" *ngFor="let set of lessonSets" cdkDrag>
+      <!-- Lesson Set Header -->
+      <div class="set-header" (click)="toggleSet(set)">
+        <div class="set-title-group">
+          <button class="toggle-btn" [class.expanded]="set.isExpanded">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
+          <div cdkDragHandle style="cursor: grab; margin-right: 8px; display: flex; color: #cbd5e1;">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="9" cy="12" r="1"></circle><circle cx="9" cy="5" r="1"></circle><circle cx="9" cy="19" r="1"></circle>
+              <circle cx="15" cy="12" r="1"></circle><circle cx="15" cy="5" r="1"></circle><circle cx="15" cy="19" r="1"></circle>
+            </svg>
+          </div>
+          <h2>{{ set.title }}</h2>
+          <span class="badge badge-neutral">{{ set.lessons.length }} Lessons</span>
+        </div>
+        <div class="set-actions">
+          <button class="btn btn-icon btn-ghost" title="Edit Set" (click)="editLessonSet(set, $event)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+            </svg>
+          </button>
+          <button class="btn btn-icon btn-ghost text-danger" title="Delete Set" (click)="deleteLessonSet(set, $event)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Lesson Set Body (List of Lessons) -->
+      <div class="set-body" *ngIf="set.isExpanded">
+        <div class="lesson-list" cdkDropList [cdkDropListData]="set.lessons" (cdkDropListDropped)="dropLesson($event, set)">
+          <div class="lesson-item" *ngFor="let lesson of set.lessons" cdkDrag>
+            <div class="drag-handle" cdkDragHandle>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="9" cy="12" r="1"></circle>
+                <circle cx="9" cy="5" r="1"></circle>
+                <circle cx="9" cy="19" r="1"></circle>
+                <circle cx="15" cy="12" r="1"></circle>
+                <circle cx="15" cy="5" r="1"></circle>
+                <circle cx="15" cy="19" r="1"></circle>
+              </svg>
+            </div>
+            <div class="lesson-info">
+              <span class="lesson-type-badge type-{{ lesson.type | lowercase }}">{{ lesson.type }}</span>
+              <span class="lesson-title">{{ lesson.title }}</span>
+            </div>
+            <div class="lesson-actions">
+              <button class="btn btn-sm btn-ghost" (click)="editLesson(lesson, set.id)">Edit</button>
+              <button class="btn btn-sm btn-ghost text-danger" (click)="deleteLesson(lesson, set.id)">Delete</button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="add-lesson-row">
+          <button class="btn btn-outline btn-sm" (click)="openAddLesson(set.id)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Add Lesson
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State / Add First Set -->
+    <div class="empty-state" *ngIf="lessonSets.length === 0">
+      <div class="empty-icon">📁</div>
+      <h3>No Lesson Sets</h3>
+      <p>Start building your curriculum by adding a lesson set.</p>
+      <button class="btn btn-primary mt-4" (click)="openAddLessonSet()">Add Lesson Set</button>
+    </div>
+  </div>
+
+  <!-- Lesson Set Modal -->
+  <div class="modal-overlay" *ngIf="isSetModalOpen" (click)="closeSetModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>{{ isEditSet ? 'Edit Lesson Set' : 'Add Lesson Set' }}</h2>
+        <button class="close-btn" (click)="closeSetModal()">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Set Title (e.g. Day 1: A Kiss)</label>
+          <input type="text" class="form-control" [(ngModel)]="currentSet.title" placeholder="Enter title" />
+        </div>
+        <div class="form-group mt-3">
+          <label>Order Index</label>
+          <input type="number" class="form-control" [(ngModel)]="currentSet.orderIndex" min="1" />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" (click)="closeSetModal()">Cancel</button>
+        <button class="btn btn-primary" (click)="saveLessonSet()">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lesson Modal -->
+  <div class="modal-overlay" *ngIf="isLessonModalOpen" (click)="closeLessonModal()">
+    <div class="modal-content modal-lg" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>{{ isEditLesson ? 'Edit Lesson' : 'Add Lesson' }}</h2>
+        <button class="close-btn" (click)="closeLessonModal()">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Lesson Title</label>
+          <input type="text" class="form-control" [(ngModel)]="currentLesson.title" placeholder="e.g. A Kiss - Main Audio" />
+        </div>
+        
+        <div class="form-group mt-3">
+          <label>Lesson Type</label>
+          <select class="form-control" [(ngModel)]="currentLesson.type" (change)="onLessonTypeChange()">
+            <option value="MAIN_AUDIO">Main Audio</option>
+            <option value="VOCABULARY">Vocabulary</option>
+            <option value="MINI_STORY">Mini Story</option>
+            <option value="POV">Point of View (POV)</option>
+          </select>
+        </div>
+
+        <div class="form-group mt-3">
+          <label>Audio File (.mp3)</label>
+          <div class="file-upload-box">
+            <input type="file" accept="audio/mp3" />
+            <p class="text-sm text-secondary mt-1">Upload the audio file for this lesson.</p>
+          </div>
+        </div>
+
+        <hr class="my-4" />
+
+        <!-- Dynamic Form Fields based on Type -->
+        
+        <!-- MAIN_AUDIO & POV -->
+        <div class="form-group" *ngIf="currentLesson.type === 'MAIN_AUDIO' || currentLesson.type === 'POV'">
+          <label>Text Content (HTML)</label>
+          <textarea class="form-control" rows="8" [(ngModel)]="currentLesson.content.textHtml" placeholder="Paste lesson transcript here..."></textarea>
+        </div>
+
+        <!-- VOCABULARY -->
+        <div *ngIf="currentLesson.type === 'VOCABULARY'">
+          <div class="flex-between mb-2">
+            <label>Vocabulary List</label>
+            <button class="btn btn-sm btn-outline" (click)="addWordToVocab()">+ Add Word</button>
+          </div>
+          
+          <div class="vocab-list">
+            <div class="vocab-row" *ngFor="let item of currentLesson.content.words; let i = index">
+              <input type="text" class="form-control" [(ngModel)]="item.word" placeholder="Word" style="flex: 2" />
+              <select class="form-control" [(ngModel)]="item.type" style="flex: 1">
+                <option value="n">Noun (n)</option>
+                <option value="v">Verb (v)</option>
+                <option value="adj">Adjective (adj)</option>
+                <option value="adv">Adverb (adv)</option>
+              </select>
+              <input type="text" class="form-control" [(ngModel)]="item.meaning" placeholder="Meaning" style="flex: 3" />
+              <button class="btn btn-icon btn-ghost text-danger" (click)="removeWord(i)">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              </button>
+            </div>
+            <div class="text-secondary text-sm text-center py-4" *ngIf="currentLesson.content.words?.length === 0">
+              No words added yet. Click "+ Add Word" to begin.
+            </div>
+          </div>
+        </div>
+
+        <!-- MINI_STORY -->
+        <div class="form-group" *ngIf="currentLesson.type === 'MINI_STORY'">
+          <label>Subtitle Tool (JSON / VTT)</label>
+          <p class="text-sm text-secondary mb-2">
+            Paste JSON array containing <code>{{ '{' }} start: 0, end: 2, text: "sentence" {{ '}' }}</code> to enable auto-highlight.
+          </p>
+          <textarea class="form-control font-mono text-sm" rows="8" placeholder="[ {{ '{' }} 'start': ... {{ '}' }} ]"></textarea>
+        </div>
+        
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" (click)="closeLessonModal()">Cancel</button>
+        <button class="btn btn-primary" (click)="saveLesson()">Save Lesson</button>
+      </div>
+    </div>
+  </div>
+</div>

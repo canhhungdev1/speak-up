@@ -1,0 +1,401 @@
+.admin-page-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 1rem 0;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+
+  .header-left {
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+      transition: color var(--transition-fast);
+
+      svg { width: 16px; height: 16px; }
+      &:hover { color: var(--primary-color); }
+    }
+
+    h1 {
+      font-size: 2rem;
+      color: var(--text-primary);
+      margin-bottom: 0.25rem;
+    }
+    p {
+      color: var(--text-secondary);
+      margin: 0;
+    }
+  }
+}
+
+.curriculum-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Lesson Set Card */
+.lesson-set-card {
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--transition-normal);
+
+  &:hover {
+    box-shadow: var(--shadow-md);
+  }
+
+  .set-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 1.5rem;
+    background: var(--surface-color);
+    cursor: pointer;
+    user-select: none;
+    border-bottom: 1px solid transparent;
+
+    .set-title-group {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+
+      .toggle-btn {
+        background: none;
+        border: none;
+        color: var(--text-secondary);
+        cursor: pointer;
+        padding: 0.25rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform var(--transition-normal);
+
+        svg { width: 20px; height: 20px; }
+        
+        &.expanded {
+          transform: rotate(90deg);
+        }
+      }
+
+      h2 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin: 0;
+        color: var(--text-primary);
+      }
+    }
+
+    .set-actions {
+      display: flex;
+      gap: 0.5rem;
+      opacity: 0;
+      transition: opacity var(--transition-fast);
+      
+      svg { width: 18px; height: 18px; }
+    }
+
+    &:hover .set-actions {
+      opacity: 1;
+    }
+  }
+}
+
+/* Expanded state specific styles */
+.lesson-set-card:has(.set-body) {
+  .set-header {
+    border-bottom-color: var(--border-color);
+    background: rgba(0,0,0,0.01);
+  }
+}
+
+.set-body {
+  padding: 1.5rem;
+  background: var(--bg-color);
+
+  .lesson-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+
+    .lesson-item {
+      display: flex;
+      align-items: center;
+      background: var(--surface-color);
+      border: 1px solid var(--border-color);
+      border-radius: 0.75rem;
+      padding: 0.75rem 1rem;
+      gap: 1rem;
+      transition: all 0.2s ease;
+
+      &:hover {
+        border-color: var(--primary-color);
+        transform: translateX(4px);
+      }
+
+      .drag-handle {
+        color: #cbd5e1;
+        cursor: grab;
+        display: flex;
+        align-items: center;
+        
+        svg { width: 16px; height: 16px; }
+        
+        &:hover { color: var(--text-secondary); }
+        &:active { cursor: grabbing; }
+      }
+
+      .lesson-info {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+
+        .lesson-type-badge {
+          font-size: 0.7rem;
+          font-weight: 600;
+          padding: 0.2rem 0.5rem;
+          border-radius: 0.25rem;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+          
+          &.type-main_audio { background: #e0e7ff; color: #4338ca; }
+          &.type-vocabulary { background: #dcfce7; color: #15803d; }
+          &.type-mini_story { background: #fef3c7; color: #b45309; }
+          &.type-pov { background: #fce7f3; color: #be185d; }
+        }
+
+        .lesson-title {
+          font-weight: 500;
+          color: var(--text-primary);
+        }
+      }
+
+      .lesson-actions {
+        display: flex;
+        gap: 0.25rem;
+        opacity: 0.5;
+        transition: opacity var(--transition-fast);
+      }
+
+      &:hover .lesson-actions {
+        opacity: 1;
+      }
+    }
+  }
+
+  .add-lesson-row {
+    display: flex;
+    justify-content: flex-start;
+    
+    button {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      svg { width: 16px; height: 16px; }
+    }
+  }
+}
+
+/* Drag and Drop Styles */
+.cdk-drag-preview {
+  box-sizing: border-box;
+  border-radius: 4px;
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+              0 8px 10px 1px rgba(0, 0, 0, 0.14),
+              0 3px 14px 2px rgba(0, 0, 0, 0.12);
+  background: var(--surface-color);
+  opacity: 0.9;
+}
+
+.cdk-drag-placeholder {
+  opacity: 0;
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.lesson-list.cdk-drop-list-dragging .lesson-item:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+.curriculum-container.cdk-drop-list-dragging .lesson-set-card:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: var(--surface-color);
+  border: 1px dashed var(--border-color);
+  border-radius: 1rem;
+
+  .empty-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+  }
+  
+  h3 {
+    font-size: 1.25rem;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+  }
+  
+  p {
+    color: var(--text-secondary);
+  }
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+  animation: fadeIn 0.2s ease;
+}
+
+.modal-content {
+  background: var(--surface-color);
+  width: 100%;
+  max-width: 500px;
+  border-radius: 1rem;
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+
+  &.modal-lg {
+    max-width: 800px;
+  }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    
+    h2 {
+      margin: 0;
+      font-size: 1.25rem;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: flex;
+      padding: 0.25rem;
+      border-radius: 50%;
+      transition: background var(--transition-fast);
+
+      &:hover {
+        background: var(--bg-color);
+        color: var(--text-primary);
+      }
+    }
+  }
+
+  .modal-body {
+    padding: 1.5rem;
+    overflow-y: auto;
+    
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+
+      label {
+        font-weight: 500;
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+      }
+      
+      .form-control {
+        padding: 0.75rem 1rem;
+        border: 1px solid var(--border-color);
+        border-radius: 0.5rem;
+        font-size: 1rem;
+        outline: none;
+        transition: border-color var(--transition-fast);
+        background: var(--bg-color);
+        color: var(--text-primary);
+
+        &:focus {
+          border-color: var(--primary-color);
+          box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb), 0.1);
+        }
+      }
+
+      .file-upload-box {
+        border: 2px dashed var(--border-color);
+        padding: 1.5rem;
+        border-radius: 0.5rem;
+        text-align: center;
+        background: var(--bg-color);
+      }
+    }
+  }
+
+  .modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: var(--bg-color);
+    border-top: 1px solid var(--border-color);
+  }
+}
+
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.vocab-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+
+  .vocab-row {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+
+    .form-control {
+      padding: 0.5rem;
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
