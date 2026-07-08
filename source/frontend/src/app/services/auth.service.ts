@@ -11,7 +11,7 @@ export class AuthService {
   public currentUser$ = this.currentUserSubject.asObservable();
 
   constructor(private http: HttpClient) {
-    const token = localStorage.getItem('access_token');
+    const token = localStorage.getItem('accessToken');
     if (token) {
       // Decode or set user based on token if needed
       // this.currentUserSubject.next({ token });
@@ -22,7 +22,7 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/google`, { token: credential }).pipe(
       tap((response: any) => {
         if (response.accessToken) {
-          localStorage.setItem('access_token', response.accessToken);
+          localStorage.setItem('accessToken', response.accessToken);
           this.currentUserSubject.next(response.user);
         }
       })
@@ -30,7 +30,7 @@ export class AuthService {
   }
 
   logout() {
-    localStorage.removeItem('access_token');
+    localStorage.removeItem('accessToken');
     this.currentUserSubject.next(null);
   }
 }

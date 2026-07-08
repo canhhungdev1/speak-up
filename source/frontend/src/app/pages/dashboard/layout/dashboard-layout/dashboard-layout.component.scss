@@ -1,0 +1,28 @@
+.dashboard-wrapper {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--bg-surface);
+
+  .main-content {
+    flex: 1;
+    margin-left: var(--sidebar-width);
+    display: flex;
+    flex-direction: column;
+    transition: margin-left 0.3s ease;
+
+    .page-content {
+      padding: 32px 40px;
+      flex: 1;
+      overflow-y: auto;
+    }
+  }
+}
+
+@media (max-width: 992px) {
+  .dashboard-wrapper .main-content {
+    margin-left: 0;
+  }
+  .dashboard-wrapper .main-content .page-content {
+    padding: 24px 20px;
+  }
+}

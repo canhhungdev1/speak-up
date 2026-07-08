@@ -1,6 +1,7 @@
-import { Component, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { ThemeService } from '../../services/theme.service';
 
 @Component({
   selector: 'app-landing',
@@ -9,19 +10,40 @@ import { RouterModule } from '@angular/router';
   templateUrl: './landing.component.html',
   styleUrl: './landing.component.scss'
 })
-export class LandingComponent {
+export class LandingComponent implements OnInit {
   isDarkMode = false;
+  isLoggedIn = false;
+  userInitial = '';
+  userAvatar = '';
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private themeService: ThemeService
+  ) {}
 
-  toggleTheme() {
-    this.isDarkMode = !this.isDarkMode;
+  ngOnInit(): void {
+    this.themeService.isDarkTheme$.subscribe(isDark => {
+      this.isDarkMode = isDark;
+    });
+
     if (isPlatformBrowser(this.platformId)) {
-      if (this.isDarkMode) {
-        document.body.classList.add('dark-theme');
-      } else {
-        document.body.classList.remove('dark-theme');
+      const token = localStorage.getItem('accessToken');
+      if (token) {
+        this.isLoggedIn = true;
+        try {
+          const payload = JSON.parse(atob(token.split('.')[1]));
+          if (payload.name) {
+            this.userInitial = payload.name.charAt(0).toUpperCase();
+          }
+          if (payload.avatarUrl) {
+            this.userAvatar = payload.avatarUrl;
+          }
+        } catch (e) {}
       }
     }
+  }
+
+  toggleTheme() {
+    this.themeService.toggleTheme();
   }
 }

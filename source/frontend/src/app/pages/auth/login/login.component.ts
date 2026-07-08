@@ -1,5 +1,6 @@
 import { Component, AfterViewInit, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { environment } from '../../../../environments/environment';
 
@@ -15,7 +16,11 @@ declare var google: any;
 export class LoginComponent implements AfterViewInit {
   isLoginMode = true;
 
-  constructor(private authService: AuthService, private ngZone: NgZone) {}
+  constructor(
+    private authService: AuthService,
+    private ngZone: NgZone,
+    private router: Router
+  ) {}
 
   ngAfterViewInit() {
     this.initGoogleAuth();
@@ -43,7 +48,8 @@ export class LoginComponent implements AfterViewInit {
       this.authService.googleLogin(response.credential).subscribe({
         next: (res) => {
           console.log('Đăng nhập Google thành công!', res);
-          // TODO: Chuyển hướng sang trang Dashboard
+          // Chuyển hướng sang trang Dashboard
+          this.router.navigate(['/dashboard']);
         },
         error: (err) => {
           console.error('Đăng nhập Google thất bại', err);

@@ -1,7 +1,7 @@
 :host {
   --primary-color: var(--accent-primary);
   --success-color: var(--course-green);
-  --surface-color: var(--bg-surface);
+  --bg-main-color: var(--bg-surface);
   --bg-color: var(--bg-main);
   --font-heading: 'Inter', sans-serif;
   --transition-normal: var(--transition-smooth);
@@ -58,21 +58,83 @@
 
   .auth-buttons {
     display: flex;
-    gap: 1.5rem;
     align-items: center;
+    gap: 16px;
 
     .icon-btn {
       background: none;
-      border: none;
       color: var(--text-secondary);
       display: flex;
       align-items: center;
       justify-content: center;
-      cursor: pointer;
-      transition: color var(--transition-fast);
-      &:hover { color: var(--primary-color); }
+      padding: 8px;
+      border-radius: 8px;
+      transition: all 0.2s;
+      
+      &:hover {
+        color: var(--text-primary);
+        background-color: var(--bg-surface);
+      }
     }
-    
+
+    .logged-in-widgets {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 4px;
+      border-radius: 30px;
+      transition: background-color 0.2s;
+
+      &:hover {
+        background-color: var(--bg-surface-hover);
+      }
+
+      .streak-badge {
+        display: flex;
+        align-items: center;
+        background-color: rgba(245, 158, 11, 0.15);
+        padding: 6px 12px;
+        border-radius: 20px;
+        
+        .fire-icon {
+          margin-right: 4px;
+          color: #d97706;
+          display: flex;
+        }
+        .streak-text {
+          color: #d97706;
+          font-weight: 700;
+          font-size: 14px;
+        }
+      }
+
+      .avatar-circle {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background-color: var(--course-green);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 16px;
+      }
+
+      .avatar-image {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid transparent;
+        transition: border-color 0.2s;
+
+        &:hover {
+          border-color: var(--accent-primary);
+        }
+      }
+    }
+
     .btn-ghost {
       color: var(--text-primary);
       font-weight: 600;
@@ -168,7 +230,7 @@
     }
 
     .btn-secondary {
-      background-color: var(--surface-color);
+      background-color: var(--bg-main-color);
       color: var(--text-primary);
       border: 1px solid var(--border-color);
       box-shadow: var(--shadow-sm);
@@ -315,7 +377,7 @@
 /* FEATURES SECTION */
 .features {
   padding: 4rem 5%;
-  background-color: var(--surface-color);
+  background-color: var(--bg-main-color);
 
   @media (min-width: 768px) { padding: 5rem 5%; }
 
