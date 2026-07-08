@@ -29,7 +29,8 @@ export class AuthService {
       tap((response: any) => {
         if (response.accessToken) {
           localStorage.setItem('accessToken', response.accessToken);
-          this.currentUserSubject.next(response.user);
+          const payload = parseJwt(response.accessToken);
+          this.currentUserSubject.next(payload);
         }
       })
     );

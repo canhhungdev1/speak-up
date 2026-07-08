@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { CourseService, Course } from '../../../../services/course.service';
 import { CourseFormComponent } from '../course-form/course-form.component';
 
 @Component({
   selector: 'app-course-list',
   standalone: true,
-  imports: [CommonModule, CourseFormComponent],
+  imports: [CommonModule, RouterModule, CourseFormComponent],
   templateUrl: './course-list.component.html',
   styleUrls: ['./course-list.component.scss']
 })
