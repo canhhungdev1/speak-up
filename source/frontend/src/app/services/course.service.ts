@@ -1,7 +1,7 @@
-import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { isPlatformBrowser } from '@angular/common';
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface Course {
   id: string;
@@ -16,26 +16,12 @@ export interface Course {
   providedIn: 'root'
 })
 export class CourseService {
-  private apiUrl = 'http://localhost:3000/api/v1/courses';
-  private token: string | null = null;
+  private apiUrl = `${environment.apiUrl}/courses`;
 
   private coursesSubject = new BehaviorSubject<Course[]>([]);
   public courses$ = this.coursesSubject.asObservable();
 
-  constructor(
-    private http: HttpClient,
-    @Inject(PLATFORM_ID) private platformId: Object
-  ) {
-    if (isPlatformBrowser(this.platformId)) {
-      this.token = localStorage.getItem('accessToken');
-    }
-  }
-
-  private getHeaders() {
-    return new HttpHeaders({
-      Authorization: `Bearer ${this.token}`,
-    });
-  }
+  constructor(private http: HttpClient) {}
 
   fetchCourses(): Observable<Course[]> {
     const request = this.http.get<Course[]>(this.apiUrl);
@@ -47,14 +33,14 @@ export class CourseService {
   }
 
   createCourse(courseData: Partial<Course>): Observable<Course> {
-    return this.http.post<Course>(this.apiUrl, courseData, { headers: this.getHeaders() });
+    return this.http.post<Course>(this.apiUrl, courseData);
   }
 
   updateCourse(id: string, courseData: Partial<Course>): Observable<Course> {
-    return this.http.put<Course>(`${this.apiUrl}/${id}`, courseData, { headers: this.getHeaders() });
+    return this.http.put<Course>(`${this.apiUrl}/${id}`, courseData);
   }
 
   deleteCourse(id: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`, { headers: this.getHeaders() });
+    return this.http.delete(`${this.apiUrl}/${id}`);
   }
 }

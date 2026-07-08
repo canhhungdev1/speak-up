@@ -39,19 +39,18 @@ Mở Terminal 2 và di chuyển vào thư mục `source/backend/`:
 cd source/backend
 ```
 
-**Cài đặt thư viện và cấu hình biến môi trường:**
+**Cài đặt thư viện và khởi tạo Database:**
 ```bash
 # 1. Cài đặt các gói phụ thuộc
 npm install
 
-# 2. Tạo file .env từ file mẫu
-copy .env.example .env 
-# (Nhớ mở file .env lên và điền các thông tin bảo mật nếu cần)
+# 2. Sinh Prisma Client (Tạo các kiểu dữ liệu TypeScript)
+npx prisma generate
 
 # 3. Cập nhật schema Prisma vào Database (Tạo bảng)
 npx prisma db push
 
-# 3. (Tùy chọn) Chạy seed dữ liệu mẫu nếu có
+# 4. (Tùy chọn) Chạy seed dữ liệu mẫu nếu có
 # npx prisma db seed
 ```
 
