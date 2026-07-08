@@ -1,0 +1,128 @@
+<div class="page-header">
+  <div class="header-left">
+    <a routerLink="/admin/courses" class="btn-back">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+      Trở về
+    </a>
+    <h1 *ngIf="course">{{ course.title }}</h1>
+  </div>
+  <div class="header-actions">
+    <button class="btn-primary" (click)="openSetModal()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+      Thêm Bộ Bài Học
+    </button>
+  </div>
+</div>
+
+<div class="content-container">
+  <div class="empty-state" *ngIf="lessonSets.length === 0">
+    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
+    <h3>Chưa có Bộ bài học nào</h3>
+    <p>Hãy tạo một bộ bài học (Ví dụ: Day 1 - A Kiss) để bắt đầu thêm nội dung MP3.</p>
+    <button class="btn-primary" (click)="openSetModal()">Tạo ngay</button>
+  </div>
+
+  <div class="lesson-set-list" *ngIf="lessonSets.length > 0">
+    <div class="lesson-set-card" *ngFor="let set of lessonSets">
+      <div class="set-header">
+        <div class="set-info">
+          <h3>{{ set.title }}</h3>
+          <p>{{ set.description || 'Không có mô tả' }} | Mở khóa sau: {{ set.requiredDays }} ngày</p>
+        </div>
+        <div class="set-actions">
+          <button class="btn-icon" (click)="openSetModal(set)" title="Sửa bộ bài học">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+          </button>
+          <button class="btn-icon text-danger" (click)="deleteSet(set.id)" title="Xóa bộ bài học">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+          </button>
+        </div>
+      </div>
+      
+      <div class="lesson-list">
+        <div class="lesson-item" *ngFor="let lesson of set.lessons">
+          <div class="lesson-type-badge" [ngClass]="lesson.type.toLowerCase()">{{ lesson.type }}</div>
+          <div class="lesson-title">{{ lesson.title }}</div>
+          <div class="lesson-actions">
+            <button class="btn-icon" (click)="openLessonModal(set.id, lesson)" title="Sửa bài học">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+            </button>
+            <button class="btn-icon text-danger" (click)="deleteLesson(lesson.id)" title="Xóa bài học">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+            </button>
+          </div>
+        </div>
+        
+        <button class="btn-add-lesson" (click)="openLessonModal(set.id)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+          Thêm Bài Học MP3
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Thêm/Sửa Bộ Bài Học -->
+<div class="modal-overlay" *ngIf="showSetModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>{{ isEditingSet ? 'Sửa Bộ Bài Học' : 'Thêm Bộ Bài Học Mới' }}</h2>
+      <button class="btn-close" (click)="closeSetModal()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Tên Bộ bài học <span class="required">*</span></label>
+        <input type="text" class="form-control" [(ngModel)]="currentSet.title" placeholder="VD: Day 1 - A Kiss">
+      </div>
+      <div class="form-group">
+        <label>Mô tả</label>
+        <input type="text" class="form-control" [(ngModel)]="currentSet.description" placeholder="Giới thiệu nội dung bộ bài học">
+      </div>
+      <div class="form-group">
+        <label>Số ngày yêu cầu mở khóa (Streak)</label>
+        <input type="number" class="form-control" [(ngModel)]="currentSet.requiredDays">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" (click)="closeSetModal()">Hủy</button>
+      <button class="btn-primary" (click)="saveSet()" [disabled]="!currentSet.title">Lưu</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Thêm/Sửa Bài Học -->
+<div class="modal-overlay" *ngIf="showLessonModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>{{ isEditingLesson ? 'Sửa Bài Học' : 'Thêm Bài Học Mới' }}</h2>
+      <button class="btn-close" (click)="closeLessonModal()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Loại bài học <span class="required">*</span></label>
+        <select class="form-control" [(ngModel)]="currentLesson.type">
+          <option value="MAIN">Main Audio (Bài nghe chính)</option>
+          <option value="VOCAB">Vocabulary (Từ vựng)</option>
+          <option value="MINI_STORY">Mini-Story (Hỏi đáp nhanh)</option>
+          <option value="POV">Point of View (Kể lại bằng thì khác)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Tên Bài học <span class="required">*</span></label>
+        <input type="text" class="form-control" [(ngModel)]="currentLesson.title" placeholder="VD: A Kiss - Main Story">
+      </div>
+      <div class="form-group">
+        <label>Đường dẫn File MP3 (Audio URL) <span class="required">*</span></label>
+        <input type="text" class="form-control" [(ngModel)]="currentLesson.audioUrl" placeholder="https://...">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" (click)="closeLessonModal()">Hủy</button>
+      <button class="btn-primary" (click)="saveLesson()" [disabled]="!currentLesson.title || !currentLesson.audioUrl">Lưu</button>
+    </div>
+  </div>
+</div>
