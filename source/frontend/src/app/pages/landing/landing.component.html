@@ -1,0 +1,114 @@
+<div class="landing-container">
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="logo">Speak<span>Up</span></div>
+    <nav class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#method">The Method</a>
+    </nav>
+    <div class="auth-buttons">
+      <button class="icon-btn" (click)="toggleTheme()" title="Toggle Dark/Light Mode">
+        <svg *ngIf="!isDarkMode" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+        <svg *ngIf="isDarkMode" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+      </button>
+      <a routerLink="/auth" class="btn-ghost">Log in</a>
+      <a routerLink="/auth" class="btn-primary">Start Learning</a>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <span class="badge">Master English Naturally 🚀</span>
+      <h1 class="hero-title">
+        Stop Studying Grammar.<br />
+        Start <span class="highlight">Speaking</span> English.
+      </h1>
+      <p class="hero-subtitle">
+        Join thousands of students who have achieved fluency through the Effortless English method. 
+        Learn with your ears, not your eyes.
+      </p>
+      <div class="hero-actions">
+        <a routerLink="/auth" class="btn-primary btn-large">Start Learning for Free</a>
+        <button class="btn-secondary btn-large">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+          Watch Demo
+        </button>
+      </div>
+    </div>
+    
+    <div class="hero-visual">
+      <!-- Decorative Elements -->
+      <div class="blob blob-1"></div>
+      <div class="blob blob-2"></div>
+      <div class="glass-card main-card">
+        <div class="player-header">
+          <div class="cover-art"></div>
+          <div class="track-info">
+            <h4>Dragons (Mini-Story)</h4>
+            <p>A.J. Hoge</p>
+          </div>
+        </div>
+        <div class="transcript-preview">
+          <p class="line">There was a beautiful princess.</p>
+          <p class="line active">She lived in a very tall tower.</p>
+          <p class="line">One day, a dragon came...</p>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill"></div>
+        </div>
+        <div class="controls">
+          <button class="ctrl-btn">⏮</button>
+          <button class="ctrl-btn play">⏸</button>
+          <button class="ctrl-btn">⏭</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section id="features" class="features">
+    <div class="section-header">
+      <h2>The 4 Pillars of Fluency</h2>
+      <p>Follow our proven roadmap to achieve confident spoken English.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="icon icon-headphone">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"/></svg>
+        </div>
+        <h3>Main Audio Article</h3>
+        <p>Listen to fascinating stories and articles. Improve your listening comprehension naturally.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon icon-brain">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/></svg>
+        </div>
+        <h3>Vocabulary Lesson</h3>
+        <p>Learn words in context through audio explanations, never memorize lists again.</p>
+      </div>
+      <div class="feature-card highlight-card">
+        <div class="icon icon-lightning">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </div>
+        <h3>Mini-Story (Q&A)</h3>
+        <p>The secret weapon. Answer fast-paced questions to train your brain to think in English.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon icon-sync">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg>
+        </div>
+        <h3>Point of View Story</h3>
+        <p>Master English grammar instinctively by listening to the same story in different tenses.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+
+<audio controls>
+  <source src="https://archive.org/download/baseball-pig-ms/Baseball%20Pig%20Audio.mp3" type="audio/mpeg">
+  Trình duyệt của bạn không hỗ trợ thẻ audio.
+</audio>
