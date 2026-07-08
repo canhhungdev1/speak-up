@@ -58,7 +58,8 @@ export class AuthService {
         sub: user.id, 
         email: user.email,
         name: user.fullName,
-        avatarUrl: user.avatarUrl
+        avatarUrl: user.avatarUrl,
+        role: user.role
       });
 
       return {

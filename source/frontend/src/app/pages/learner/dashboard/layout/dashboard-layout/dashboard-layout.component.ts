@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { SidebarComponent } from '../../../../shared/components/sidebar/sidebar.component';
-import { TopbarComponent } from '../../../../shared/components/topbar/topbar.component';
+import { SidebarComponent } from '../../../../../shared/components/sidebar/sidebar.component';
+import { TopbarComponent } from '../../../../../shared/components/topbar/topbar.component';
 
 @Component({
   selector: 'app-dashboard-layout',

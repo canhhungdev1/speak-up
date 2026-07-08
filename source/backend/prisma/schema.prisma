@@ -9,10 +9,13 @@ datasource db {
 model User {
   id           String   @id @default(uuid())
   email        String   @unique
-  googleId     String?  @unique
-  fullName     String?
-  avatarUrl    String?
-  passwordHash String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  googleId     String?  @unique @map("google_id")
+  fullName     String?  @map("full_name")
+  avatarUrl    String?  @map("avatar_url")
+  passwordHash String?  @map("password_hash")
+  role         String   @default("LEARNER")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@map("users")
 }

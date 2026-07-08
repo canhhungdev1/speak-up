@@ -39,8 +39,7 @@ export class DashboardHomeComponent implements OnInit {
   }
 
   setGreeting() {
-    // const hour = new Date().getHours();
-    const hour = 21
+    const hour = new Date().getHours();
     if (hour >= 5 && hour < 12) {
       this.greeting = 'Good morning';
       this.timeClass = 'morning';
