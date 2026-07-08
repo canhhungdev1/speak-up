@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { parseJwt } from '../../../../../shared/utils/jwt.util';
 
 @Component({
   selector: 'app-dashboard-home',
@@ -29,8 +30,7 @@ export class DashboardHomeComponent implements OnInit {
     const token = localStorage.getItem('accessToken');
     if (token) {
       try {
-        const payloadStr = token.split('.')[1];
-        const payload = JSON.parse(atob(payloadStr));
+        const payload = parseJwt(token);
         if (payload.name) {
           this.userName = payload.name;
         }

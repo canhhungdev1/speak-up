@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
@@ -12,11 +13,26 @@ declare var google: any;
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss'
 })
-export class SidebarComponent {
+export class SidebarComponent implements OnInit, OnDestroy {
+  isAdmin = false;
+  private userSub?: Subscription;
+
   constructor(
     private authService: AuthService,
     private router: Router
   ) {}
+
+  ngOnInit() {
+    this.userSub = this.authService.currentUser$.subscribe(user => {
+      this.isAdmin = user?.role === 'ADMIN';
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.userSub) {
+      this.userSub.unsubscribe();
+    }
+  }
 
   logout() {
     this.authService.logout();

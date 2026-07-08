@@ -1,6 +1,7 @@
 import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ThemeService } from '../../../services/theme.service';
+import { parseJwt } from '../../utils/jwt.util';
 
 @Component({
   selector: 'app-topbar',
@@ -32,8 +33,7 @@ export class TopbarComponent implements OnInit {
       const token = localStorage.getItem('accessToken');
       if (token) {
         try {
-          const payloadStr = token.split('.')[1];
-          const payload = JSON.parse(atob(payloadStr));
+          const payload = parseJwt(token);
           if (payload.name) {
             this.userName = payload.name;
             this.userInitial = this.userName.charAt(0).toUpperCase();

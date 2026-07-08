@@ -2,6 +2,7 @@ import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ThemeService } from '../../../services/theme.service';
+import { parseJwt } from '../../../shared/utils/jwt.util';
 
 @Component({
   selector: 'app-landing',
@@ -31,7 +32,7 @@ export class LandingComponent implements OnInit {
       if (token) {
         this.isLoggedIn = true;
         try {
-          const payload = JSON.parse(atob(token.split('.')[1]));
+          const payload = parseJwt(token);
           if (payload.name) {
             this.userInitial = payload.name.charAt(0).toUpperCase();
           }

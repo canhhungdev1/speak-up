@@ -1,0 +1,75 @@
+.admin-layout {
+  display: flex;
+  height: 100vh;
+  background-color: var(--background-color);
+
+  .admin-sidebar {
+    width: 260px;
+    background-color: var(--surface-card);
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+
+    .logo {
+      padding: 24px;
+      h2 {
+        font-size: 24px;
+        margin: 0;
+        span {
+          color: var(--course-green);
+        }
+        small {
+          font-size: 12px;
+          color: #ef4444;
+          vertical-align: top;
+          margin-left: 4px;
+        }
+      }
+    }
+
+    .menu-list {
+      list-style: none;
+      padding: 0 12px;
+      margin: 0;
+
+      .menu-item {
+        margin-bottom: 4px;
+
+        a {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          padding: 12px 16px;
+          border-radius: 8px;
+          color: var(--text-secondary);
+          text-decoration: none;
+          font-weight: 500;
+          transition: all 0.2s;
+
+          &:hover {
+            background-color: rgba(0,0,0,0.05);
+            color: var(--text-color);
+          }
+        }
+
+        &.active a {
+          background-color: rgba(76, 175, 80, 0.1);
+          color: var(--course-green);
+        }
+      }
+    }
+  }
+
+  .admin-main {
+    flex: 1;
+    overflow-y: auto;
+  }
+}
+
+:host-context(body.dark-mode) {
+  .admin-sidebar {
+    .menu-item a:hover {
+      background-color: rgba(255,255,255,0.05);
+    }
+  }
+}

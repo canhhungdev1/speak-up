@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { parseJwt } from '../shared/utils/jwt.util';
 
 @Injectable({
   providedIn: 'root'
@@ -13,8 +14,13 @@ export class AuthService {
   constructor(private http: HttpClient) {
     const token = localStorage.getItem('accessToken');
     if (token) {
-      // Decode or set user based on token if needed
-      // this.currentUserSubject.next({ token });
+      try {
+        const payload = parseJwt(token);
+        this.currentUserSubject.next(payload);
+      } catch (e) {
+        console.error('Invalid token');
+        localStorage.removeItem('accessToken');
+      }
     }
   }
 

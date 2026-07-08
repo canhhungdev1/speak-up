@@ -1,5 +1,6 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
+import { parseJwt } from '../shared/utils/jwt.util';
 
 export const adminGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
@@ -7,7 +8,7 @@ export const adminGuard: CanActivateFn = (route, state) => {
   
   if (token) {
     try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
+      const payload = parseJwt(token);
       if (payload.role === 'ADMIN') {
         return true; // Cho phép truy cập
       }
