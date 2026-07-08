@@ -26,9 +26,12 @@ erDiagram
         string google_id
         string full_name
         string avatar_url
+        string password_hash
         string role
         int current_streak
         date last_active_date
+        timestamp created_at
+        timestamp updated_at
     }
 
     courses {
@@ -105,10 +108,12 @@ Bảng lưu trữ thông tin người dùng, xác thực trực tiếp thông qu
 | `google_id` | `varchar` | Unique | ID định danh duy nhất (Subject ID) của người dùng do Google cung cấp. |
 | `full_name` | `varchar` | | Họ và tên hiển thị của người dùng (từ Google profile). |
 | `avatar_url` | `varchar` | | Đường dẫn (URL) tới ảnh đại diện (từ Google profile). |
+| `password_hash` | `varchar` | | Mật khẩu mã hóa (Dùng cho phương thức đăng nhập bằng Email/Password nếu có). |
 | `role` | `enum` | Default: `LEARNER`| Phân quyền hệ thống. Gồm 2 giá trị: `LEARNER` (Học viên) và `ADMIN` (Quản trị viên). |
 | `current_streak` | `int` | Default: `0` | **[Tối ưu]** Bộ đếm số ngày học liên tục hiện tại của user, giúp query nhanh trên Dashboard. |
 | `last_active_date` | `date` | | Ngày cuối cùng user có hoạt động học tập, dùng để tính toán Streak cho ngày tiếp theo. |
 | `created_at` | `timestamp`| Default: `now()`| Thời điểm tạo tài khoản lần đầu. |
+| `updated_at` | `timestamp`| | Thời điểm cập nhật thông tin gần nhất. |
 
 ### 2.2. Bảng `courses` (Khóa học)
 Quản lý các khóa học lớn (Ví dụ: Original Effortless English, Power English).

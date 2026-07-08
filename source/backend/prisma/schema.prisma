@@ -6,16 +6,151 @@ datasource db {
   provider = "postgresql"
 }
 
+enum Role {
+  LEARNER
+  ADMIN
+}
+
+enum LessonType {
+  MAIN
+  VOCAB
+  MINI_STORY
+  POV
+}
+
 model User {
-  id           String   @id @default(uuid())
-  email        String   @unique
-  googleId     String?  @unique @map("google_id")
-  fullName     String?  @map("full_name")
-  avatarUrl    String?  @map("avatar_url")
-  passwordHash String?  @map("password_hash")
-  role         String   @default("LEARNER")
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
+  id             String    @id @default(uuid())
+  email          String    @unique
+  googleId       String?   @unique @map("google_id")
+  fullName       String?   @map("full_name")
+  avatarUrl      String?   @map("avatar_url")
+  passwordHash   String?   @map("password_hash")
+  role           Role      @default(LEARNER)
+  currentStreak  Int       @default(0) @map("current_streak")
+  lastActiveDate DateTime? @map("last_active_date") @db.Date
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+
+  progresses    UserProgress[]
+  dailyCheckins DailyCheckin[]
+  unlockedSets  UserUnlockedSet[]
+  comments      Comment[]
 
   @@map("users")
+}
+
+model Course {
+  id            String   @id @default(uuid())
+  title         String
+  description   String?
+  coverImageUrl String?  @map("cover_image_url")
+  isPublished   Boolean  @default(false) @map("is_published")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  lessonSets LessonSet[]
+
+  @@map("courses")
+}
+
+model LessonSet {
+  id           String   @id @default(uuid())
+  courseId     String   @map("course_id")
+  title        String
+  description  String?
+  orderIndex   Int?     @map("order_index")
+  requiredDays Int      @default(7) @map("required_days")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  course        Course            @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessons       Lesson[]
+  dailyCheckins DailyCheckin[]
+  unlockedBy    UserUnlockedSet[]
+
+  @@map("lesson_sets")
+}
+
+model Lesson {
+  id              String     @id @default(uuid())
+  lessonSetId     String     @map("lesson_set_id")
+  title           String
+  type            LessonType
+  audioUrl        String     @map("audio_url")
+  durationSeconds Int?       @map("duration_seconds")
+  orderIndex      Int?       @map("order_index")
+  createdAt       DateTime   @default(now()) @map("created_at")
+
+  lessonSet   LessonSet      @relation(fields: [lessonSetId], references: [id], onDelete: Cascade)
+  transcripts Transcript[]
+  progresses  UserProgress[]
+  comments    Comment[]
+
+  @@map("lessons")
+}
+
+model Transcript {
+  id          String @id @default(uuid())
+  lessonId    String @map("lesson_id")
+  startTime   Float  @map("start_time")
+  endTime     Float  @map("end_time")
+  textContent String @map("text_content")
+  orderIndex  Int?   @map("order_index")
+
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@map("transcripts")
+}
+
+model UserProgress {
+  id              String    @id @default(uuid())
+  userId          String    @map("user_id")
+  lessonId        String    @map("lesson_id")
+  lastPosition    Float     @default(0.0) @map("last_position")
+  isCompleted     Boolean   @default(false) @map("is_completed")
+  listenCount     Int       @default(0) @map("listen_count")
+  totalListenTime Int       @default(0) @map("total_listen_time")
+  lastListenedAt  DateTime? @map("last_listened_at")
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@map("user_progress")
+}
+
+model DailyCheckin {
+  id          String   @id @default(uuid())
+  userId      String   @map("user_id")
+  lessonSetId String   @map("lesson_set_id")
+  checkinDate DateTime @map("checkin_date") @db.Date
+
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lessonSet LessonSet @relation(fields: [lessonSetId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, lessonSetId, checkinDate])
+  @@map("daily_checkins")
+}
+
+model UserUnlockedSet {
+  id          String   @id @default(uuid())
+  userId      String   @map("user_id")
+  lessonSetId String   @map("lesson_set_id")
+  unlockedAt  DateTime @default(now()) @map("unlocked_at")
+
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lessonSet LessonSet @relation(fields: [lessonSetId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, lessonSetId])
+  @@map("user_unlocked_sets")
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  lessonId  String   @map("lesson_id")
+  content   String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@map("comments")
 }
