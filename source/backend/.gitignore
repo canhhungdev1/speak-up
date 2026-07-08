@@ -42,3 +42,5 @@ Thumbs.db
 
 # NestJS specific
 .nest/
+
+/generated/prisma

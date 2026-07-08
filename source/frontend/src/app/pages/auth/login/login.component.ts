@@ -1,5 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, AfterViewInit, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../../services/auth.service';
+import { environment } from '../../../../environments/environment';
+
+declare var google: any;
 
 @Component({
   selector: 'app-login',
@@ -8,14 +12,47 @@ import { CommonModule } from '@angular/common';
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
-export class LoginComponent {
+export class LoginComponent implements AfterViewInit {
   isLoginMode = true;
+
+  constructor(private authService: AuthService, private ngZone: NgZone) {}
+
+  ngAfterViewInit() {
+    this.initGoogleAuth();
+  }
+
+  initGoogleAuth() {
+    if (typeof google === 'undefined') {
+      setTimeout(() => this.initGoogleAuth(), 100);
+      return;
+    }
+
+    google.accounts.id.initialize({
+      client_id: environment.googleClientId,
+      callback: this.handleGoogleCredentialResponse.bind(this)
+    });
+
+    google.accounts.id.renderButton(
+      document.getElementById('google-btn'),
+      { theme: 'outline', size: 'large', text: 'continue_with', width: '380' }
+    );
+  }
+
+  handleGoogleCredentialResponse(response: any) {
+    this.ngZone.run(() => {
+      this.authService.googleLogin(response.credential).subscribe({
+        next: (res) => {
+          console.log('Đăng nhập Google thành công!', res);
+          // TODO: Chuyển hướng sang trang Dashboard
+        },
+        error: (err) => {
+          console.error('Đăng nhập Google thất bại', err);
+        }
+      });
+    });
+  }
 
   toggleMode() {
     this.isLoginMode = !this.isLoginMode;
-  }
-
-  signInWithGoogle() {
-    console.log('Signing in with Google...');
   }
 }
