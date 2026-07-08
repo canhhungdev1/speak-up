@@ -15,7 +15,7 @@
 }
 
 .modal-content {
-  background-color: var(--surface-card);
+  background-color: var(--bg-main);
   border-radius: 16px;
   width: 100%;
   max-width: 500px;
@@ -51,7 +51,7 @@
 
       &:hover {
         background-color: rgba(0, 0, 0, 0.05);
-        color: var(--text-color);
+        color: var(--text-primary);
       }
     }
   }
@@ -69,7 +69,7 @@
         font-weight: 500;
         margin-bottom: 8px;
         font-size: 14px;
-        color: var(--text-color);
+        color: var(--text-primary);
 
         .required {
           color: #ef4444;
@@ -81,8 +81,8 @@
         padding: 10px 12px;
         border: 1px solid var(--border-color);
         border-radius: 8px;
-        background-color: var(--surface-ground);
-        color: var(--text-color);
+        background-color: var(--bg-surface);
+        color: var(--text-primary);
         font-family: inherit;
         font-size: 14px;
         transition: all 0.2s;
@@ -91,7 +91,7 @@
           outline: none;
           border-color: var(--course-green);
           box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
-          background-color: var(--surface-card);
+          background-color: var(--bg-main);
         }
       }
 
@@ -105,7 +105,7 @@
         height: 120px;
         border-radius: 8px;
         overflow: hidden;
-        background-color: var(--surface-ground);
+        background-color: var(--bg-surface);
         border: 1px dashed var(--border-color);
         display: flex;
         align-items: center;
@@ -172,7 +172,7 @@
     .btn-cancel {
       background: transparent;
       border: 1px solid var(--border-color);
-      color: var(--text-color);
+      color: var(--text-primary);
       
       &:hover:not(:disabled) {
         background-color: rgba(0, 0, 0, 0.05);

@@ -41,7 +41,7 @@
   }
 
   .table-card {
-    background-color: var(--surface-card);
+    background-color: var(--bg-main);
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
     overflow: hidden;
@@ -110,7 +110,7 @@
 
           strong {
             font-size: 15px;
-            color: var(--text-color);
+            color: var(--text-primary);
           }
           
           .desc {
@@ -131,7 +131,7 @@
         border-radius: 20px;
         font-size: 12px;
         font-weight: 600;
-        background-color: var(--surface-ground);
+        background-color: var(--bg-surface);
         color: var(--text-secondary);
 
         &.published {
@@ -157,7 +157,7 @@
 
         &:hover {
           background-color: rgba(0, 0, 0, 0.05);
-          color: var(--text-color);
+          color: var(--text-primary);
         }
 
         &.btn-danger:hover {
@@ -176,7 +176,7 @@
 /* Dark mode adjustments */
 :host-context(body.dark-mode) {
   .table-card {
-    background-color: var(--surface-card);
+    background-color: var(--bg-main);
     border-color: var(--border-color);
 
     .data-table {
