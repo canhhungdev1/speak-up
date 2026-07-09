@@ -16,6 +16,22 @@ export const routes: Routes = [
       {
         path: '',
         loadComponent: () => import('./pages/learner/dashboard/home/dashboard-home/dashboard-home.component').then(m => m.DashboardHomeComponent)
+      },
+      {
+        path: 'courses',
+        loadComponent: () => import('./pages/learner/course/learner-course-list/learner-course-list.component').then(m => m.LearnerCourseListComponent)
+      },
+      {
+        path: 'courses/:id',
+        loadComponent: () => import('./pages/learner/course/learner-course-detail/learner-course-detail.component').then(m => m.LearnerCourseDetailComponent)
+      },
+      {
+        path: 'learn/:lessonId',
+        loadComponent: () => import('./pages/learner/lesson/learner-lesson-detail/learner-lesson-detail.component').then(m => m.LearnerLessonDetailComponent)
+      },
+      {
+        path: 'sets/:setId',
+        loadComponent: () => import('./pages/learner/set/learner-set-detail/learner-set-detail.component').then(m => m.LearnerSetDetailComponent)
       }
     ]
   },

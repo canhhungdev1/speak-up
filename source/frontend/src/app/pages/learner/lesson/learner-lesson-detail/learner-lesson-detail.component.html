@@ -1,0 +1,34 @@
+<div class="page-header">
+  <div class="header-left">
+    <a [routerLink]="['/dashboard/courses', courseId]" class="btn-back">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+      Trở về Khóa học
+    </a>
+  </div>
+</div>
+
+<div class="lesson-header" *ngIf="lesson">
+  <div class="lesson-type-badge" [ngClass]="lesson.type.toLowerCase()">{{ lesson.type }}</div>
+  <h1>{{ lesson.title }}</h1>
+</div>
+
+<div class="learning-room-content" *ngIf="lesson">
+  
+  <app-main-lesson-view 
+    *ngIf="lesson.type === 'MAIN'" 
+    [transcripts]="transcripts">
+  </app-main-lesson-view>
+
+  <app-vocab-lesson-view 
+    *ngIf="lesson.type === 'VOCAB'" 
+    [transcripts]="transcripts">
+  </app-vocab-lesson-view>
+
+  <app-interactive-transcript 
+    *ngIf="lesson.type === 'MINI_STORY' || lesson.type === 'POV'"
+    [transcripts]="transcripts"
+    [currentTime]="currentTime"
+    (seekTime)="onSeekTime($event)">
+  </app-interactive-transcript>
+
+</div>
