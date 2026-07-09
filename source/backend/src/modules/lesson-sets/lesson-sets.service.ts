@@ -15,9 +15,29 @@ export class LessonSetsService {
       throw new NotFoundException('Course not found');
     }
 
-    return this.prisma.lessonSet.create({
-      data: createLessonSetDto,
+    const maxSet = await this.prisma.lessonSet.findFirst({
+      where: { courseId: createLessonSetDto.courseId },
+      orderBy: { orderIndex: 'desc' },
+      select: { orderIndex: true }
     });
+    const nextIndex = (maxSet?.orderIndex ?? -1) + 1;
+
+    return this.prisma.lessonSet.create({
+      data: {
+        ...createLessonSetDto,
+        orderIndex: nextIndex
+      },
+    });
+  }
+
+  async reorder(orderedIds: string[]) {
+    const updatePromises = orderedIds.map((id, index) =>
+      this.prisma.lessonSet.update({
+        where: { id },
+        data: { orderIndex: index },
+      })
+    );
+    return this.prisma.$transaction(updatePromises);
   }
 
   findAllByCourse(courseId: string) {

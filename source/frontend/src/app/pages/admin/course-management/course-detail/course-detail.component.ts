@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
+import { DragDropModule, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { CourseService } from '../../../../services/course.service';
 import { LessonSetService, LessonSet } from '../../../../services/lesson-set.service';
 import { LessonService, Lesson } from '../../../../services/lesson.service';
@@ -9,7 +10,7 @@ import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-course-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, DragDropModule],
   templateUrl: './course-detail.component.html',
   styleUrls: ['./course-detail.component.scss']
 })
@@ -57,6 +58,17 @@ export class CourseDetailComponent implements OnInit {
     });
   }
 
+  dropSet(event: CdkDragDrop<LessonSet[]>) {
+    if (event.previousIndex !== event.currentIndex) {
+      moveItemInArray(this.lessonSets, event.previousIndex, event.currentIndex);
+      const orderedIds = this.lessonSets.map(s => s.id);
+      this.lessonSetService.reorderLessonSets(orderedIds).subscribe({
+        next: () => console.log('Đã cập nhật thứ tự Bộ bài học'),
+        error: (err) => console.error('Lỗi khi cập nhật thứ tự', err)
+      });
+    }
+  }
+
   // --- Lesson Set ---
   openSetModal(set?: LessonSet) {
     if (set) {
@@ -74,13 +86,21 @@ export class CourseDetailComponent implements OnInit {
   }
 
   saveSet() {
+    const payload = {
+      title: this.currentSet.title,
+      description: this.currentSet.description,
+      requiredDays: this.currentSet.requiredDays,
+      orderIndex: this.currentSet.orderIndex,
+      courseId: this.currentSet.courseId
+    };
+
     if (this.isEditingSet) {
-      this.lessonSetService.updateLessonSet(this.currentSet.id, this.currentSet).subscribe(() => {
+      this.lessonSetService.updateLessonSet(this.currentSet.id, payload).subscribe(() => {
         this.loadData();
         this.closeSetModal();
       });
     } else {
-      this.lessonSetService.createLessonSet(this.currentSet).subscribe(() => {
+      this.lessonSetService.createLessonSet(payload).subscribe(() => {
         this.loadData();
         this.closeSetModal();
       });
@@ -114,13 +134,22 @@ export class CourseDetailComponent implements OnInit {
   }
 
   saveLesson() {
+    const payload = {
+      title: this.currentLesson.title,
+      type: this.currentLesson.type,
+      audioUrl: this.currentLesson.audioUrl,
+      durationSeconds: this.currentLesson.durationSeconds,
+      orderIndex: this.currentLesson.orderIndex,
+      lessonSetId: this.currentLesson.lessonSetId
+    };
+
     if (this.isEditingLesson) {
-      this.lessonService.updateLesson(this.currentLesson.id, this.currentLesson).subscribe(() => {
+      this.lessonService.updateLesson(this.currentLesson.id, payload).subscribe(() => {
         this.loadData();
         this.closeLessonModal();
       });
     } else {
-      this.lessonService.createLesson(this.currentLesson).subscribe(() => {
+      this.lessonService.createLesson(payload).subscribe(() => {
         this.loadData();
         this.closeLessonModal();
       });

@@ -33,6 +33,10 @@ export class LessonSetService {
     return this.http.patch<LessonSet>(`${this.apiUrl}/${id}`, data);
   }
 
+  reorderLessonSets(orderedIds: string[]): Observable<void> {
+    return this.http.patch<void>(`${this.apiUrl}/reorder`, { orderedIds });
+  }
+
   deleteLessonSet(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }

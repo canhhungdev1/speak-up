@@ -37,7 +37,11 @@ erDiagram
     courses {
         uuid id PK
         string title
+        string description
+        string cover_image_url
         boolean is_published
+        int order_index
+        timestamp created_at
     }
 
     lesson_sets {
@@ -124,6 +128,7 @@ Quản lý các khóa học lớn (Ví dụ: Original Effortless English, Power 
 | `description` | `text` | | Mô tả chi tiết về khóa học. |
 | `cover_image_url` | `varchar` | | Đường dẫn ảnh bìa của khóa học. |
 | `is_published` | `boolean` | Default: `false`| Trạng thái hiển thị (True = Đã xuất bản cho học viên thấy, False = Đang soạn thảo/Ẩn). |
+| `order_index` | `int` | | Thứ tự ưu tiên hiển thị trên danh sách của Học viên (Sắp xếp bằng thao tác Kéo thả ở Admin). |
 | `created_at` | `timestamp`| Default: `now()`| Thời điểm tạo. |
 
 ### 2.3. Bảng `lesson_sets` (Bộ bài học / Module)

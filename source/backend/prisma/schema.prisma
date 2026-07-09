@@ -45,6 +45,7 @@ model Course {
   description   String?
   coverImageUrl String?  @map("cover_image_url")
   isPublished   Boolean  @default(false) @map("is_published")
+  orderIndex    Int?     @map("order_index")
   createdAt     DateTime @default(now()) @map("created_at")
 
   lessonSets LessonSet[]

@@ -8,15 +8,38 @@ export class CoursesService {
   constructor(private prisma: PrismaService) {}
 
   async create(createCourseDto: CreateCourseDto) {
+    const maxCourse = await this.prisma.course.findFirst({
+      orderBy: { orderIndex: 'desc' },
+      select: { orderIndex: true }
+    });
+    const nextIndex = (maxCourse?.orderIndex ?? -1) + 1;
+
     return this.prisma.course.create({
-      data: createCourseDto,
+      data: {
+        ...createCourseDto,
+        orderIndex: nextIndex
+      },
     });
   }
 
   async findAll() {
     return this.prisma.course.findMany({
-      orderBy: { createdAt: 'desc' },
+      orderBy: [
+        { orderIndex: 'asc' },
+        { createdAt: 'desc' }
+      ],
     });
+  }
+
+  async reorder(orderedIds: string[]) {
+    // Cập nhật hàng loạt bằng transaction
+    const updatePromises = orderedIds.map((id, index) =>
+      this.prisma.course.update({
+        where: { id },
+        data: { orderIndex: index },
+      })
+    );
+    return this.prisma.$transaction(updatePromises);
   }
 
   async findOne(id: string) {

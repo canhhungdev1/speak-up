@@ -22,10 +22,17 @@
   - Quản lý Khóa học (Course CRUD).
   - Quản lý Bộ bài học (Lesson Set) và Bài học MP3 (Lesson). Database Cascade Delete.
 
-### 🚧 Đang thực hiện (In Progress)
 - **Phase 2.2: Learner Dashboard & Audio Player**
   - Xây dựng màn hình danh sách Khóa học cho Học viên (`/dashboard`).
   - Xây dựng Component Trình phát nhạc (Audio Player) sticky ở dưới cùng màn hình.
+
+- **Phase 3: Integration & Advanced Features**
+  - Tích hợp API thật cho màn hình Học viên (Lấy dữ liệu động từ Backend thay vì Mock Data).
+  - Nâng cấp màn hình Quản lý Khóa học Admin: Cập nhật CSDL và giao diện Kéo thả (Drag & Drop bằng Angular CDK) để sắp xếp thứ tự khóa học.
+
+### 🚧 Đang thực hiện (In Progress)
+- **Phase 3.3: Learner Room (Phòng học chi tiết)**
+  - Tích hợp Audio Player với các bài học cụ thể (MAIN, VOCAB, MINI_STORY).
 
 ### ❌ Chưa bắt đầu (To Do)
 - Tool Admin upload & đồng bộ Transcript (chèn Timestamp).

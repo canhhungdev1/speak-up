@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { DragDropModule, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { CourseService, Course } from '../../../../services/course.service';
 import { CourseFormComponent } from '../course-form/course-form.component';
 
 @Component({
   selector: 'app-course-list',
   standalone: true,
-  imports: [CommonModule, RouterModule, CourseFormComponent],
+  imports: [CommonModule, RouterModule, CourseFormComponent, DragDropModule],
   templateUrl: './course-list.component.html',
   styleUrls: ['./course-list.component.scss']
 })
@@ -30,6 +31,17 @@ export class CourseListComponent implements OnInit {
   loadCourses() {
     this.isLoading = true;
     this.courseService.fetchCourses();
+  }
+
+  drop(event: CdkDragDrop<Course[]>) {
+    if (event.previousIndex !== event.currentIndex) {
+      moveItemInArray(this.courses, event.previousIndex, event.currentIndex);
+      const orderedIds = this.courses.map(c => c.id);
+      this.courseService.reorderCourses(orderedIds).subscribe({
+        next: () => console.log('Đã cập nhật thứ tự khóa học'),
+        error: (err) => console.error('Lỗi khi cập nhật thứ tự', err)
+      });
+    }
   }
 
   openCreateForm() {

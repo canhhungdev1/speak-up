@@ -26,6 +26,13 @@ export class LessonSetsController {
     return []; // For safety, only allow querying by courseId
   }
 
+  @Patch('reorder')
+  @UseGuards(RolesGuard)
+  @Roles('ADMIN')
+  reorder(@Body() body: { orderedIds: string[] }) {
+    return this.lessonSetsService.reorder(body.orderedIds);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.lessonSetsService.findOne(id);

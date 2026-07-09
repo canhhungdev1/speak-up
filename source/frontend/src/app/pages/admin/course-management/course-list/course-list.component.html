@@ -19,17 +19,21 @@
     <table class="data-table" *ngIf="!isLoading">
       <thead>
         <tr>
+          <th class="drag-handle-th" style="width: 40px;"></th>
           <th>Tên Khóa học</th>
           <th>Trạng thái</th>
           <th>Ngày tạo</th>
           <th class="actions-col">Thao tác</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody cdkDropList (cdkDropListDropped)="drop($event)">
         <tr *ngIf="courses.length === 0">
-          <td colspan="4" class="empty-state">Chưa có khóa học nào. Hãy tạo khóa học đầu tiên!</td>
+          <td colspan="5" class="empty-state">Chưa có khóa học nào. Hãy tạo khóa học đầu tiên!</td>
         </tr>
-        <tr *ngFor="let course of courses">
+        <tr *ngFor="let course of courses" cdkDrag class="drag-row">
+          <td class="drag-handle-col" cdkDragHandle>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="drag-icon"><circle cx="9" cy="12" r="1"/><circle cx="9" cy="5" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="19" r="1"/></svg>
+          </td>
           <td>
             <div class="course-info">
               <div class="cover-image" [style.backgroundImage]="'url(' + (course.coverImageUrl || '/assets/default-cover.png') + ')'"></div>

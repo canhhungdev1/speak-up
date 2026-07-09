@@ -32,12 +32,20 @@ export class CourseService {
     return request;
   }
 
+  getCourseById(id: string): Observable<Course> {
+    return this.http.get<Course>(`${this.apiUrl}/${id}`);
+  }
+
   createCourse(courseData: Partial<Course>): Observable<Course> {
     return this.http.post<Course>(this.apiUrl, courseData);
   }
 
   updateCourse(id: string, courseData: Partial<Course>): Observable<Course> {
     return this.http.put<Course>(`${this.apiUrl}/${id}`, courseData);
+  }
+
+  reorderCourses(orderedIds: string[]): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/reorder`, { orderedIds });
   }
 
   deleteCourse(id: string): Observable<any> {
