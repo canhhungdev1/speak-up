@@ -27,6 +27,6 @@
     margin-left: 0;
   }
   .dashboard-wrapper .main-content .page-content {
-    padding: 24px 20px;
+    padding: calc(var(--topbar-height) + 24px) 20px 24px 20px;
   }
 }
