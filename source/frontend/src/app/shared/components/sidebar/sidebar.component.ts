@@ -1,16 +1,16 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink, RouterLinkActive, NavigationEnd } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 declare var google: any;
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive],
+  imports: [CommonModule, RouterLink, RouterLinkActive, TranslateModule],
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss']
 })

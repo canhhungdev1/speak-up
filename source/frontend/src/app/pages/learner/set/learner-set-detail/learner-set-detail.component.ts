@@ -7,11 +7,12 @@ import { LessonSetService } from '../../../../services/lesson-set.service';
 import { MainLessonViewComponent } from '../../lesson/components/main-lesson-view/main-lesson-view.component';
 import { VocabLessonViewComponent } from '../../lesson/components/vocab-lesson-view/vocab-lesson-view.component';
 import { InteractiveTranscriptComponent } from '../../lesson/components/interactive-transcript/interactive-transcript.component';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-learner-set-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule, MainLessonViewComponent, VocabLessonViewComponent, InteractiveTranscriptComponent],
+  imports: [CommonModule, RouterModule, MainLessonViewComponent, VocabLessonViewComponent, InteractiveTranscriptComponent, TranslateModule],
   templateUrl: './learner-set-detail.component.html',
   styleUrls: ['./learner-set-detail.component.scss']
 })
@@ -30,7 +31,8 @@ export class LearnerSetDetailComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private audioService: AudioService,
-    private lessonSetService: LessonSetService
+    private lessonSetService: LessonSetService,
+    private translate: TranslateService
   ) {}
 
   ngOnInit() {
@@ -76,26 +78,31 @@ export class LearnerSetDetailComponent implements OnInit, OnDestroy {
     const type = lesson.type;
     const sameTypeLessons = this.lessons.filter(l => l.type === type);
     
+    let baseLabel = '';
+    switch (type) {
+      case 'MAIN':
+        baseLabel = this.translate.instant('SET_DETAIL.MAIN_ARTICLE');
+        break;
+      case 'VOCAB':
+        baseLabel = this.translate.instant('SET_DETAIL.VOCABULARY');
+        break;
+      case 'MINI_STORY':
+        baseLabel = this.translate.instant('SET_DETAIL.MINI_STORY');
+        break;
+      case 'POV':
+        baseLabel = this.translate.instant('SET_DETAIL.POINT_OF_VIEW');
+        break;
+      default:
+        baseLabel = type;
+    }
+    
     if (sameTypeLessons.length <= 1) {
-      switch (type) {
-        case 'MAIN': return 'Main Article';
-        case 'VOCAB': return 'Vocabulary';
-        case 'MINI_STORY': return 'Mini Story';
-        case 'POV': return 'Point of View';
-        default: return type;
-      }
+      return baseLabel;
     }
     
     const index = sameTypeLessons.findIndex(l => l.id === lesson.id);
     const letter = String.fromCharCode(65 + index); // Tạo chữ cái A, B, C...
-    
-    switch (type) {
-      case 'MAIN': return `Main Article ${letter}`;
-      case 'VOCAB': return `Vocabulary ${letter}`;
-      case 'MINI_STORY': return `Mini Story ${letter}`;
-      case 'POV': return `POV ${letter}`;
-      default: return `${type} ${letter}`;
-    }
+    return `${baseLabel} ${letter}`;
   }
 
   ngOnDestroy() {

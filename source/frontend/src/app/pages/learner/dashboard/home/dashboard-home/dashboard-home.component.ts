@@ -1,17 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { parseJwt } from '../../../../../shared/utils/jwt.util';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-dashboard-home',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './dashboard-home.component.html',
   styleUrl: './dashboard-home.component.scss'
 })
 export class DashboardHomeComponent implements OnInit {
   userName = 'Student';
-  greeting = 'Good afternoon';
+  greetingKey = 'DASHBOARD.GOOD_AFTERNOON';
   timeClass = 'afternoon'; // 'morning', 'afternoon', 'evening'
 
   recommendedCourses = [
@@ -41,13 +42,14 @@ export class DashboardHomeComponent implements OnInit {
   setGreeting() {
     const hour = new Date().getHours();
     if (hour >= 5 && hour < 12) {
-      this.greeting = 'Good morning';
+      this.greetingKey = 'DASHBOARD.GOOD_MARGIN'; // 'DASHBOARD.GOOD_MORNING'
+      this.greetingKey = 'DASHBOARD.GOOD_MORNING';
       this.timeClass = 'morning';
     } else if (hour >= 12 && hour < 18) {
-      this.greeting = 'Good afternoon';
+      this.greetingKey = 'DASHBOARD.GOOD_AFTERNOON';
       this.timeClass = 'afternoon';
     } else {
-      this.greeting = 'Good evening';
+      this.greetingKey = 'DASHBOARD.GOOD_EVENING';
       this.timeClass = 'evening';
     }
   }

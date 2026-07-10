@@ -1,0 +1,75 @@
+{
+  "COMMON": {
+    "STUDENT_MEMBER": "Học viên",
+    "ADMINISTRATOR": "Quản trị viên",
+    "CANCEL": "Hủy",
+    "SAVE": "Lưu",
+    "DELETE": "Xóa",
+    "CONFIRM": "Xác nhận",
+    "BACK": "Trở về",
+    "NO_DESCRIPTION": "Chưa có mô tả"
+  },
+  "MENU": {
+    "DASHBOARD": "Tổng quan",
+    "EXPLORE_COURSES": "Khám phá khóa học",
+    "MY_PROGRESS": "Tiến trình",
+    "PROFILE": "Hồ sơ cá nhân",
+    "LOG_OUT": "Đăng xuất",
+    "SETTINGS": "THIẾT LẬP"
+  },
+  "TOPBAR": {
+    "SEARCH_PLACEHOLDER": "Tìm kiếm bài học...",
+    "STREAK_SUFFIX": "Ngày Streak"
+  },
+  "DASHBOARD": {
+    "GOOD_MORNING": "Chào buổi sáng",
+    "GOOD_AFTERNOON": "Chào buổi chiều",
+    "GOOD_EVENING": "Chào buổi tối",
+    "WELCOME_BACK": "Chào mừng quay trở lại",
+    "STREAK_BANNER": "Bạn đang có chuỗi học tập 5 ngày. Hãy tiếp tục giữ vững phong độ nhé!",
+    "CONTINUE_LEARNING": "Học tiếp bài cũ",
+    "VIEW_HISTORY": "Lịch sử học",
+    "PROGRESS": "Tiến độ",
+    "RESUME_LESSON": "Học tiếp",
+    "RECOMMENDED": "Gợi ý dành cho bạn",
+    "EXPLORE_ALL": "Xem tất cả",
+    "EXPLORE_NOW": "Khám phá ngay",
+    "WEEKLY_GOAL": "Mục tiêu tuần",
+    "DAILY_TARGET": "Mục tiêu ngày: 30 phút",
+    "TOTAL_MINS": "Tổng số phút",
+    "GOALS_MET": "Số ngày đạt",
+    "STATISTICS": "Thống kê học tập",
+    "LESSONS_COMPLETED": "Bài học đã học",
+    "STUDY_TIME": "Thời gian học",
+    "MINUTES": "phút",
+    "COMPLETED": "Đã hoàn thành"
+  },
+  "EXPLORE": {
+    "TITLE": "Khám phá Khóa học",
+    "SUBTITLE": "Chọn một khóa học để bắt đầu luyện nói",
+    "NO_COURSES": "Hiện chưa có khóa học nào."
+  },
+  "COURSE_DETAIL": {
+    "STREAK_REQUIREMENT": "Streak: {{days}} ngày",
+    "UNLOCKED": "Đã mở khóa",
+    "LOCKED": "Chưa mở khóa (Yêu cầu {{days}} ngày streak)",
+    "LESSONS": "bài học",
+    "START_LEARNING": "Bắt đầu học",
+    "CONTINUE_LEARNING": "Học tiếp",
+    "BACK_TO_EXPLORE": "Quay lại Explore",
+    "LESSON_SETS": "Bộ bài học",
+    "COURSE_CONTENT": "Nội dung khóa học"
+  },
+  "SET_DETAIL": {
+    "BACK_TO_COURSE": "Trở về Khóa học",
+    "NO_CONTENT": "Bài học chưa có nội dung.",
+    "MAIN_ARTICLE": "Bài đọc chính",
+    "VOCABULARY": "Từ vựng",
+    "MINI_STORY": "Mini Story",
+    "POINT_OF_VIEW": "Point of View",
+    "LISTEN_EXPLANATION": "Nghe giải thích từ này",
+    "NO_VOCABULARY": "Bài học này chưa có danh sách từ vựng.",
+    "CLICK_TO_PLAY": "Bấm để phát từ đây",
+    "NO_SUBTITLE": "Bài học này chưa có phụ đề."
+  }
+}

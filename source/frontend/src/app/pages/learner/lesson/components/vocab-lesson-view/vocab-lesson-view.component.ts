@@ -1,11 +1,12 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AudioService } from '../../../../../services/audio.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-vocab-lesson-view',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   template: `
     <div class="vocab-container">
       <div class="vocab-card animate-fade" *ngFor="let vocab of transcripts">
@@ -14,7 +15,7 @@ import { AudioService } from '../../../../../services/audio.service';
           
           <div class="card-actions" *ngIf="hasAudio && vocab.startTime">
             <span class="time-badge">{{ formatTime(vocab.startTime) }}</span>
-            <button class="btn-play-audio" (click)="playFrom(vocab.startTime)" title="Nghe giải thích từ này">
+            <button class="btn-play-audio" (click)="playFrom(vocab.startTime)" [title]="'SET_DETAIL.LISTEN_EXPLANATION' | translate">
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 3 20 12 6 21 6 3"/></svg>
             </button>
           </div>
@@ -22,10 +23,10 @@ import { AudioService } from '../../../../../services/audio.service';
         
         <div class="vocab-meaning">{{ getMeaning(vocab) }}</div>
       </div>
-
+ 
       <div class="empty-state" *ngIf="transcripts.length === 0">
         <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/><path d="M6 6h10"/><path d="M6 10h10"/></svg>
-        <p>Bài học này chưa có danh sách từ vựng.</p>
+        <p>{{ 'SET_DETAIL.NO_VOCABULARY' | translate }}</p>
       </div>
     </div>
   `,

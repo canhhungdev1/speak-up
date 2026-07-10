@@ -1,0 +1,75 @@
+{
+  "COMMON": {
+    "STUDENT_MEMBER": "Student Member",
+    "ADMINISTRATOR": "Administrator",
+    "CANCEL": "Cancel",
+    "SAVE": "Save",
+    "DELETE": "Delete",
+    "CONFIRM": "Confirm",
+    "BACK": "Back",
+    "NO_DESCRIPTION": "No description available"
+  },
+  "MENU": {
+    "DASHBOARD": "Dashboard",
+    "EXPLORE_COURSES": "Explore Courses",
+    "MY_PROGRESS": "My Progress",
+    "PROFILE": "Profile",
+    "LOG_OUT": "Log Out",
+    "SETTINGS": "SETTINGS"
+  },
+  "TOPBAR": {
+    "SEARCH_PLACEHOLDER": "Search lessons...",
+    "STREAK_SUFFIX": "Day Streak"
+  },
+  "DASHBOARD": {
+    "GOOD_MORNING": "Good morning",
+    "GOOD_AFTERNOON": "Good afternoon",
+    "GOOD_EVENING": "Good evening",
+    "WELCOME_BACK": "Welcome back",
+    "STREAK_BANNER": "You're on a 5-day learning streak. Keep the fire burning!",
+    "CONTINUE_LEARNING": "Continue Learning",
+    "VIEW_HISTORY": "View History",
+    "PROGRESS": "Progress",
+    "RESUME_LESSON": "Resume Lesson",
+    "RECOMMENDED": "Recommended for You",
+    "EXPLORE_ALL": "Explore All",
+    "EXPLORE_NOW": "Explore Now",
+    "WEEKLY_GOAL": "Weekly Goal",
+    "DAILY_TARGET": "Daily target: 30 mins",
+    "TOTAL_MINS": "Total Mins",
+    "GOALS_MET": "Goals Met",
+    "STATISTICS": "Statistics",
+    "LESSONS_COMPLETED": "Lessons Completed",
+    "STUDY_TIME": "Study Time",
+    "MINUTES": "minutes",
+    "COMPLETED": "Completed"
+  },
+  "EXPLORE": {
+    "TITLE": "Explore Courses",
+    "SUBTITLE": "Choose a course to start speaking up",
+    "NO_COURSES": "No courses available at the moment."
+  },
+  "COURSE_DETAIL": {
+    "STREAK_REQUIREMENT": "Streak: {{days}} days",
+    "UNLOCKED": "Unlocked",
+    "LOCKED": "Locked (Requires {{days}} days streak)",
+    "LESSONS": "lessons",
+    "START_LEARNING": "Start Learning",
+    "CONTINUE_LEARNING": "Continue Learning",
+    "BACK_TO_EXPLORE": "Back to Explore",
+    "LESSON_SETS": "Lesson Sets",
+    "COURSE_CONTENT": "Course Content"
+  },
+  "SET_DETAIL": {
+    "BACK_TO_COURSE": "Back to Course",
+    "NO_CONTENT": "This lesson has no content yet.",
+    "MAIN_ARTICLE": "Main Article",
+    "VOCABULARY": "Vocabulary",
+    "MINI_STORY": "Mini Story",
+    "POINT_OF_VIEW": "Point of View",
+    "LISTEN_EXPLANATION": "Listen to explanation",
+    "NO_VOCABULARY": "This lesson has no vocabulary list yet.",
+    "CLICK_TO_PLAY": "Click to play from here",
+    "NO_SUBTITLE": "This lesson has no subtitle yet."
+  }
+}

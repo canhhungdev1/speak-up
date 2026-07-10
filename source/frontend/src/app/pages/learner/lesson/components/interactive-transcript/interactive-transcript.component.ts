@@ -1,10 +1,11 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-interactive-transcript',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   template: `
     <div class="interactive-transcript">
       <div 
@@ -12,13 +13,13 @@ import { CommonModule } from '@angular/common';
         *ngFor="let line of transcripts"
         [class.active]="currentTime >= line.startTime && currentTime <= line.endTime"
         (click)="onLineClick(line.startTime)"
-        title="Bấm để phát từ đây">
+        [title]="'SET_DETAIL.CLICK_TO_PLAY' | translate">
         
         <span class="text-content">{{ line.textContent }}</span>
         
       </div>
       <div class="empty-state" *ngIf="transcripts.length === 0">
-        Bài học này chưa có phụ đề.
+        {{ 'SET_DETAIL.NO_SUBTITLE' | translate }}
       </div>
     </div>
   `,

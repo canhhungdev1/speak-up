@@ -1,10 +1,11 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-main-lesson-view',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   template: `
     <div class="main-article">
       <!-- Hiển thị nội dung Quill Rich Text -->
@@ -18,7 +19,7 @@ import { CommonModule } from '@angular/common';
       </ng-container>
 
       <div class="empty-state" *ngIf="!htmlContent && transcripts.length === 0">
-        Bài đọc chưa có nội dung.
+        {{ 'SET_DETAIL.NO_CONTENT' | translate }}
       </div>
     </div>
   `,

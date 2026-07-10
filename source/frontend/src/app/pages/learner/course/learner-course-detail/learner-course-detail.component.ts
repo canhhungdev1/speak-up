@@ -4,11 +4,12 @@ import { ActivatedRoute, RouterModule, Router } from '@angular/router';
 import { CourseService } from '../../../../services/course.service';
 import { LessonSetService, LessonSet } from '../../../../services/lesson-set.service';
 import { AudioService } from '../../../../services/audio.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-learner-course-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, TranslateModule],
   templateUrl: './learner-course-detail.component.html',
   styleUrls: ['./learner-course-detail.component.scss']
 })

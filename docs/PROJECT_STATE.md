@@ -33,12 +33,15 @@
   - Nâng cấp màn hình Quản lý Khóa học Admin: Cập nhật CSDL và giao diện Kéo thả (Drag & Drop bằng Angular CDK) để sắp xếp thứ tự khóa học.
   - Refactor UI Admin toàn cục: Áp dụng phong cách **Glassmorphism**, đổi bảng dữ liệu thành dạng thẻ bóng bẩy, hover nổi, nút nhấn gradient phát sáng, biểu mẫu nhập liệu có hiệu ứng glow khi focus.
   - Tích hợp Audio Player và API cho phòng học (Learner Set Detail). Dữ liệu Audio, Transcripts được load động từ Database.
+  - **Tích hợp Đa ngôn ngữ (i18n):** Cài đặt và cấu hình `@ngx-translate` phía giao diện học viên (Learner) với ngôn ngữ mặc định là tiếng Anh (`en`) và tiếng Việt (`vi`) tùy chọn, hỗ trợ dịch động tức thì không cần tải lại trang.
+  - **Tái cấu trúc Sidebar & Topbar Layout:** Di chuyển thẻ hiển thị người dùng (Profile Card) xuống sidebar trái dưới Logo, tích hợp hộp chọn ngôn ngữ dạng capsule kèm cờ quốc gia vào góc phải trên cùng của Topbar (với cơ chế đóng dropdown click outside tự động).
+  - Lời thoại tương tác (Interactive Transcript) ở Learner UI cuộn theo Audio.
 
 - **Phase 4: Các tính năng nâng cao & Gamification**
   - Tool Admin nhập liệu Transcript tự động bóc tách Timestamp cho VTT, nhập liệu Vocab động.
 
 ### 🚧 Đang thực hiện (In Progress)
-- Lời thoại tương tác (Interactive Transcript) ở Learner UI cuộn theo Audio.
+- [Trống]
 
 ### ❌ Chưa bắt đầu (To Do)
 - Hệ thống theo dõi điểm danh (Daily Check-in) & mở khóa chuỗi (Streak 7 ngày).

@@ -2,11 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { CourseService, Course } from '../../../../services/course.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-learner-course-list',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, TranslateModule],
   templateUrl: './learner-course-list.component.html',
   styleUrls: ['./learner-course-list.component.scss']
 })

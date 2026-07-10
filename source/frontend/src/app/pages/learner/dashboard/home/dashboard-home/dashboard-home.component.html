@@ -1,7 +1,7 @@
 <div class="hero-banner" [ngClass]="timeClass">
   <div class="banner-content">
-    <h1>{{ greeting }}, {{ userName }}</h1>
-    <p>You're on a 5-day learning streak. Keep the fire burning!</p>
+    <h1>{{ greetingKey | translate }}, {{ userName }}</h1>
+    <p>{{ 'DASHBOARD.STREAK_BANNER' | translate }}</p>
   </div>
   <div class="banner-decor">
     <div class="circle c1"></div>
@@ -13,8 +13,8 @@
   <!-- Cột trái (Chính) -->
   <div class="main-column">
     <div class="section-header">
-      <h3>Continue Learning</h3>
-      <a href="javascript:void(0)" class="link-btn">View History</a>
+      <h3>{{ 'DASHBOARD.CONTINUE_LEARNING' | translate }}</h3>
+      <a href="javascript:void(0)" class="link-btn">{{ 'DASHBOARD.VIEW_HISTORY' | translate }}</a>
     </div>
 
     <div class="continue-card">
@@ -28,7 +28,7 @@
         
         <div class="progress-section">
           <div class="progress-text">
-            <span>Progress</span>
+            <span>{{ 'DASHBOARD.PROGRESS' | translate }}</span>
             <span>65%</span>
           </div>
           <div class="progress-bar">
@@ -36,13 +36,13 @@
           </div>
         </div>
         
-        <button class="primary-btn">Resume Lesson</button>
+        <button class="primary-btn">{{ 'DASHBOARD.RESUME_LESSON' | translate }}</button>
       </div>
     </div>
 
     <div class="section-header mt-40">
-      <h3>Recommended for You</h3>
-      <a href="javascript:void(0)" class="link-btn">Explore All</a>
+      <h3>{{ 'DASHBOARD.RECOMMENDED' | translate }}</h3>
+      <a href="javascript:void(0)" class="link-btn">{{ 'DASHBOARD.EXPLORE_ALL' | translate }}</a>
     </div>
 
     <div class="recommended-grid">
@@ -52,7 +52,7 @@
         </div>
         <div class="card-bottom">
           <h5>{{ course.title }}</h5>
-          <p>{{ course.lessons }} Lessons</p>
+          <p>{{ course.lessons }} {{ 'COURSE_DETAIL.LESSONS' | translate }}</p>
         </div>
       </div>
     </div>
@@ -62,8 +62,8 @@
   <div class="aside-column">
     <div class="widget-card weekly-goal">
       <div class="widget-header">
-        <h4>Weekly Goal</h4>
-        <p>Daily target: 30 mins</p>
+        <h4>{{ 'DASHBOARD.WEEKLY_GOAL' | translate }}</h4>
+        <p>{{ 'DASHBOARD.DAILY_TARGET' | translate }}</p>
       </div>
       
       <div class="bar-chart">
@@ -78,11 +78,11 @@
       <div class="stats-row">
         <div class="stat-box">
           <h2>150</h2>
-          <p>Total Mins</p>
+          <p>{{ 'DASHBOARD.TOTAL_MINS' | translate }}</p>
         </div>
         <div class="stat-box">
           <h2>3</h2>
-          <p>Goals Met</p>
+          <p>{{ 'DASHBOARD.GOALS_MET' | translate }}</p>
         </div>
       </div>
     </div>
