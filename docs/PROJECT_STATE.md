@@ -28,7 +28,8 @@
 
 - **Phase 2.2: Learner Dashboard & Audio Player**
   - Xây dựng màn hình danh sách Khóa học cho Học viên (`/dashboard`).
-  - Xây dựng Component Trình phát nhạc (Audio Player) sticky ở dưới cùng màn hình.
+  - **Nâng cấp Audio Player:** Tái thiết kế trình phát nhạc cố định dưới màn hình theo chuẩn giao diện **Glassmorphism** cao cấp, thêm hiệu ứng đĩa nhạc Vinyl xoay tròn và sóng âm nhấp nhô động khi phát, tích hợp thanh điều chỉnh âm lượng (Volume Slider), nút tắt âm nhanh (Mute) và nút phát lớn gradient phát sáng tỏa ra xung quanh.
+
 
 - **Phase 3: Integration & Advanced Features**
   - Tích hợp API thật cho màn hình Học viên (Lấy dữ liệu động từ Backend thay vì Mock Data).

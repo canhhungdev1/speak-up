@@ -1,5 +1,5 @@
 <ng-container *ngIf="state?.lesson as lesson">
-  <div class="audio-player-container" *ngIf="lesson.audioUrl">
+  <div class="audio-player-container glass-card" *ngIf="lesson.audioUrl">
     <!-- Progress Bar at top of player -->
     <div class="progress-container">
       <input 
@@ -13,39 +13,80 @@
     </div>
 
     <div class="player-content">
-      <!-- Left: Lesson Info -->
+      <!-- Left: Lesson Info, Vinyl disc & Live Equalizer -->
       <div class="lesson-info">
-        <div class="lesson-type" [ngClass]="lesson.type.toLowerCase()">{{ lesson.type }}</div>
-        <div class="lesson-title">{{ lesson.title }}</div>
+        <!-- Vinyl Record Disc Graphic -->
+        <div class="vinyl-wrapper" [class.playing]="state.isPlaying">
+          <div class="vinyl-disc">
+            <div class="vinyl-center"></div>
+          </div>
+        </div>
+
+        <div class="info-text-wrapper">
+          <div class="lesson-type" [ngClass]="lesson.type.toLowerCase()">{{ lesson.type }}</div>
+          <div class="lesson-title" [title]="lesson.title">{{ lesson.title }}</div>
+        </div>
+
+        <!-- Live Sound Equalizer Animation -->
+        <div class="live-equalizer" *ngIf="state.isPlaying">
+          <div class="eq-bar bar1"></div>
+          <div class="eq-bar bar2"></div>
+          <div class="eq-bar bar3"></div>
+          <div class="eq-bar bar4"></div>
+        </div>
       </div>
 
       <!-- Center: Controls -->
       <div class="player-controls">
-        <button class="btn-control" (click)="skip(-5)" title="Tua lùi 5s">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>
+        <button class="btn-control skip-btn" (click)="skip(-5)" title="Tua lùi 5s">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>
         </button>
 
-        <button class="btn-play-pause" (click)="togglePlay()">
-          <svg *ngIf="!state.isPlaying" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M5 3v18l15-9L5 3z"/></svg>
-          <svg *ngIf="state.isPlaying" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4h4v16H6zm8 0h4v16h-4z"/></svg>
+        <button class="btn-play-pause glow-btn" (click)="togglePlay()" [class.playing]="state.isPlaying">
+          <svg *ngIf="!state.isPlaying" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          <svg *ngIf="state.isPlaying" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
         </button>
 
-        <button class="btn-control" (click)="skip(5)" title="Tua tới 5s">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M12 7v5l-4 2"/></svg>
+        <button class="btn-control skip-btn" (click)="skip(5)" title="Tua tới 5s">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M12 7v5l-4 2"/></svg>
         </button>
       </div>
 
-      <!-- Right: Time & Speed -->
+      <!-- Right: Volume, Time & Speed -->
       <div class="player-extras">
         <div class="time-display">
-          {{ formatTime(state.currentTime) }} / {{ formatTime(state.duration) }}
+          {{ formatTime(state.currentTime) }} <span class="divider">/</span> {{ formatTime(state.duration) }}
+        </div>
+
+        <!-- Volume Control Slider -->
+        <div class="volume-container">
+          <button class="btn-volume" (click)="toggleMute()" title="Bật/Tắt âm thanh">
+            <!-- Muted Icon -->
+            <svg *ngIf="state.volume === 0" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+            <!-- Low Volume Icon -->
+            <svg *ngIf="state.volume > 0 && state.volume < 0.5" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+            <!-- High Volume Icon -->
+            <svg *ngIf="state.volume >= 0.5" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+          </button>
+          <div class="volume-slider-wrapper">
+            <input 
+              type="range" 
+              class="volume-slider" 
+              [min]="0" 
+              [max]="1" 
+              [step]="0.05"
+              [value]="state.volume"
+              (input)="onVolumeChange($event)">
+            <div class="volume-fill" [style.width.%]="state.volume * 100"></div>
+          </div>
         </div>
         
+        <!-- Speed Picker Dropdown -->
         <div class="speed-control">
           <button class="btn-speed" (click)="showSpeedMenu = !showSpeedMenu">
             {{ state.playbackRate }}x
           </button>
-          <div class="speed-menu" *ngIf="showSpeedMenu">
+          <div class="speed-menu glass-card" *ngIf="showSpeedMenu">
             <button [class.active]="state.playbackRate === 0.75" (click)="setSpeed(0.75)">0.75x</button>
             <button [class.active]="state.playbackRate === 1.0" (click)="setSpeed(1.0)">1.0x</button>
             <button [class.active]="state.playbackRate === 1.25" (click)="setSpeed(1.25)">1.25x</button>

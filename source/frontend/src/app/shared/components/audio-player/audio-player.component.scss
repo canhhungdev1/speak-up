@@ -3,24 +3,30 @@
   bottom: 0;
   left: var(--sidebar-width);
   right: 0;
-  background-color: var(--bg-surface);
-  border-top: 1px solid var(--border-color);
-  z-index: 9999; /* Tăng z-index lên max */
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--glass-border);
+  z-index: 9999;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.12);
+  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
+  /* Progress Slider at Top edge */
   .progress-container {
     position: relative;
-    height: 6px;
+    height: 4px;
     background-color: var(--border-color);
     cursor: pointer;
+    transition: height 0.2s ease;
     
     .progress-fill {
       position: absolute;
       top: 0; left: 0; bottom: 0;
-      background-color: var(--course-blue);
+      background: linear-gradient(to right, var(--course-blue), #2563eb);
       pointer-events: none;
+      box-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
     }
 
     .progress-slider {
@@ -31,8 +37,11 @@
       z-index: 2;
     }
     
-    &:hover .progress-fill {
-      background-color: #2563eb;
+    &:hover {
+      height: 8px;
+      .progress-fill {
+        background: #2563eb;
+      }
     }
   }
 
@@ -40,51 +49,289 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 80px;
-    padding: 0 24px;
+    height: 84px;
+    padding: 0 32px;
     
+    /* Left Section: Vinyl Art & Info */
     .lesson-info {
-      display: flex; align-items: center; gap: 12px; flex: 1;
-      .lesson-type {
-        font-size: 11px; font-weight: 600; padding: 4px 8px; border-radius: 4px; text-transform: uppercase;
-        &.main { background-color: rgba(59, 130, 246, 0.1); color: #3b82f6; }
-        &.vocab { background-color: rgba(16, 185, 129, 0.1); color: #10b981; }
-        &.mini_story { background-color: rgba(245, 158, 11, 0.1); color: #f59e0b; }
-        &.pov { background-color: rgba(139, 92, 246, 0.1); color: #8b5cf6; }
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex: 1;
+      min-width: 0;
+
+      .vinyl-wrapper {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background-color: #111;
+        padding: 3px;
+        box-shadow: var(--shadow-sm);
+        flex-shrink: 0;
+        
+        .vinyl-disc {
+          width: 100%;
+          height: 100%;
+          border-radius: 50%;
+          background: repeating-radial-gradient(
+            circle,
+            #222,
+            #222 2px,
+            #111 3px,
+            #111 4px
+          );
+          border: 1px solid rgba(255, 255, 255, 0.05);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          .vinyl-center {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--course-blue);
+            border: 2px solid #111;
+          }
+        }
+
+        &.playing {
+          animation: rotateVinyl 4s linear infinite;
+        }
       }
-      .lesson-title { font-weight: 600; font-size: 15px; color: var(--text-primary); }
+
+      .info-text-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        min-width: 0;
+
+        .lesson-type {
+          align-self: flex-start;
+          font-size: 10px;
+          font-weight: 700;
+          padding: 2px 8px;
+          border-radius: 20px;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          
+          &.main { background-color: rgba(59, 130, 246, 0.12); color: #3b82f6; }
+          &.vocab { background-color: rgba(16, 185, 129, 0.12); color: #10b981; }
+          &.mini_story { background-color: rgba(245, 158, 11, 0.12); color: #f59e0b; }
+          &.pov { background-color: rgba(139, 92, 246, 0.12); color: #8b5cf6; }
+        }
+
+        .lesson-title {
+          font-weight: 700;
+          font-size: 14.5px;
+          color: var(--text-primary);
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+
+      /* Live sound wave visualizer */
+      .live-equalizer {
+        display: flex;
+        align-items: flex-end;
+        gap: 3px;
+        height: 14px;
+        margin-left: 8px;
+        flex-shrink: 0;
+
+        .eq-bar {
+          width: 3px;
+          border-radius: 3px;
+          background-color: var(--course-blue);
+          animation: waveBounce 0.8s ease-in-out infinite alternate;
+
+          &.bar1 { height: 30%; animation-delay: 0.1s; }
+          &.bar2 { height: 60%; animation-delay: 0.4s; }
+          &.bar3 { height: 45%; animation-delay: 0.2s; }
+          &.bar4 { height: 75%; animation-delay: 0.6s; }
+        }
+      }
     }
 
+    /* Center Section: Main Controls */
     .player-controls {
-      display: flex; align-items: center; justify-content: center; gap: 24px; flex: 1;
-      
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      flex: 1;
+
       .btn-control {
-        background: transparent; border: none; color: var(--text-secondary); cursor: pointer; padding: 8px; border-radius: 50%; transition: all 0.2s;
-        &:hover { color: var(--text-primary); background-color: var(--bg-main); }
+        background: transparent;
+        border: none;
+        color: var(--text-secondary);
+        cursor: pointer;
+        padding: 10px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.25s ease;
+        
+        &:hover {
+          color: var(--text-primary);
+          background-color: var(--bg-surface);
+          transform: scale(1.05);
+        }
       }
-      
-      .btn-play-pause {
-        background-color: var(--course-blue); color: white; border: none; width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: transform 0.1s, box-shadow 0.2s;
-        &:hover { transform: scale(1.05); box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4); }
-        &:active { transform: scale(0.95); }
+
+      .glow-btn {
+        background: linear-gradient(135deg, var(--course-blue) 0%, #2563eb 100%);
+        color: white;
+        border: none;
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4);
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        
+        &:hover {
+          transform: scale(1.08);
+          box-shadow: 0 6px 20px rgba(59, 130, 246, 0.6);
+        }
+        
+        &:active {
+          transform: scale(0.95);
+        }
       }
     }
 
+    /* Right Section: Extras, Time & Volume */
     .player-extras {
-      display: flex; align-items: center; justify-content: flex-end; gap: 20px; flex: 1;
-      .time-display { font-size: 13px; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 24px;
+      flex: 1;
+
+      .time-display {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-secondary);
+        font-variant-numeric: tabular-nums;
+        
+        .divider {
+          color: var(--border-color);
+          margin: 0 4px;
+        }
+      }
+
+      /* Volume Controls slider */
+      .volume-container {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        .btn-volume {
+          background: transparent;
+          border: none;
+          color: var(--text-secondary);
+          cursor: pointer;
+          padding: 6px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.2s;
+
+          &:hover {
+            color: var(--text-primary);
+            background-color: var(--bg-surface);
+          }
+        }
+
+        .volume-slider-wrapper {
+          position: relative;
+          width: 80px;
+          height: 4px;
+          background-color: var(--border-color);
+          border-radius: 2px;
+          overflow: visible;
+
+          .volume-fill {
+            position: absolute;
+            top: 0; left: 0; bottom: 0;
+            background-color: var(--text-secondary);
+            border-radius: 2px;
+            pointer-events: none;
+          }
+
+          .volume-slider {
+            position: absolute;
+            top: -6px; left: 0; width: 100%; height: 16px;
+            opacity: 0;
+            cursor: pointer;
+            z-index: 2;
+          }
+
+          &:hover .volume-fill {
+            background-color: var(--course-blue);
+          }
+        }
+      }
       
+      /* Speed Picker */
       .speed-control {
         position: relative;
+        
         .btn-speed {
-          background: transparent; border: 1px solid var(--border-color); color: var(--text-primary); padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;
-          &:hover { border-color: var(--text-muted); }
+          background: transparent;
+          border: 1px solid var(--border-color);
+          color: var(--text-primary);
+          padding: 6px 12px;
+          border-radius: 20px;
+          font-size: 12px;
+          font-weight: 700;
+          cursor: pointer;
+          transition: all 0.2s;
+          
+          &:hover {
+            border-color: var(--text-muted);
+            background-color: var(--bg-surface);
+          }
         }
+
         .speed-menu {
-          position: absolute; bottom: 100%; right: 0; margin-bottom: 8px; background-color: var(--bg-main); border: 1px solid var(--border-color); border-radius: 8px; padding: 4px; box-shadow: var(--shadow-lg); display: flex; flex-direction: column; min-width: 80px;
-          button { background: transparent; border: none; padding: 8px 12px; text-align: left; border-radius: 4px; font-size: 13px; color: var(--text-primary); cursor: pointer;
-            &:hover { background-color: var(--bg-surface); }
-            &.active { color: var(--course-blue); font-weight: 600; background-color: rgba(59, 130, 246, 0.1); }
+          position: absolute;
+          bottom: 100%;
+          right: 0;
+          margin-bottom: 12px;
+          padding: 6px;
+          display: flex;
+          flex-direction: column;
+          min-width: 90px;
+          animation: popUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+          
+          button {
+            background: transparent;
+            border: none;
+            padding: 8px 14px;
+            text-align: left;
+            border-radius: 8px;
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.2s;
+            
+            &:hover {
+              background-color: var(--bg-surface);
+            }
+            
+            &.active {
+              color: var(--course-blue);
+              font-weight: 700;
+              background-color: rgba(59, 130, 246, 0.08);
+            }
           }
         }
       }
@@ -92,30 +339,65 @@
   }
 }
 
+/* Animations */
+@keyframes rotateVinyl {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes waveBounce {
+  from { height: 10%; }
+  to { height: 100%; }
+}
+
+@keyframes popUp {
+  from { opacity: 0; transform: translateY(8px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
 /* RESPONSIVE */
+@media (max-width: 1024px) {
+  .audio-player-container {
+    .player-content {
+      padding: 0 20px;
+      
+      .player-extras {
+        gap: 16px;
+        .volume-container {
+          .volume-slider-wrapper { width: 60px; }
+        }
+      }
+    }
+  }
+}
+
 @media (max-width: 768px) {
   .audio-player-container {
-    left: 0; // Sidebar is hidden or off-canvas on mobile
+    left: 0;
     
     .player-content {
-      padding: 0 12px;
-      height: 70px;
+      padding: 0 16px;
+      height: 76px;
       
       .lesson-info {
-        flex: 0.8;
-        .lesson-type { display: none; } // Hide badge to save space
-        .lesson-title { font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px; }
+        flex: 1.2;
+        .vinyl-wrapper, .live-equalizer { display: none; }
+        .info-text-wrapper {
+          .lesson-type { display: none; }
+          .lesson-title { font-size: 13.5px; max-width: 140px; }
+        }
       }
       
       .player-controls {
+        flex: 0.8;
         gap: 12px;
-        .btn-play-pause { width: 40px; height: 40px; }
+        .btn-play-pause { width: 42px; height: 42px; }
       }
       
       .player-extras {
-        flex: 0.7;
+        flex: 1;
         gap: 12px;
-        .time-display { display: none; } // Hide time on very small screens, rely on progress bar
+        .time-display, .volume-container { display: none; }
       }
     }
   }

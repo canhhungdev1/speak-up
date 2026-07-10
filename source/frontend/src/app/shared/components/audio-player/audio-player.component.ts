@@ -16,9 +16,11 @@ export class AudioPlayerComponent implements OnInit, OnDestroy {
     isPlaying: false,
     currentTime: 0,
     duration: 0,
-    playbackRate: 1
+    playbackRate: 1,
+    volume: 1
   };
   showSpeedMenu = false;
+  previousVolume = 1;
   private sub!: Subscription;
 
   constructor(
@@ -56,6 +58,20 @@ export class AudioPlayerComponent implements OnInit, OnDestroy {
   onSeek(event: any) {
     const value = event.target.value;
     this.audioService.seek(value);
+  }
+
+  onVolumeChange(event: any) {
+    const value = parseFloat(event.target.value);
+    this.audioService.setVolume(value);
+  }
+
+  toggleMute() {
+    if (this.state.volume > 0) {
+      this.previousVolume = this.state.volume;
+      this.audioService.setVolume(0);
+    } else {
+      this.audioService.setVolume(this.previousVolume || 1);
+    }
   }
 
   formatTime(seconds: number): string {

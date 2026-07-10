@@ -8,6 +8,7 @@ export interface AudioState {
   currentTime: number;
   duration: number;
   playbackRate: number;
+  volume: number;
 }
 
 @Injectable({
@@ -21,7 +22,8 @@ export class AudioService {
     isPlaying: false,
     currentTime: 0,
     duration: 0,
-    playbackRate: 1
+    playbackRate: 1,
+    volume: 1
   });
 
   public state$ = this.stateSubject.asObservable();
@@ -42,6 +44,10 @@ export class AudioService {
     this.audio.addEventListener('play', () => this.updateState({ isPlaying: true }));
     this.audio.addEventListener('pause', () => this.updateState({ isPlaying: false }));
     this.audio.addEventListener('ended', () => this.updateState({ isPlaying: false }));
+    
+    this.audio.addEventListener('volumechange', () => {
+      this.updateState({ volume: this.audio.volume });
+    });
   }
 
   private updateState(newState: Partial<AudioState>) {
@@ -88,5 +94,9 @@ export class AudioService {
   setPlaybackRate(rate: number) {
     this.audio.playbackRate = rate;
     this.updateState({ playbackRate: rate });
+  }
+
+  setVolume(volume: number) {
+    this.audio.volume = Math.max(0, Math.min(1, volume));
   }
 }
