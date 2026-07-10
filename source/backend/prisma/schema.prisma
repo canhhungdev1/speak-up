@@ -75,7 +75,7 @@ model Lesson {
   lessonSetId     String     @map("lesson_set_id")
   title           String
   type            LessonType
-  audioUrl        String     @map("audio_url")
+  audioUrl        String?    @map("audio_url")
   durationSeconds Int?       @map("duration_seconds")
   orderIndex      Int?       @map("order_index")
   htmlContent     String?    @map("html_content")

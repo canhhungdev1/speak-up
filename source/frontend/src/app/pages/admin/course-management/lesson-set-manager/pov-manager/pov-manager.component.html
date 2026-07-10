@@ -10,18 +10,20 @@
   </div>
 
   <div class="card-body">
-    <!-- Tên bài học -->
-    <div class="form-group">
-      <label>Tên bài POV <span class="required">*</span></label>
-      <input type="text" [(ngModel)]="lesson.title" placeholder="VD: A Kiss - Point of View" class="form-control">
-    </div>
-
-    <!-- Audio URL -->
-    <div class="form-group">
-      <label>Đường dẫn File MP3 (Audio URL) <span class="required">*</span></label>
-      <input type="text" [(ngModel)]="lesson.audioUrl" placeholder="https://..." class="form-control">
-      <div class="audio-preview" *ngIf="lesson.audioUrl">
-        <audio [src]="lesson.audioUrl" controls></audio>
+    <div class="form-row">
+      <!-- Tên bài học -->
+      <div class="form-group">
+        <label>Tên bài POV <span class="required">*</span></label>
+        <input type="text" [(ngModel)]="lesson.title" placeholder="VD: A Kiss - Point of View" class="form-control">
+      </div>
+  
+      <!-- Audio URL -->
+      <div class="form-group">
+        <label>Đường dẫn File MP3 (Audio URL) <span class="required">*</span></label>
+        <input type="text" [(ngModel)]="lesson.audioUrl" placeholder="https://..." class="form-control">
+        <div class="audio-preview" *ngIf="lesson.audioUrl">
+          <audio [src]="lesson.audioUrl" controls></audio>
+        </div>
       </div>
     </div>
 

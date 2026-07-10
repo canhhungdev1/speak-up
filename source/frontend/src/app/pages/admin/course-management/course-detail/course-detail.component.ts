@@ -29,12 +29,40 @@ export class CourseDetailComponent implements OnInit {
   
   isEditingSet = false;
 
+  // Track collapsed sets
+  collapsedSets: { [setId: string]: boolean } = {};
+
   constructor(
     private route: ActivatedRoute,
     private courseService: CourseService,
     private lessonSetService: LessonSetService,
     private lessonService: LessonService
   ) {}
+
+  toggleSetCollapse(setId: string, event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    // Don't toggle if clicking on action buttons, links, or drag handles
+    if (
+      target.closest('.set-actions') || 
+      target.closest('.drag-handle') || 
+      target.closest('a') || 
+      target.closest('button')
+    ) {
+      return;
+    }
+    
+    // Default is collapsed (true). If toggle first time, set to false (expanded)
+    if (this.collapsedSets[setId] === undefined) {
+      this.collapsedSets[setId] = false;
+    } else {
+      this.collapsedSets[setId] = !this.collapsedSets[setId];
+    }
+  }
+
+  isSetCollapsed(setId: string): boolean {
+    // If undefined, it is collapsed by default (return true)
+    return this.collapsedSets[setId] !== false;
+  }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
@@ -46,9 +74,14 @@ export class CourseDetailComponent implements OnInit {
   }
 
   loadData() {
-    // Load Course info
-    this.courseService.courses$.subscribe((courses: any[]) => {
-      this.course = courses.find((c: any) => c.id === this.courseId);
+    // Load Course info directly from API to prevent blank state on page refresh
+    this.courseService.getCourseById(this.courseId).subscribe({
+      next: (course) => {
+        this.course = course;
+      },
+      error: (err) => {
+        console.error('Lỗi khi tải thông tin khóa học:', err);
+      }
     });
     
     // Load Lesson Sets

@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsOptional, IsInt, IsEnum, IsUrl, IsNumber } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional, IsInt, IsEnum, IsUrl, IsNumber, ValidateIf } from 'class-validator';
 import { LessonType } from '@prisma/client';
 
 export class CreateLessonDto {
@@ -15,9 +15,10 @@ export class CreateLessonDto {
   type: LessonType;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
+  @ValidateIf(o => o.audioUrl && o.audioUrl !== '')
   @IsUrl()
-  audioUrl: string;
+  audioUrl?: string;
 
   @IsInt()
   @IsOptional()

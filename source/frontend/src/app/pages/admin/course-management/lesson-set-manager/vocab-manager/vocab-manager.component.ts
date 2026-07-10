@@ -19,6 +19,15 @@ export class VocabManagerComponent implements OnInit {
   isSaving = false;
   saveSuccess = false;
 
+  showModal = false;
+  modalTitle = 'Thêm từ vựng mới';
+  modalVocab = {
+    index: -1,
+    vocabularyWord: '',
+    textContent: '',
+    startTime: 0
+  };
+
   constructor(
     private route: ActivatedRoute,
     private lessonService: LessonService
@@ -66,27 +75,78 @@ export class VocabManagerComponent implements OnInit {
     });
   }
 
-  addVocab() {
+  openAddModal() {
+    this.modalTitle = 'Thêm từ vựng mới';
+    this.modalVocab = {
+      index: -1,
+      vocabularyWord: '',
+      textContent: '',
+      startTime: 0
+    };
+    this.showModal = true;
+  }
+
+  openEditModal(index: number, vocab: any) {
+    this.modalTitle = 'Sửa từ vựng';
+    this.modalVocab = {
+      index: index,
+      vocabularyWord: vocab.vocabularyWord || '',
+      textContent: vocab.textContent || '',
+      startTime: vocab.startTime || 0
+    };
+    this.showModal = true;
+  }
+
+  closeModal() {
+    this.showModal = false;
+  }
+
+  saveModalVocab() {
     if (!this.lesson) return;
     if (!this.lesson.transcripts) {
       this.lesson.transcripts = [];
     }
-    this.lesson.transcripts.push({
-      vocabularyWord: '',
-      textContent: '',
-      startTime: 0,
+
+    if (!this.modalVocab.vocabularyWord || !this.modalVocab.textContent) {
+      alert('Vui lòng nhập Từ gốc và Ý nghĩa.');
+      return;
+    }
+
+    const vocabData = {
+      vocabularyWord: this.modalVocab.vocabularyWord,
+      textContent: this.modalVocab.textContent,
+      startTime: Number(this.modalVocab.startTime) || 0,
       endTime: 0
-    });
+    };
+
+    if (this.modalVocab.index === -1) {
+      this.lesson.transcripts.push(vocabData);
+    } else {
+      this.lesson.transcripts[this.modalVocab.index] = vocabData;
+    }
+
+    this.closeModal();
+    this.save(); // Tự động lưu
   }
 
   removeVocab(index: number) {
     if (!this.lesson || !this.lesson.transcripts) return;
-    this.lesson.transcripts.splice(index, 1);
+    if (confirm('Bạn có chắc chắn muốn xóa từ vựng này?')) {
+      this.lesson.transcripts.splice(index, 1);
+      this.save(); // Tự động lưu
+    }
+  }
+
+  formatTime(seconds: number): string {
+    if (!seconds) return '00:00';
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   }
 
   save() {
-    if (!this.lesson || !this.lesson.title || !this.lesson.audioUrl) {
-      alert('Vui lòng điền đầy đủ Tên bài và Đường dẫn File MP3.');
+    if (!this.lesson || !this.lesson.title) {
+      alert('Vui lòng điền đầy đủ Tên bài.');
       return;
     }
 
@@ -104,7 +164,7 @@ export class VocabManagerComponent implements OnInit {
     const payload = {
       title: this.lesson.title,
       type: 'VOCAB',
-      audioUrl: this.lesson.audioUrl,
+      audioUrl: this.lesson.audioUrl || null,
       lessonSetId: this.setId,
       htmlContent: null,
       transcripts: cleanTranscripts

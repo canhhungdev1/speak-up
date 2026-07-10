@@ -4,81 +4,124 @@
 </div>
 
 <div class="form-container" *ngIf="!isLoading && lesson">
-  <div class="card-header">
-    <div class="header-left">
-      <h2>Từ vựng giải thích (Vocabulary)</h2>
-      <p>Thêm các từ mới xuất hiện trong bài đọc và chỉ định mốc thời gian giải thích trong file nghe.</p>
-    </div>
-    <button class="btn-secondary" (click)="addVocab()">
-      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
-      Thêm từ vựng
-    </button>
-  </div>
-
-  <div class="card-body">
-    <!-- Tên bài học -->
-    <div class="form-group">
-      <label>Tên bài từ vựng <span class="required">*</span></label>
-      <input type="text" [(ngModel)]="lesson.title" placeholder="VD: A Kiss - Vocabulary" class="form-control">
-    </div>
-
-    <!-- Audio URL -->
-    <div class="form-group">
-      <label>Đường dẫn File MP3 giải thích từ vựng <span class="required">*</span></label>
-      <input type="text" [(ngModel)]="lesson.audioUrl" placeholder="https://..." class="form-control">
-      <div class="audio-preview" *ngIf="lesson.audioUrl">
-        <audio [src]="lesson.audioUrl" controls></audio>
-      </div>
-    </div>
-
-    <!-- Danh sách từ vựng Grid -->
-    <div class="vocab-section">
-      <h3>Danh sách từ mới ({{ lesson.transcripts?.length || 0 }})</h3>
-      
-      <div class="empty-vocab" *ngIf="!lesson.transcripts || lesson.transcripts.length === 0">
-        <p>Chưa có từ vựng nào được thêm. Hãy nhấn "Thêm từ vựng" để bắt đầu soạn thảo.</p>
-      </div>
-
-      <div class="vocab-grid" *ngIf="lesson.transcripts && lesson.transcripts.length > 0">
-        <div class="vocab-card animate-fade" *ngFor="let vocab of lesson.transcripts; let i = index">
-          <div class="card-num">{{ i + 1 }}</div>
-          
-          <div class="card-inputs">
-            <div class="input-field">
-              <label>Từ gốc</label>
-              <input type="text" [(ngModel)]="vocab.vocabularyWord" placeholder="VD: Huge" class="form-control">
-            </div>
-            
-            <div class="input-field">
-              <label>Ý nghĩa</label>
-              <input type="text" [(ngModel)]="vocab.textContent" placeholder="VD: Khổng lồ" class="form-control">
-            </div>
-            
-            <div class="input-field time-field">
-              <label>Bắt đầu (giây)</label>
-              <input type="number" [(ngModel)]="vocab.startTime" placeholder="0" class="form-control">
-            </div>
-          </div>
-
-          <button class="btn-delete" (click)="removeVocab(i)" title="Xóa từ này">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Nút Lưu -->
-  <div class="card-footer">
-    <div class="message-area">
-      <span class="text-success animate-fade" *ngIf="saveSuccess">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
-        Đã lưu danh sách từ vựng!
-      </span>
-    </div>
-    <button class="btn-primary" (click)="save()" [disabled]="isSaving">
-      <span class="spinner-small" *ngIf="isSaving"></span>
-      {{ isSaving ? 'Đang lưu...' : 'Lưu từ vựng' }}
-    </button>
-  </div>
-</div>
+   <div class="card-header">
+     <div class="header-left">
+       <h2>Từ vựng giải thích (Vocabulary)</h2>
+       <p>Thêm các từ mới xuất hiện trong bài đọc và chỉ định mốc thời gian giải thích trong file nghe.</p>
+     </div>
+     <button class="btn-primary-action" (click)="save()" [disabled]="isSaving">
+       <span class="spinner-small" *ngIf="isSaving"></span>
+       {{ isSaving ? 'Đang lưu...' : 'Lưu bài học' }}
+     </button>
+   </div>
+ 
+   <div class="card-body">
+     <div class="form-row">
+       <!-- Tên bài học -->
+       <div class="form-group">
+         <label>Tên bài từ vựng <span class="required">*</span></label>
+         <input type="text" [(ngModel)]="lesson.title" placeholder="VD: A Kiss - Vocabulary" class="form-control">
+       </div>
+   
+       <!-- Audio URL -->
+       <div class="form-group">
+         <label>Đường dẫn File MP3 giải thích từ vựng</label>
+         <input type="text" [(ngModel)]="lesson.audioUrl" placeholder="https://..." class="form-control">
+         <div class="audio-preview" *ngIf="lesson.audioUrl">
+           <audio [src]="lesson.audioUrl" controls></audio>
+         </div>
+       </div>
+     </div>
+ 
+     <!-- Danh sách từ vựng dạng bảng -->
+     <div class="vocab-section">
+       <div class="section-title-bar">
+         <h3>Danh sách từ mới ({{ lesson.transcripts?.length || 0 }})</h3>
+         <button class="btn-primary-action" *ngIf="lesson.transcripts && lesson.transcripts.length > 0" (click)="openAddModal()">
+           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+           Thêm từ vựng
+         </button>
+       </div>
+       
+       <div class="empty-vocab" *ngIf="!lesson.transcripts || lesson.transcripts.length === 0">
+         <p>Chưa có từ vựng nào được thêm.</p>
+         <button class="btn-primary-action" style="margin-top: 12px;" (click)="openAddModal()">
+           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+           Thêm từ vựng đầu tiên
+         </button>
+       </div>
+ 
+       <div class="table-container" *ngIf="lesson.transcripts && lesson.transcripts.length > 0">
+         <table class="vocab-table">
+           <thead>
+             <tr>
+               <th style="width: 60px; text-align: center;">STT</th>
+               <th>Từ gốc</th>
+               <th>Ý nghĩa</th>
+               <th style="width: 140px;">Bắt đầu (giây)</th>
+               <th style="width: 120px; text-align: center;">Thao tác</th>
+             </tr>
+           </thead>
+           <tbody>
+             <tr *ngFor="let vocab of lesson.transcripts; let i = index" class="animate-fade">
+               <td style="text-align: center;"><span class="row-num">{{ i + 1 }}</span></td>
+               <td><strong class="word-text">{{ vocab.vocabularyWord }}</strong></td>
+               <td><span class="meaning-text">{{ vocab.textContent }}</span></td>
+               <td>
+                 <span class="time-badge" *ngIf="vocab.startTime">
+                   {{ formatTime(vocab.startTime) }} ({{ vocab.startTime }}s)
+                 </span>
+                 <span class="time-badge none" *ngIf="!vocab.startTime">Không có</span>
+               </td>
+               <td>
+                 <div class="row-actions">
+                   <button class="btn-icon btn-edit" (click)="openEditModal(i, vocab)" title="Sửa từ này">
+                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                   </button>
+                   <button class="btn-icon btn-delete" (click)="removeVocab(i)" title="Xóa từ này">
+                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                   </button>
+                 </div>
+               </td>
+             </tr>
+           </tbody>
+         </table>
+       </div>
+     </div>
+   </div>
+ </div>
+ 
+ <!-- Modal Thêm / Sửa từ vựng -->
+ <div class="modal-backdrop" *ngIf="showModal" (click)="closeModal()">
+   <div class="modal-content animate-scale" (click)="$event.stopPropagation()">
+     <div class="modal-header">
+       <h3>{{ modalTitle }}</h3>
+       <button class="btn-close" (click)="closeModal()">
+         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+       </button>
+     </div>
+     
+     <div class="modal-body">
+       <div class="form-group">
+         <label>Từ gốc <span class="required">*</span></label>
+         <input type="text" [(ngModel)]="modalVocab.vocabularyWord" placeholder="VD: big hitter" class="form-control" autofocus>
+       </div>
+       
+       <div class="form-group">
+         <label>Ý nghĩa / Giải thích tiếng Anh <span class="required">*</span></label>
+         <textarea [(ngModel)]="modalVocab.textContent" placeholder="VD: someone who can hit a baseball very far" class="form-control" rows="3"></textarea>
+       </div>
+       
+       <div class="form-group">
+         <label>Mốc thời gian giải thích (giây)</label>
+         <input type="number" [(ngModel)]="modalVocab.startTime" placeholder="0" class="form-control">
+         <p class="field-desc">Thời điểm xuất hiện từ này trong file âm thanh MP3 để học viên click nghe nhanh.</p>
+       </div>
+     </div>
+     
+     <div class="modal-footer">
+       <button class="btn-secondary" (click)="closeModal()">Hủy</button>
+       <button class="btn-primary-action" (click)="saveModalVocab()">Lưu lại</button>
+     </div>
+   </div>
+ </div>

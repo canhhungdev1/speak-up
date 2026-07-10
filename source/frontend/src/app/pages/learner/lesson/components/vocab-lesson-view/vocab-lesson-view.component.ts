@@ -12,7 +12,7 @@ import { AudioService } from '../../../../../services/audio.service';
         <div class="card-header">
           <div class="vocab-word">{{ getWord(vocab) }}</div>
           
-          <div class="card-actions" *ngIf="vocab.startTime">
+          <div class="card-actions" *ngIf="hasAudio && vocab.startTime">
             <span class="time-badge">{{ formatTime(vocab.startTime) }}</span>
             <button class="btn-play-audio" (click)="playFrom(vocab.startTime)" title="Nghe giải thích từ này">
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 3 20 12 6 21 6 3"/></svg>
@@ -155,6 +155,7 @@ import { AudioService } from '../../../../../services/audio.service';
 })
 export class VocabLessonViewComponent {
   @Input() transcripts: any[] = [];
+  @Input() hasAudio: boolean = true;
 
   constructor(private audioService: AudioService) {}
 
