@@ -26,6 +26,7 @@
   
   <app-main-lesson-view 
     *ngIf="activeLesson.type === 'MAIN'" 
+    [htmlContent]="activeLesson.htmlContent"
     [transcripts]="transcripts">
   </app-main-lesson-view>
 

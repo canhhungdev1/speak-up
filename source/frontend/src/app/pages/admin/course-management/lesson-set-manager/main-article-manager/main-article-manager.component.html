@@ -1,0 +1,50 @@
+<div class="loading-container" *ngIf="isLoading">
+  <div class="spinner"></div>
+  <p>Đang tải dữ liệu bài học...</p>
+</div>
+
+<div class="form-container" *ngIf="!isLoading && lesson">
+  <div class="card-header">
+    <h2>Nội dung bài nghe chính (Main Article)</h2>
+    <p>Nhập văn bản chính và đính kèm file audio MP3 giải thích nội dung bài đọc.</p>
+  </div>
+
+  <div class="card-body">
+    <!-- Tên bài học -->
+    <div class="form-group">
+      <label>Tên bài học <span class="required">*</span></label>
+      <input type="text" [(ngModel)]="lesson.title" placeholder="VD: A Kiss - Main Story" class="form-control">
+    </div>
+
+    <!-- Audio URL -->
+    <div class="form-group">
+      <label>Đường dẫn File MP3 (Audio URL) <span class="required">*</span></label>
+      <input type="text" [(ngModel)]="lesson.audioUrl" placeholder="https://..." class="form-control">
+      
+      <!-- Audio Player Preview -->
+      <div class="audio-preview" *ngIf="lesson.audioUrl">
+        <audio [src]="lesson.audioUrl" controls></audio>
+      </div>
+    </div>
+
+    <!-- Quill Rich Text Editor -->
+    <div class="form-group">
+      <label>Nội dung bài viết (Văn bản hiển thị cho học viên)</label>
+      <quill-editor [(ngModel)]="lesson.htmlContent" placeholder="Nhập văn bản... Bôi đen văn bản để tùy chỉnh In Đậm, In Nghiêng, Tiêu đề..." [styles]="{height: '350px'}"></quill-editor>
+    </div>
+  </div>
+
+  <!-- Nút Hành động -->
+  <div class="card-footer">
+    <div class="message-area">
+      <span class="text-success animate-fade" *ngIf="saveSuccess">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        Đã lưu bài viết thành công!
+      </span>
+    </div>
+    <button class="btn-primary" (click)="save()" [disabled]="isSaving">
+      <span class="spinner-small" *ngIf="isSaving"></span>
+      {{ isSaving ? 'Đang lưu...' : 'Lưu bài viết' }}
+    </button>
+  </div>
+</div>

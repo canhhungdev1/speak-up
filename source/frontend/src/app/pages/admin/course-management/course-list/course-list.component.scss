@@ -7,17 +7,21 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 24px;
+    margin-bottom: 32px;
 
     .header-left {
       h1 {
-        font-size: 24px;
-        font-weight: 700;
+        font-size: 28px;
+        font-weight: 800;
+        letter-spacing: -0.5px;
         margin-bottom: 4px;
+        background: linear-gradient(135deg, var(--text-primary) 0%, var(--course-blue) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
       }
       p {
         color: var(--text-secondary);
-        font-size: 14px;
+        font-size: 15px;
       }
     }
 
@@ -25,27 +29,31 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      padding: 10px 16px;
-      background-color: var(--course-green);
+      padding: 12px 20px;
+      background: linear-gradient(135deg, var(--course-blue) 0%, #2563eb 100%);
       color: white;
       border: none;
-      border-radius: 8px;
+      border-radius: 12px;
       font-weight: 600;
       cursor: pointer;
-      transition: background 0.2s;
+      box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       
       &:hover {
-        background-color: var(--course-green-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(59, 130, 246, 0.6);
       }
     }
   }
 
   .table-card {
-    background-color: var(--bg-main);
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 16px;
+    box-shadow: var(--shadow-md);
     overflow: hidden;
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--glass-border);
 
     .loading-state, .empty-state {
       padding: 48px;
@@ -55,7 +63,7 @@
 
     .spinner {
       border: 3px solid rgba(0, 0, 0, 0.1);
-      border-top-color: var(--course-green);
+      border-top-color: var(--course-blue);
       border-radius: 50%;
       width: 32px;
       height: 32px;
@@ -65,29 +73,39 @@
 
     .data-table {
       width: 100%;
-      border-collapse: collapse;
+      border-collapse: separate;
+      border-spacing: 0 8px; /* Giãn cách các dòng để tạo card mỏng */
+      padding: 0 16px 16px 16px;
 
       th, td {
         padding: 16px 24px;
         text-align: left;
-        border-bottom: 1px solid var(--border-color);
+        border-bottom: none; /* Xóa viền ngang */
       }
 
       th {
-        background-color: rgba(0, 0, 0, 0.02);
-        font-weight: 600;
-        color: var(--text-secondary);
+        background: transparent;
+        font-weight: 700;
+        color: var(--text-muted);
         font-size: 13px;
         text-transform: uppercase;
         letter-spacing: 0.5px;
       }
 
-      tr:last-child td {
-        border-bottom: none;
-      }
+      tbody tr {
+        background: var(--bg-surface);
+        border-radius: 12px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: var(--shadow-sm);
+        
+        td:first-child { border-top-left-radius: 12px; border-bottom-left-radius: 12px; }
+        td:last-child { border-top-right-radius: 12px; border-bottom-right-radius: 12px; }
 
-      tr:hover td {
-        background-color: rgba(0, 0, 0, 0.01);
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: var(--shadow-md);
+          background: var(--bg-main);
+        }
       }
 
       .course-info {
@@ -96,12 +114,13 @@
         gap: 16px;
 
         .cover-image {
-          width: 64px;
-          height: 48px;
-          border-radius: 6px;
+          width: 72px;
+          height: 52px;
+          border-radius: 8px;
           background-color: var(--border-color);
           background-size: cover;
           background-position: center;
+          box-shadow: var(--shadow-sm);
         }
 
         .details {
@@ -109,7 +128,8 @@
           flex-direction: column;
 
           strong {
-            font-size: 15px;
+            font-size: 16px;
+            font-weight: 700;
             color: var(--text-primary);
           }
           
@@ -127,16 +147,18 @@
 
       .status-badge {
         display: inline-block;
-        padding: 4px 12px;
+        padding: 6px 14px;
         border-radius: 20px;
         font-size: 12px;
-        font-weight: 600;
-        background-color: var(--bg-surface);
+        font-weight: 700;
+        background-color: rgba(203, 213, 225, 0.3);
         color: var(--text-secondary);
+        box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05);
 
         &.published {
-          background-color: rgba(76, 175, 80, 0.1);
+          background-color: rgba(16, 185, 129, 0.15);
           color: var(--course-green);
+          box-shadow: inset 0 0 0 1px rgba(16, 185, 129, 0.2);
         }
       }
 
@@ -148,21 +170,42 @@
       .btn-icon {
         background: transparent;
         border: none;
-        color: var(--text-secondary);
+        color: var(--text-muted);
         cursor: pointer;
         padding: 8px;
         border-radius: 50%;
-        transition: all 0.2s;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         margin-left: 4px;
+        position: relative;
+        overflow: hidden;
+
+        &::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: currentColor;
+          opacity: 0;
+          border-radius: 50%;
+          transition: opacity 0.3s;
+        }
+
+        svg {
+          position: relative;
+          z-index: 1;
+        }
 
         &:hover {
-          background-color: rgba(0, 0, 0, 0.05);
-          color: var(--text-primary);
+          color: var(--course-blue);
+          &::before {
+            opacity: 0.15;
+          }
         }
 
         &.btn-danger:hover {
           color: #ef4444;
-          background-color: rgba(239, 68, 68, 0.1);
+          &::before {
+            opacity: 0.15;
+          }
         }
       }
 
@@ -170,19 +213,23 @@
         width: 40px;
         padding-right: 0 !important;
         cursor: grab;
-        color: var(--text-secondary);
+        color: var(--text-muted);
         
         &:active {
           cursor: grabbing;
         }
 
         .drag-icon {
-          opacity: 0.5;
-          transition: opacity 0.2s;
+          opacity: 0;
+          transition: opacity 0.2s, color 0.2s;
         }
-        
-        &:hover .drag-icon {
+      }
+      
+      tbody tr:hover .drag-handle-col .drag-icon {
+        opacity: 0.6;
+        &:hover {
           opacity: 1;
+          color: var(--course-blue);
         }
       }
     }
@@ -191,10 +238,11 @@
 
 .cdk-drag-preview {
   box-sizing: border-box;
-  border-radius: 8px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
-  background: white;
+  border-radius: 12px;
+  box-shadow: var(--shadow-lg);
+  background: var(--bg-surface);
   display: table;
+  border: 1px solid var(--course-blue);
 }
 
 .cdk-drag-placeholder {

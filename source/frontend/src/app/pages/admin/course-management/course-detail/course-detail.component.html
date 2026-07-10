@@ -35,6 +35,9 @@
           </div>
         </div>
         <div class="set-actions">
+          <a class="btn-icon" [routerLink]="['sets', set.id]" title="Quản lý chi tiết bài học" style="color: var(--course-blue);">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          </a>
           <button class="btn-icon" (click)="openSetModal(set)" title="Sửa bộ bài học">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
           </button>
@@ -45,23 +48,23 @@
       </div>
       
       <div class="lesson-list">
-        <div class="lesson-item" *ngFor="let lesson of set.lessons">
+        <div class="lesson-item animate-fade" *ngFor="let lesson of set.lessons">
           <div class="lesson-type-badge" [ngClass]="lesson.type.toLowerCase()">{{ lesson.type }}</div>
           <div class="lesson-title">{{ lesson.title }}</div>
           <div class="lesson-actions">
-            <button class="btn-icon" (click)="openLessonModal(set.id, lesson)" title="Sửa bài học">
+            <a class="btn-icon" [routerLink]="['sets', set.id, getRouteForType(lesson.type)]" title="Sửa bài học">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
-            </button>
+            </a>
             <button class="btn-icon text-danger" (click)="deleteLesson(lesson.id)" title="Xóa bài học">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
             </button>
           </div>
         </div>
         
-        <button class="btn-add-lesson" (click)="openLessonModal(set.id)">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
-          Thêm Bài Học MP3
-        </button>
+        <a class="btn-add-lesson" [routerLink]="['sets', set.id]">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+          Quản lý chi tiết bài học
+        </a>
       </div>
     </div>
   </div>
@@ -97,80 +100,4 @@
   </div>
 </div>
 
-<!-- Modal Thêm/Sửa Bài Học -->
-<div class="modal-overlay" *ngIf="showLessonModal">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h2>{{ isEditingLesson ? 'Sửa Bài Học' : 'Thêm Bài Học Mới' }}</h2>
-      <button class="btn-close" (click)="closeLessonModal()">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-      </button>
-    </div>
-    <div class="modal-body">
-      <div class="form-group">
-        <label>Loại bài học <span class="required">*</span></label>
-        <select class="form-control" [(ngModel)]="currentLesson.type">
-          <option value="MAIN">Main Audio (Bài nghe chính)</option>
-          <option value="VOCAB">Vocabulary (Từ vựng)</option>
-          <option value="MINI_STORY">Mini-Story (Hỏi đáp nhanh)</option>
-          <option value="POV">Point of View (Kể lại bằng thì khác)</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Tên Bài học <span class="required">*</span></label>
-        <input type="text" class="form-control" [(ngModel)]="currentLesson.title" placeholder="VD: A Kiss - Main Story">
-      </div>
-      <div class="form-group">
-        <label>Đường dẫn File MP3 (Audio URL) <span class="required">*</span></label>
-        <input type="text" class="form-control" [(ngModel)]="currentLesson.audioUrl" placeholder="https://...">
-      </div>
 
-      <!-- MAIN -->
-      <div class="form-group" *ngIf="currentLesson.type === 'MAIN'">
-        <label>Nội dung bài đọc (Rich Text/HTML)</label>
-        <quill-editor [(ngModel)]="currentLesson.htmlContent" placeholder="Nhập văn bản... Bôi đen để chọn in đậm/in nghiêng" [styles]="{height: '250px'}"></quill-editor>
-      </div>
-
-      <!-- VOCAB -->
-      <div class="form-group" *ngIf="currentLesson.type === 'VOCAB'">
-        <div style="display:flex; justify-content:space-between; align-items: center; margin-bottom: 12px;">
-          <label style="margin: 0;">Danh sách từ vựng</label>
-          <button class="btn-primary" style="padding: 6px 12px; font-size: 13px; border-radius: 8px;" (click)="addVocab()">+ Thêm từ vựng</button>
-        </div>
-        <div class="vocab-list-container">
-          <div class="vocab-card" *ngFor="let vocab of currentLesson.transcripts; let i = index">
-            <div>
-              <input type="text" class="form-control" [(ngModel)]="vocab.vocabularyWord" placeholder="Từ gốc (VD: Huge)">
-            </div>
-            <div>
-              <input type="text" class="form-control" [(ngModel)]="vocab.textContent" placeholder="Ý nghĩa (VD: Khổng lồ)">
-            </div>
-            <div>
-              <input type="number" class="form-control" [(ngModel)]="vocab.startTime" placeholder="0 (s)">
-            </div>
-            <div style="text-align: right;">
-              <button class="btn-icon text-danger" (click)="removeVocab(i)" title="Xóa từ này">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- MINI_STORY & POV -->
-      <div class="form-group" *ngIf="currentLesson.type === 'MINI_STORY' || currentLesson.type === 'POV'">
-        <label>Paste nội dung file VTT</label>
-        <textarea class="form-control" rows="8" [(ngModel)]="currentLesson.vttContent" placeholder="WEBVTT..."></textarea>
-        <button class="btn-primary" style="padding: 4px 8px; font-size: 12px; margin-top: 8px;" (click)="parseVTT()">Phân tích VTT</button>
-        <p class="text-success" style="margin-top: 8px; font-size: 14px;" *ngIf="currentLesson.transcripts?.length > 0">
-          Đã bóc tách được {{ currentLesson.transcripts.length }} dòng lời thoại.
-        </p>
-      </div>
-
-    </div>
-    <div class="modal-footer">
-      <button class="btn-cancel" (click)="closeLessonModal()">Hủy</button>
-      <button class="btn-primary" (click)="saveLesson()" [disabled]="!currentLesson.title || !currentLesson.audioUrl">Lưu</button>
-    </div>
-  </div>
-</div>

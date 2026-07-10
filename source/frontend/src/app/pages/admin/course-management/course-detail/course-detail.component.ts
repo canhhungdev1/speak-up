@@ -23,14 +23,11 @@ export class CourseDetailComponent implements OnInit {
   
   // Modal states
   showSetModal = false;
-  showLessonModal = false;
   
   // Form data
   currentSet: any = { title: '', description: '', requiredDays: 7, orderIndex: 0 };
-  currentLesson: any = { title: '', type: 'MAIN', audioUrl: '', orderIndex: 0, lessonSetId: '' };
   
   isEditingSet = false;
-  isEditingLesson = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -118,106 +115,21 @@ export class CourseDetailComponent implements OnInit {
   }
 
   // --- Lesson ---
-  openLessonModal(setId: string, lesson?: Lesson) {
-    if (lesson) {
-      this.isEditingLesson = true;
-      // Copy lesson object to avoid two-way binding mutation before save
-      // Ensure transcripts is cloned
-      this.currentLesson = { ...lesson, transcripts: lesson.transcripts ? [...lesson.transcripts] : [] };
-    } else {
-      this.isEditingLesson = false;
-      const set = this.lessonSets.find(s => s.id === setId);
-      const nextOrder = set && set.lessons ? set.lessons.length + 1 : 1;
-      this.currentLesson = { title: '', type: 'MAIN', audioUrl: '', orderIndex: nextOrder, lessonSetId: setId, transcripts: [] };
-    }
-    this.showLessonModal = true;
-  }
-
-  closeLessonModal() {
-    this.showLessonModal = false;
-  }
-
-  addVocab() {
-    if (!this.currentLesson.transcripts) {
-      this.currentLesson.transcripts = [];
-    }
-    this.currentLesson.transcripts.push({ vocabularyWord: '', textContent: '', startTime: 0, endTime: 0 });
-  }
-
-  removeVocab(index: number) {
-    this.currentLesson.transcripts.splice(index, 1);
-  }
-
-  parseVTT() {
-    if (!this.currentLesson.vttContent) return;
-    const lines = this.currentLesson.vttContent.split('\n');
-    const transcripts = [];
-    let currentTranscript: any = null;
-
-    const timeRegex = /(\d{2}:)?(\d{2}):(\d{2})\.(\d{3})\s+-->\s+(\d{2}:)?(\d{2}):(\d{2})\.(\d{3})/;
-
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i].trim();
-      if (!line || line === 'WEBVTT') continue;
-
-      const match = line.match(timeRegex);
-      if (match) {
-        const startHours = match[1] ? parseInt(match[1].replace(':', '')) : 0;
-        const startMins = parseInt(match[2]);
-        const startSecs = parseInt(match[3]);
-        const startMs = parseInt(match[4]);
-        const startTime = startHours * 3600 + startMins * 60 + startSecs + startMs / 1000;
-
-        const endHours = match[5] ? parseInt(match[5].replace(':', '')) : 0;
-        const endMins = parseInt(match[6]);
-        const endSecs = parseInt(match[7]);
-        const endMs = parseInt(match[8]);
-        const endTime = endHours * 3600 + endMins * 60 + endSecs + endMs / 1000;
-
-        currentTranscript = { startTime, endTime, textContent: '' };
-      } else if (currentTranscript && !line.includes('-->') && !/^\d+$/.test(line)) {
-         currentTranscript.textContent += (currentTranscript.textContent ? ' ' : '') + line;
-      } else if (currentTranscript && line === '') {
-         transcripts.push(currentTranscript);
-         currentTranscript = null;
-      }
-    }
-    if (currentTranscript && currentTranscript.textContent) {
-      transcripts.push(currentTranscript);
-    }
-    this.currentLesson.transcripts = transcripts;
-  }
-
-  saveLesson() {
-    const payload = {
-      title: this.currentLesson.title,
-      type: this.currentLesson.type,
-      audioUrl: this.currentLesson.audioUrl,
-      durationSeconds: this.currentLesson.durationSeconds,
-      orderIndex: this.currentLesson.orderIndex,
-      lessonSetId: this.currentLesson.lessonSetId,
-      htmlContent: this.currentLesson.type === 'MAIN' ? this.currentLesson.htmlContent : null,
-      transcripts: this.currentLesson.type !== 'MAIN' ? this.currentLesson.transcripts : []
-    };
-
-    if (this.isEditingLesson) {
-      this.lessonService.updateLesson(this.currentLesson.id, payload).subscribe(() => {
-        this.loadData();
-        this.closeLessonModal();
-      });
-    } else {
-      this.lessonService.createLesson(payload).subscribe(() => {
-        this.loadData();
-        this.closeLessonModal();
-      });
-    }
-  }
-
   deleteLesson(id: string) {
     if (confirm('Bạn có chắc chắn muốn xóa Bài học này không?')) {
       this.lessonService.deleteLesson(id).subscribe(() => {
         this.loadData();
       });
+    }
+  }
+
+  getRouteForType(type: string): string {
+    switch (type) {
+      case 'MAIN': return 'main';
+      case 'VOCAB': return 'vocab';
+      case 'MINI_STORY': return 'mini-stories';
+      case 'POV': return 'pov';
+      default: return 'main';
     }
   }
 }

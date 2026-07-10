@@ -1,0 +1,70 @@
+<div class="loading-container" *ngIf="isLoading">
+  <div class="spinner"></div>
+  <p>Đang tải bài nghe POV...</p>
+</div>
+
+<div class="form-container" *ngIf="!isLoading && lesson">
+  <div class="card-header">
+    <h2>Bài nghe kể lại câu chuyện (Point of View)</h2>
+    <p>Upload file MP3 chứa audio kể lại câu chuyện ở thì khác hoặc góc nhìn khác, kèm theo phụ đề VTT.</p>
+  </div>
+
+  <div class="card-body">
+    <!-- Tên bài học -->
+    <div class="form-group">
+      <label>Tên bài POV <span class="required">*</span></label>
+      <input type="text" [(ngModel)]="lesson.title" placeholder="VD: A Kiss - Point of View" class="form-control">
+    </div>
+
+    <!-- Audio URL -->
+    <div class="form-group">
+      <label>Đường dẫn File MP3 (Audio URL) <span class="required">*</span></label>
+      <input type="text" [(ngModel)]="lesson.audioUrl" placeholder="https://..." class="form-control">
+      <div class="audio-preview" *ngIf="lesson.audioUrl">
+        <audio [src]="lesson.audioUrl" controls></audio>
+      </div>
+    </div>
+
+    <!-- VTT Parser -->
+    <div class="form-group">
+      <label>Nội dung phụ đề VTT (WebVTT)</label>
+      <p class="field-desc">Dán nội dung tệp phụ đề .vtt vào đây để bóc tách mốc thời gian lời thoại.</p>
+      <textarea [(ngModel)]="lesson.vttContent" placeholder="WEBVTT&#10;&#10;1&#10;00:00:01.000 --> 00:00:04.000&#10;In the past, Carlos bought a new car." class="form-control" rows="8"></textarea>
+      
+      <button class="btn-secondary" style="margin-top: 10px;" (click)="parseVTT()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        Bóc tách VTT
+      </button>
+    </div>
+
+    <!-- Summary transcripts -->
+    <div class="transcripts-summary" *ngIf="lesson.transcripts && lesson.transcripts.length > 0">
+      <div class="summary-badge">
+        Đã bóc tách thành công: <strong>{{ lesson.transcripts.length }}</strong> dòng lời thoại.
+      </div>
+      <div class="preview-lines">
+        <div class="preview-line" *ngFor="let t of lesson.transcripts.slice(0, 3)">
+          <span class="time">[{{ t.startTime | number:'1.1-1' }}s - {{ t.endTime | number:'1.1-1' }}s]</span>
+          <span class="text">{{ t.textContent }}</span>
+        </div>
+        <div class="preview-line more" *ngIf="lesson.transcripts.length > 3">
+          và {{ lesson.transcripts.length - 3 }} dòng khác...
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Nút Hành động -->
+  <div class="card-footer">
+    <div class="message-area">
+      <span class="text-success animate-fade" *ngIf="saveSuccess">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        Đã lưu thành công!
+      </span>
+    </div>
+    <button class="btn-primary" (click)="save()" [disabled]="isSaving">
+      <span class="spinner-small" *ngIf="isSaving"></span>
+      {{ isSaving ? 'Đang lưu...' : 'Lưu bài POV' }}
+    </button>
+  </div>
+</div>

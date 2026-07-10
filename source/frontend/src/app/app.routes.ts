@@ -51,6 +51,29 @@ export const routes: Routes = [
       {
         path: 'courses/:id',
         loadComponent: () => import('./pages/admin/course-management/course-detail/course-detail.component').then(m => m.CourseDetailComponent)
+      },
+      {
+        path: 'courses/:courseId/sets/:setId',
+        loadComponent: () => import('./pages/admin/course-management/lesson-set-manager/lesson-set-manager.component').then(m => m.LessonSetManagerComponent),
+        children: [
+          { path: '', redirectTo: 'main', pathMatch: 'full' },
+          {
+            path: 'main',
+            loadComponent: () => import('./pages/admin/course-management/lesson-set-manager/main-article-manager/main-article-manager.component').then(m => m.MainArticleManagerComponent)
+          },
+          {
+            path: 'vocab',
+            loadComponent: () => import('./pages/admin/course-management/lesson-set-manager/vocab-manager/vocab-manager.component').then(m => m.VocabManagerComponent)
+          },
+          {
+            path: 'mini-stories',
+            loadComponent: () => import('./pages/admin/course-management/lesson-set-manager/mini-story-manager/mini-story-manager.component').then(m => m.MiniStoryManagerComponent)
+          },
+          {
+            path: 'pov',
+            loadComponent: () => import('./pages/admin/course-management/lesson-set-manager/pov-manager/pov-manager.component').then(m => m.PovManagerComponent)
+          }
+        ]
       }
     ]
   }

@@ -34,19 +34,29 @@ export class LessonsService {
       });
     }
 
-    return createdLesson;
+    return this.findOne(createdLesson.id);
   }
 
   findAllByLessonSet(lessonSetId: string) {
     return this.prisma.lesson.findMany({
       where: { lessonSetId },
       orderBy: { orderIndex: 'asc' },
+      include: {
+        transcripts: {
+          orderBy: { orderIndex: 'asc' }
+        }
+      }
     });
   }
 
   async findOne(id: string) {
     const lesson = await this.prisma.lesson.findUnique({
       where: { id },
+      include: {
+        transcripts: {
+          orderBy: { orderIndex: 'asc' }
+        }
+      }
     });
     if (!lesson) {
       throw new NotFoundException('Lesson not found');
@@ -78,17 +88,28 @@ export class LessonsService {
           });
         }
         
-        return prisma.lesson.update({
+        await prisma.lesson.update({
           where: { id },
           data: lessonData,
+        });
+
+        return prisma.lesson.findUnique({
+          where: { id },
+          include: {
+            transcripts: {
+              orderBy: { orderIndex: 'asc' }
+            }
+          }
         });
       });
     }
 
-    return this.prisma.lesson.update({
+    await this.prisma.lesson.update({
       where: { id },
       data: lessonData,
     });
+
+    return this.findOne(id);
   }
 
   async remove(id: string) {
