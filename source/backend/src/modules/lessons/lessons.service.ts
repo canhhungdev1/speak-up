@@ -15,7 +15,7 @@ export class LessonsService {
       throw new NotFoundException('Lesson Set not found');
     }
 
-    const { transcripts, ...lessonData } = createLessonDto as any;
+    const { transcripts, vttContent, ...lessonData } = createLessonDto as any;
 
     const createdLesson = await this.prisma.lesson.create({
       data: lessonData,
@@ -66,7 +66,7 @@ export class LessonsService {
 
   async update(id: string, updateLessonDto: UpdateLessonDto) {
     await this.findOne(id);
-    const { transcripts, ...lessonData } = updateLessonDto;
+    const { transcripts, vttContent, ...lessonData } = updateLessonDto as any;
     
     // Nếu có gửi lên transcripts, xóa hết cái cũ và tạo mới lại (Transaction)
     if (transcripts) {

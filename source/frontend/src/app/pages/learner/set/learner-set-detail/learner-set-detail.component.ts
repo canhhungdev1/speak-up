@@ -72,6 +72,32 @@ export class LearnerSetDetailComponent implements OnInit, OnDestroy {
     this.audioService.seek(time);
   }
 
+  getTabLabel(lesson: any): string {
+    const type = lesson.type;
+    const sameTypeLessons = this.lessons.filter(l => l.type === type);
+    
+    if (sameTypeLessons.length <= 1) {
+      switch (type) {
+        case 'MAIN': return 'Main Article';
+        case 'VOCAB': return 'Vocabulary';
+        case 'MINI_STORY': return 'Mini Story';
+        case 'POV': return 'Point of View';
+        default: return type;
+      }
+    }
+    
+    const index = sameTypeLessons.findIndex(l => l.id === lesson.id);
+    const letter = String.fromCharCode(65 + index); // Tạo chữ cái A, B, C...
+    
+    switch (type) {
+      case 'MAIN': return `Main Article ${letter}`;
+      case 'VOCAB': return `Vocabulary ${letter}`;
+      case 'MINI_STORY': return `Mini Story ${letter}`;
+      case 'POV': return `POV ${letter}`;
+      default: return `${type} ${letter}`;
+    }
+  }
+
   ngOnDestroy() {
     if (this.audioSub) {
       this.audioSub.unsubscribe();

@@ -17,7 +17,7 @@
       *ngFor="let lesson of lessons"
       [class.active]="activeLesson?.id === lesson.id"
       (click)="selectTab(lesson)">
-      {{ lesson.type }}
+      {{ getTabLabel(lesson) }}
     </button>
   </div>
 </div>
