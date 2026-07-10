@@ -21,6 +21,7 @@
 - **Phase 2.1: Admin Panel (Quản trị nội dung)**
   - Quản lý Khóa học (Course CRUD).
   - Quản lý Bộ bài học (Lesson Set) và Bài học MP3 (Lesson). Database Cascade Delete.
+  - Form nhập liệu Lesson động theo loại bài học (Main: HTML Textarea, Vocab: Dynamic Array, Mini Story: VTT Parser).
 
 - **Phase 2.2: Learner Dashboard & Audio Player**
   - Xây dựng màn hình danh sách Khóa học cho Học viên (`/dashboard`).
@@ -29,15 +30,16 @@
 - **Phase 3: Integration & Advanced Features**
   - Tích hợp API thật cho màn hình Học viên (Lấy dữ liệu động từ Backend thay vì Mock Data).
   - Nâng cấp màn hình Quản lý Khóa học Admin: Cập nhật CSDL và giao diện Kéo thả (Drag & Drop bằng Angular CDK) để sắp xếp thứ tự khóa học.
+  - Tích hợp Audio Player và API cho phòng học (Learner Set Detail). Dữ liệu Audio, Transcripts được load động từ Database.
+
+- **Phase 4: Các tính năng nâng cao & Gamification**
+  - Tool Admin nhập liệu Transcript tự động bóc tách Timestamp cho VTT, nhập liệu Vocab động.
 
 ### 🚧 Đang thực hiện (In Progress)
-- **Phase 3.3: Learner Room (Phòng học chi tiết)**
-  - Tích hợp Audio Player với các bài học cụ thể (MAIN, VOCAB, MINI_STORY).
+- Lời thoại tương tác (Interactive Transcript) ở Learner UI cuộn theo Audio.
 
 ### ❌ Chưa bắt đầu (To Do)
-- Tool Admin upload & đồng bộ Transcript (chèn Timestamp).
 - Hệ thống theo dõi điểm danh (Daily Check-in) & mở khóa chuỗi (Streak 7 ngày).
-- Lời thoại tương tác (Interactive Transcript) ở Learner UI.
 
 ## 3. Kiến trúc CSDL Hiện Tại (Database Core)
 - Bảng `User`: Lưu thông tin học viên và quyền (`LEARNER` / `ADMIN`).

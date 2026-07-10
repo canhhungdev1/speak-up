@@ -15,9 +15,26 @@ export class LessonsService {
       throw new NotFoundException('Lesson Set not found');
     }
 
-    return this.prisma.lesson.create({
-      data: createLessonDto,
+    const { transcripts, ...lessonData } = createLessonDto as any;
+
+    const createdLesson = await this.prisma.lesson.create({
+      data: lessonData,
     });
+
+    if (transcripts && transcripts.length > 0) {
+      await this.prisma.transcript.createMany({
+        data: transcripts.map((t, index) => ({
+          lessonId: createdLesson.id,
+          startTime: t.startTime || 0,
+          endTime: t.endTime || 0,
+          textContent: t.textContent,
+          vocabularyWord: t.vocabularyWord,
+          orderIndex: index
+        }))
+      });
+    }
+
+    return createdLesson;
   }
 
   findAllByLessonSet(lessonSetId: string) {
@@ -39,9 +56,38 @@ export class LessonsService {
 
   async update(id: string, updateLessonDto: UpdateLessonDto) {
     await this.findOne(id);
+    const { transcripts, ...lessonData } = updateLessonDto;
+    
+    // Nếu có gửi lên transcripts, xóa hết cái cũ và tạo mới lại (Transaction)
+    if (transcripts) {
+      return this.prisma.$transaction(async (prisma) => {
+        await prisma.transcript.deleteMany({
+          where: { lessonId: id }
+        });
+        
+        if (transcripts.length > 0) {
+          await prisma.transcript.createMany({
+            data: transcripts.map((t, index) => ({
+              lessonId: id,
+              startTime: t.startTime || 0,
+              endTime: t.endTime || 0,
+              textContent: t.textContent,
+              vocabularyWord: t.vocabularyWord,
+              orderIndex: index
+            }))
+          });
+        }
+        
+        return prisma.lesson.update({
+          where: { id },
+          data: lessonData,
+        });
+      });
+    }
+
     return this.prisma.lesson.update({
       where: { id },
-      data: updateLessonDto,
+      data: lessonData,
     });
   }
 

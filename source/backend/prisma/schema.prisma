@@ -78,6 +78,7 @@ model Lesson {
   audioUrl        String     @map("audio_url")
   durationSeconds Int?       @map("duration_seconds")
   orderIndex      Int?       @map("order_index")
+  htmlContent     String?    @map("html_content")
   createdAt       DateTime   @default(now()) @map("created_at")
 
   lessonSet   LessonSet      @relation(fields: [lessonSetId], references: [id], onDelete: Cascade)
@@ -89,12 +90,13 @@ model Lesson {
 }
 
 model Transcript {
-  id          String @id @default(uuid())
-  lessonId    String @map("lesson_id")
-  startTime   Float  @map("start_time")
-  endTime     Float  @map("end_time")
-  textContent String @map("text_content")
-  orderIndex  Int?   @map("order_index")
+  id             String  @id @default(uuid())
+  lessonId       String  @map("lesson_id")
+  startTime      Float   @map("start_time")
+  endTime        Float   @map("end_time")
+  textContent    String  @map("text_content")
+  vocabularyWord String? @map("vocabulary_word")
+  orderIndex     Int?    @map("order_index")
 
   lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
 

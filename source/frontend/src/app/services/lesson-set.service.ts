@@ -25,6 +25,10 @@ export class LessonSetService {
     return this.http.get<LessonSet[]>(`${this.apiUrl}?courseId=${courseId}`);
   }
 
+  getLessonSetById(id: string): Observable<LessonSet> {
+    return this.http.get<LessonSet>(`${this.apiUrl}/${id}`);
+  }
+
   createLessonSet(data: any): Observable<LessonSet> {
     return this.http.post<LessonSet>(this.apiUrl, data);
   }

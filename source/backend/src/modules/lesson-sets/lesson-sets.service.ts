@@ -47,6 +47,11 @@ export class LessonSetsService {
       include: {
         lessons: {
           orderBy: { orderIndex: 'asc' },
+          include: {
+            transcripts: {
+              orderBy: { startTime: 'asc' }
+            }
+          }
         }
       }
     });
@@ -58,6 +63,11 @@ export class LessonSetsService {
       include: {
         lessons: {
           orderBy: { orderIndex: 'asc' },
+          include: {
+            transcripts: {
+              orderBy: { startTime: 'asc' }
+            }
+          }
         }
       }
     });

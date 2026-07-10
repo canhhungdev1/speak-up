@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsOptional, IsInt, IsEnum, IsUrl } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional, IsInt, IsEnum, IsUrl, IsNumber } from 'class-validator';
 import { LessonType } from '@prisma/client';
 
 export class CreateLessonDto {
@@ -23,7 +23,11 @@ export class CreateLessonDto {
   @IsOptional()
   durationSeconds?: number;
 
-  @IsInt()
   @IsOptional()
+  @IsNumber()
   orderIndex?: number;
+
+  @IsOptional()
+  @IsString()
+  htmlContent?: string;
 }

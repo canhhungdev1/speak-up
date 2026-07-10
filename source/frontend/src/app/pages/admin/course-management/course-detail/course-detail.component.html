@@ -124,6 +124,49 @@
         <label>Đường dẫn File MP3 (Audio URL) <span class="required">*</span></label>
         <input type="text" class="form-control" [(ngModel)]="currentLesson.audioUrl" placeholder="https://...">
       </div>
+
+      <!-- MAIN -->
+      <div class="form-group" *ngIf="currentLesson.type === 'MAIN'">
+        <label>Nội dung bài đọc (Rich Text/HTML)</label>
+        <quill-editor [(ngModel)]="currentLesson.htmlContent" placeholder="Nhập văn bản... Bôi đen để chọn in đậm/in nghiêng" [styles]="{height: '250px'}"></quill-editor>
+      </div>
+
+      <!-- VOCAB -->
+      <div class="form-group" *ngIf="currentLesson.type === 'VOCAB'">
+        <div style="display:flex; justify-content:space-between; align-items: center; margin-bottom: 12px;">
+          <label style="margin: 0;">Danh sách từ vựng</label>
+          <button class="btn-primary" style="padding: 6px 12px; font-size: 13px; border-radius: 8px;" (click)="addVocab()">+ Thêm từ vựng</button>
+        </div>
+        <div class="vocab-list-container">
+          <div class="vocab-card" *ngFor="let vocab of currentLesson.transcripts; let i = index">
+            <div>
+              <input type="text" class="form-control" [(ngModel)]="vocab.vocabularyWord" placeholder="Từ gốc (VD: Huge)">
+            </div>
+            <div>
+              <input type="text" class="form-control" [(ngModel)]="vocab.textContent" placeholder="Ý nghĩa (VD: Khổng lồ)">
+            </div>
+            <div>
+              <input type="number" class="form-control" [(ngModel)]="vocab.startTime" placeholder="0 (s)">
+            </div>
+            <div style="text-align: right;">
+              <button class="btn-icon text-danger" (click)="removeVocab(i)" title="Xóa từ này">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MINI_STORY & POV -->
+      <div class="form-group" *ngIf="currentLesson.type === 'MINI_STORY' || currentLesson.type === 'POV'">
+        <label>Paste nội dung file VTT</label>
+        <textarea class="form-control" rows="8" [(ngModel)]="currentLesson.vttContent" placeholder="WEBVTT..."></textarea>
+        <button class="btn-primary" style="padding: 4px 8px; font-size: 12px; margin-top: 8px;" (click)="parseVTT()">Phân tích VTT</button>
+        <p class="text-success" style="margin-top: 8px; font-size: 14px;" *ngIf="currentLesson.transcripts?.length > 0">
+          Đã bóc tách được {{ currentLesson.transcripts.length }} dòng lời thoại.
+        </p>
+      </div>
+
     </div>
     <div class="modal-footer">
       <button class="btn-cancel" (click)="closeLessonModal()">Hủy</button>

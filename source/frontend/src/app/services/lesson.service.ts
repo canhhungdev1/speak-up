@@ -11,6 +11,9 @@ export interface Lesson {
   audioUrl: string;
   durationSeconds?: number;
   orderIndex?: number;
+  htmlContent?: string;
+  transcripts?: any[];
+  vttContent?: string;
 }
 
 @Injectable({
