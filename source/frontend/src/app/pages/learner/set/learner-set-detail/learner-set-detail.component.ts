@@ -49,6 +49,7 @@ export class LearnerSetDetailComponent implements OnInit, OnDestroy {
   loadData() {
     this.lessonSetService.getLessonSetById(this.setId).subscribe(set => {
       this.lessonSet = set;
+      this.courseId = set.courseId; // Cập nhật courseId từ db
       this.lessons = set.lessons || [];
       if (this.lessons.length > 0) {
         this.selectTab(this.lessons[0]);
