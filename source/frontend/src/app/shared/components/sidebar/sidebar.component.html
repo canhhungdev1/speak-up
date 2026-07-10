@@ -3,6 +3,21 @@
     <h2>Speak<span>Up</span> <small *ngIf="isAdmin" style="font-size: 12px; color: #ef4444; margin-left: 4px; vertical-align: top;">Admin</small></h2>
   </div>
 
+  <!-- Thẻ thông tin người dùng (User Profile Card) -->
+  <div class="user-profile-card" *ngIf="userName" routerLink="/profile">
+    <div class="avatar-wrapper">
+      <div class="avatar-circle" *ngIf="!userAvatar">
+        {{ userInitial }}
+      </div>
+      <img [src]="userAvatar" alt="User Avatar" class="avatar-image" *ngIf="userAvatar" />
+      <span class="status-indicator online"></span>
+    </div>
+    <div class="profile-info">
+      <h4 class="profile-name">{{ userName }}</h4>
+      <p class="profile-role">{{ isAdmin ? 'Administrator' : 'Student Member' }}</p>
+    </div>
+  </div>
+
   <ng-container *ngIf="!isAdmin">
     <div class="menu-section">
       <p class="section-title">MENU</p>

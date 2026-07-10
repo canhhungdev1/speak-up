@@ -16,6 +16,9 @@ declare var google: any;
 })
 export class SidebarComponent implements OnInit, OnDestroy {
   isAdmin = false;
+  userName = '';
+  userInitial = '';
+  userAvatar = '';
   private userSub?: Subscription;
 
   constructor(
@@ -25,7 +28,17 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.userSub = this.authService.currentUser$.subscribe(user => {
-      this.isAdmin = user?.role === 'ADMIN';
+      if (user) {
+        this.isAdmin = user.role === 'ADMIN';
+        this.userName = user.name || 'Student';
+        this.userInitial = this.userName.charAt(0).toUpperCase();
+        this.userAvatar = user.avatarUrl || '';
+      } else {
+        this.isAdmin = false;
+        this.userName = '';
+        this.userInitial = '';
+        this.userAvatar = '';
+      }
     });
   }
 
