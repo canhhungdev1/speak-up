@@ -1,1 +1,168 @@
-<p>admin-home works!</p>
+<div class="admin-dashboard-container">
+  <div class="dashboard-header">
+    <h1>Dashboard Tổng quan</h1>
+    <p class="subtitle">Quản trị và theo dõi chỉ số sức khỏe của ứng dụng SpeakUp</p>
+  </div>
+
+  <div *ngIf="isLoading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Đang tải dữ liệu thống kê...</p>
+  </div>
+
+  <div *ngIf="!isLoading && stats" class="dashboard-content animate-fade">
+    <!-- KPIs Grid Row -->
+    <div class="kpi-grid">
+      <div class="kpi-card glass-card">
+        <div class="kpi-icon blue">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <div class="kpi-info">
+          <span class="label">Tổng học viên</span>
+          <h2 class="value">{{ stats.kpis.totalLearners | number }}</h2>
+        </div>
+      </div>
+
+      <div class="kpi-card glass-card">
+        <div class="kpi-icon green">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"/><path d="M12 6v6l4 2"/></svg>
+        </div>
+        <div class="kpi-info">
+          <span class="label">Học viên hoạt động (24h)</span>
+          <h2 class="value">{{ stats.kpis.activeLearners24h | number }}</h2>
+        </div>
+      </div>
+
+      <div class="kpi-card glass-card">
+        <div class="kpi-icon orange">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M4 19.5A2.5 2.5 0 0 0 6.5 22H20M4 19.5V2.5A2.5 2.5 0 0 1 6.5 0H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5z"/></svg>
+        </div>
+        <div class="kpi-info">
+          <span class="label">Tổng khóa học</span>
+          <h2 class="value">{{ stats.kpis.totalCourses | number }}</h2>
+        </div>
+      </div>
+
+      <div class="kpi-card glass-card">
+        <div class="kpi-icon purple">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        </div>
+        <div class="kpi-info">
+          <span class="label">Tổng thời gian học</span>
+          <h2 class="value">{{ stats.kpis.totalStudyTimeMinutes | number }} <span class="unit">phút</span></h2>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts & Lists Grid -->
+    <div class="dashboard-grid">
+      <!-- Cột chính bên trái -->
+      <div class="main-column">
+        <!-- Biểu đồ xu hướng học tập hàng tuần -->
+        <div class="chart-card glass-card">
+          <div class="card-header">
+            <h3>Hoạt động Luyện nghe tuần qua</h3>
+            <span class="header-subtitle">Tính theo phần trăm hoạt động trung bình hệ thống</span>
+          </div>
+
+          <div class="bar-chart">
+            <div class="bar-col" *ngFor="let h of stats.learningActivity; let i = index">
+              <div class="bar-track">
+                <div class="bar-fill" [style.height.%]="h"></div>
+              </div>
+              <span class="day-label">{{ weekDays[i] }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bảng xếp hạng khóa học phổ biến nhất -->
+        <div class="table-card glass-card mt-24">
+          <div class="card-header">
+            <h3>Khóa học được học nhiều nhất</h3>
+            <span class="header-subtitle">Sắp xếp theo số lượt tương tác bài học của người dùng</span>
+          </div>
+
+          <div class="table-wrapper">
+            <table class="dashboard-table">
+              <thead>
+                <tr>
+                  <th>Tên khóa học</th>
+                  <th>Trạng thái</th>
+                  <th>Bộ bài học</th>
+                  <th class="text-right">Tổng tiến độ ghi nhận</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let course of stats.popularCourses">
+                  <td>
+                    <div class="course-cell">
+                      <div class="course-cover" [style.backgroundImage]="'url(' + (course.coverImageUrl || 'assets/images/default-course.jpg') + ')'"></div>
+                      <span class="course-name">{{ course.title }}</span>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="status-badge" [class.published]="course.isPublished">
+                      {{ course.isPublished ? 'Đã xuất bản' : 'Bản nháp' }}
+                    </span>
+                  </td>
+                  <td>{{ course.lessonSetsCount }} bộ bài học</td>
+                  <td class="text-right bold-value">{{ course.learnersCount }}</td>
+                </tr>
+                <tr *ngIf="stats.popularCourses.length === 0">
+                  <td colspan="4" class="empty-table-text">Hệ thống chưa ghi nhận lượt học nào.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cột phụ bên phải -->
+      <div class="aside-column">
+        <!-- Shortcuts / Quick Actions -->
+        <div class="actions-card glass-card">
+          <div class="card-header">
+            <h3>Thao tác Nhanh</h3>
+          </div>
+          <div class="actions-grid">
+            <a routerLink="/admin/courses" class="action-item">
+              <span class="action-icon green">📁</span>
+              <span class="action-text">Quản lý Khóa học</span>
+            </a>
+            <a routerLink="/admin/courses" class="action-item">
+              <span class="action-icon blue">⚡</span>
+              <span class="action-text">Xem Báo cáo</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Học viên đăng ký gần đây -->
+        <div class="signups-card glass-card mt-24">
+          <div class="card-header">
+            <h3>Đăng ký Mới nhất</h3>
+          </div>
+
+          <div class="signup-list">
+            <div class="signup-item" *ngFor="let user of stats.recentSignups">
+              <div class="avatar-wrapper">
+                <div class="avatar-circle" *ngIf="!user.avatarUrl">
+                  {{ user.fullName ? user.fullName.charAt(0).toUpperCase() : 'S' }}
+                </div>
+                <img [src]="user.avatarUrl" class="avatar-image" *ngIf="user.avatarUrl" alt="User Avatar" />
+              </div>
+              <div class="user-info">
+                <div class="user-name">{{ user.fullName || 'Student member' }}</div>
+                <div class="user-email">{{ user.email }}</div>
+              </div>
+              <div class="signup-time">
+                {{ getRelativeTime(user.createdAt) }}
+              </div>
+            </div>
+            <div *ngIf="stats.recentSignups.length === 0" class="empty-list-text">
+              Chưa có học viên nào tham gia gần đây.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

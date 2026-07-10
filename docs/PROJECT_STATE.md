@@ -23,6 +23,8 @@
   - Quản lý Bộ bài học (Lesson Set) và Bài học MP3 (Lesson). Database Cascade Delete.
   - Tái cấu trúc Quản lý bài học: Loại bỏ Modal cũ, chuyển sang hệ thống **Trang quản lý chuyên biệt dạng Child Routes** (`/sets/:setId/main`, `/vocab`, `/mini-stories`, `/pov`).
   - Tích hợp Quill Rich Text Editor cho bài Main, VTT Parser cho Mini Story/POV, và Form nhập từ vựng dạng lưới thẻ.
+  - **Admin Dashboard:** Viết API tổng hợp số liệu Prisma từ PostgreSQL (tổng học viên, trực tuyến 24h, tổng khóa học, thời gian học tích lũy) và thiết kế giao diện Tổng quan Admin phong cách Glassmorphism trực quan, có biểu đồ và danh sách đăng ký mới.
+
 
 - **Phase 2.2: Learner Dashboard & Audio Player**
   - Xây dựng màn hình danh sách Khóa học cho Học viên (`/dashboard`).

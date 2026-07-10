@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { CoursesModule } from './modules/courses/courses.module';
 import { LessonSetsModule } from './modules/lesson-sets/lesson-sets.module';
 import { LessonsModule } from './modules/lessons/lessons.module';
+import { AnalyticsModule } from './modules/analytics/analytics.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { LessonsModule } from './modules/lessons/lessons.module';
     CoursesModule,
     LessonSetsModule,
     LessonsModule,
+    AnalyticsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
