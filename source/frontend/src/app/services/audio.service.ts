@@ -30,6 +30,8 @@ export class AudioService {
 
   constructor() {
     this.setupListeners();
+    // Đảm bảo phần tử Audio thực tế được đặt âm lượng mặc định là 100%
+    this.audio.volume = 1.0;
   }
 
   private setupListeners() {
@@ -46,6 +48,7 @@ export class AudioService {
     this.audio.addEventListener('ended', () => this.updateState({ isPlaying: false }));
     
     this.audio.addEventListener('volumechange', () => {
+      console.log('[AudioService] volumechange event fired. Volume:', this.audio.volume);
       this.updateState({ volume: this.audio.volume });
     });
   }
@@ -55,12 +58,19 @@ export class AudioService {
   }
 
   loadLesson(lesson: Lesson) {
-    
     const currentState = this.stateSubject.value;
     if (currentState.lesson?.id !== lesson.id) {
-      this.audio.src = lesson.audioUrl;
-      this.audio.load();
-      this.updateState({ lesson, currentTime: 0, duration: 0 });
+      this.audio.pause(); // Dừng phát nhạc của bài cũ
+      this.audio.src = lesson.audioUrl || '';
+      if (lesson.audioUrl) {
+        this.audio.load();
+      }
+      this.updateState({ 
+        lesson, 
+        isPlaying: false, 
+        currentTime: 0, 
+        duration: 0 
+      });
     }
   }
 

@@ -33,13 +33,23 @@ export class LoginComponent implements AfterViewInit {
       return;
     }
 
+    const container = document.getElementById('google-btn');
+    if (!container) {
+      // Nếu phần tử DOM chưa được render xong do route transition, thử lại sau 50ms
+      setTimeout(() => this.initGoogleAuth(), 50);
+      return;
+    }
+
+    // Xóa sạch nội dung cũ trong container trước khi vẽ nút mới để tránh lỗi render đè của Google SDK
+    container.innerHTML = '';
+
     google.accounts.id.initialize({
       client_id: environment.googleClientId,
       callback: this.handleGoogleCredentialResponse.bind(this)
     });
 
     google.accounts.id.renderButton(
-      document.getElementById('google-btn'),
+      container,
       { theme: 'outline', size: 'large', text: 'continue_with', width: '380' }
     );
   }
