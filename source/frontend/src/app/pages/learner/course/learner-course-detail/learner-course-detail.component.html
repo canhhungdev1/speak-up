@@ -1,9 +1,23 @@
-<div class="page-header">
+<div class="page-header" *ngIf="course">
   <div class="header-left">
     <a routerLink="/dashboard/courses" class="btn-back">
       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
       {{ 'COURSE_DETAIL.BACK_TO_EXPLORE' | translate }}
     </a>
+  </div>
+
+  <!-- Nút chuyển đổi giao diện xịn sò -->
+  <div class="header-right">
+    <div class="view-mode-toggle-pill">
+      <button class="toggle-btn" [class.active]="viewMode === 'game'" (click)="setViewMode('game')">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        <span>Game View</span>
+      </button>
+      <button class="toggle-btn" [class.active]="viewMode === 'basic'" (click)="setViewMode('basic')">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        <span>List View</span>
+      </button>
+    </div>
   </div>
 </div>
 
@@ -18,16 +32,18 @@
   </div>
 </div>
 
-<div class="content-section" *ngIf="course">
+<!-- CHẾ ĐỘ XEM TRUYỀN THỐNG (BASIC VIEW) -->
+<div class="content-section" *ngIf="course && viewMode === 'basic'">
   <h2>{{ 'COURSE_DETAIL.COURSE_CONTENT' | translate }}</h2>
   
   <div class="lesson-set-list">
     <div class="lesson-set-card" *ngFor="let set of lessonSets; let i = index">
       <div class="set-info">
         <h3>{{ i + 1 }}. {{ set.title }}</h3>
+        <p *ngIf="set.description" class="set-desc">{{ set.description }}</p>
       </div>
       <div class="set-action">
-        <button class="btn-primary" (click)="goToSet(set.id)">
+        <button class="btn-primary" (click)="goToSet(set.id, false)">
           {{ 'COURSE_DETAIL.START_LEARNING' | translate }}
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
         </button>
@@ -35,3 +51,154 @@
     </div>
   </div>
 </div>
+
+<!-- CHẾ ĐỘ BẢN ĐỒ GAME (GAME VIEW) -->
+<div class="content-section game-mode-section" *ngIf="course && viewMode === 'game'">
+  <h2>{{ 'COURSE_DETAIL.COURSE_CONTENT' | translate }}</h2>
+  <p class="game-subtitle">Chinh phục từng chặng kẹo ngọt để mở khóa bài học tiếp theo</p>
+  
+  <!-- Container bản đồ có chiều cao co giãn, nền đồi cỏ kẹo ngọt -->
+  <div class="roadmap-scroll-container">
+    
+    <!-- Toast Alert ngọt ngào -->
+    <div class="candy-toast" *ngIf="toastMessage">
+      <span>{{ toastMessage }}</span>
+    </div>
+
+    <div class="roadmap-canvas" [style.height.px]="lessonSets.length * 140 + 120">
+      
+      <!-- Các vật trang trí kẹo ngọt dọc đường đi kiểu Candy Crush -->
+      <div class="deco-candy c1" style="left: 8%; top: 4%;">🍭</div>
+      <div class="deco-candy c2" style="right: 8%; top: 10%;">🧁</div>
+      <div class="deco-candy c3" style="left: 12%; top: 18%;">🍬</div>
+      <div class="deco-candy c4" style="right: 12%; top: 25%;">🍩</div>
+      <div class="deco-candy c5" style="left: 8%; top: 32%;">🍪</div>
+      <div class="deco-candy c6" style="right: 10%; top: 40%;">🍒</div>
+      <div class="deco-candy c7" style="left: 10%; top: 48%;">🍿</div>
+      <div class="deco-candy c8" style="right: 12%; top: 55%;">🧸</div>
+      <div class="deco-candy c9" style="left: 8%; top: 62%;">🍭</div>
+      <div class="deco-candy c10" style="right: 8%; top: 70%;">🧁</div>
+      <div class="deco-candy c11" style="left: 12%; top: 78%;">🍬</div>
+      <div class="deco-candy c12" style="right: 10%; top: 85%;">🍩</div>
+      <div class="deco-candy c13" style="left: 10%; top: 92%;">🍪</div>
+
+      <!-- Đường đi SVG Candy Cane uốn lượn -->
+      <svg viewBox="0 0 100 100" preserveAspectRatio="none" class="road-svg-canvas">
+        <!-- Lớp đế đường viền trắng dày -->
+        <path [attr.d]="getRoadPath()" class="road-candy-border" fill="none" />
+        <!-- Lớp lòng đường màu hồng đậm ngọt ngào -->
+        <path [attr.d]="getRoadPath()" class="road-candy-track" fill="none" />
+        <!-- Vạch kẻ chéo màu trắng tạo hiệu ứng sọc kẹo gậy (Candy Cane) -->
+        <path [attr.d]="getRoadPath()" class="road-candy-stripe" fill="none" />
+      </svg>
+
+      <!-- Nút Bắt Đầu (Start Point) -->
+      <div class="planet-node candy-node start-node"
+           *ngIf="lessonSets.length > 0"
+           [style.left.%]="getNodeCoordinates(-1, lessonSets.length).x"
+           [style.top.%]="getNodeCoordinates(-1, lessonSets.length).y">
+        <div class="candy-sphere start-sphere">
+          <span class="start-icon">🏁</span>
+        </div>
+        <!-- Bảng tên Bắt đầu luôn đặt chính giữa (không lệch) -->
+        <div class="planet-details candy-details start-details">
+          <span class="planet-title candy-title start-title">{{ 'COURSE.START_ROADMAP' | translate }}</span>
+        </div>
+      </div>
+
+      <!-- Các viên kẹo bài học đè lên đường đi -->
+      <div class="planet-node candy-node" 
+           *ngFor="let set of lessonSets; let i = index"
+           [style.left.%]="getNodeCoordinates(i, lessonSets.length).x"
+           [style.top.%]="getNodeCoordinates(i, lessonSets.length).y"
+           [class.completed]="i < currentActiveIndex"
+           [class.active]="i === currentActiveIndex"
+           [class.locked]="i > currentActiveIndex"
+           (click)="goToSet(set.id, i > currentActiveIndex)">
+        
+        <!-- Avatar học viên bong bóng xanh viền đỏ lơ lửng cạnh nút hiện tại -->
+        <div class="learner-astronaut candy-avatar" *ngIf="i === currentActiveIndex">
+          <div class="avatar-frame">
+            <img *ngIf="currentUser?.avatarUrl && !avatarLoadError" [src]="currentUser.avatarUrl" class="avatar-img" alt="Learner" (error)="onAvatarError()">
+            <div *ngIf="!currentUser?.avatarUrl || avatarLoadError" class="avatar-initial">{{ getUserInitial() }}</div>
+          </div>
+          <div class="floating-pointer-red"></div>
+        </div>
+
+        <!-- Khối kẹo dẻo Glossy Candy -->
+        <div class="planet-sphere candy-sphere">
+          <!-- Hiệu ứng viền kẹo phát sáng nhấp nháy cho bài active -->
+          <div class="glow-pulse candy-pulse" *ngIf="i === currentActiveIndex"></div>
+          
+          <!-- Lớp bóng kính gương phía trên của viên kẹo -->
+          <div class="candy-gloss"></div>
+          
+          <span class="planet-number candy-number">{{ i + 1 }}</span>
+          
+          <!-- Ổ khóa nếu kẹo bị khóa -->
+          <div class="node-lock candy-lock" *ngIf="i > currentActiveIndex">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+        </div>
+
+        <!-- Bảng tên bài học dạng bong bóng kẹo ngọt đặt lệch hai bên tránh đè lấp nhau dọc đường đi -->
+        <div class="planet-details candy-details" [class.left-side]="i % 2 === 0" [class.right-side]="i % 2 !== 0">
+          <span class="planet-title candy-title">{{ set.title }}</span>
+          <!-- Đánh giá 3 sao vàng óng của màn chơi đã vượt qua -->
+          <div class="planet-stars candy-stars" *ngIf="i < currentActiveIndex">
+            <svg class="star active" xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg class="star active" xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg class="star active" xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Nút Đích Đến (Finish Line / Trophy) -->
+      <div class="planet-node finish-node"
+           *ngIf="lessonSets.length > 0"
+           [style.left.%]="getNodeCoordinates(lessonSets.length, lessonSets.length).x"
+           [style.top.%]="getNodeCoordinates(lessonSets.length, lessonSets.length).y"
+           [class.completed]="isCourseCompleted()"
+           (click)="onFinishClick()">
+        
+        <!-- Quả cầu chứa cúp vàng lơ lửng -->
+        <div class="finish-sphere-wrapper">
+          <div class="glow-pulse finish-pulse" *ngIf="isCourseCompleted()"></div>
+          <div class="finish-sphere">
+            <span class="finish-icon">🏆</span>
+          </div>
+        </div>
+
+        <!-- Bảng tên đích đến băng rôn đỏ dưới cúp -->
+        <div class="finish-banner-container">
+          <span class="finish-banner-text">
+            {{ 'COURSE.FINISH_ROADMAP' | translate }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- HIỆU ỨNG PHÁO HOA CONFETTI -->
+<div class="confetti-container" *ngIf="confettiParticles.length > 0">
+  <div class="confetti-particle" 
+       *ngFor="let p of confettiParticles"
+       [style.left.%]="p.left"
+       [style.animation-delay.s]="p.delay"
+       [style.width.px]="p.size"
+       [style.height.px]="p.size"
+       [style.background-color]="p.color">
+  </div>
+</div>
+
+<!-- CELEBRATION MODAL (CHÚC MỪNG CHIẾN THẮNG) -->
+<div class="celebration-overlay" *ngIf="showCelebrationModal" (click)="closeCelebrationModal()">
+  <div class="celebration-modal" (click)="$event.stopPropagation()">
+    <div class="trophy-container">🏆</div>
+    <h3>Chúc Mừng Chiến Thắng!</h3>
+    <p>Bạn đã xuất sắc chinh phục toàn bộ chặng đường kẹo ngọt và hoàn thành khóa học này. Hãy tiếp tục giữ vững phong độ nhé! 🎉</p>
+    <button class="btn-celebrate-finish" (click)="finishCourse()">Hoàn thành</button>
+  </div>
+</div>
+

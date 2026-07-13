@@ -71,5 +71,9 @@
     "NO_VOCABULARY": "Bài học này chưa có danh sách từ vựng.",
     "CLICK_TO_PLAY": "Bấm để phát từ đây",
     "NO_SUBTITLE": "Bài học này chưa có phụ đề."
+  },
+  "COURSE": {
+    "FINISH_ROADMAP": "Đích Đến",
+    "START_ROADMAP": "Bắt Đầu"
   }
 }

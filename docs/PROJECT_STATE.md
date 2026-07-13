@@ -42,6 +42,7 @@
 
 - **Phase 4: Các tính năng nâng cao & Gamification**
   - Tool Admin nhập liệu Transcript tự động bóc tách Timestamp cho VTT, nhập liệu Vocab động.
+  - **Nâng cấp lộ trình Game (Game View):** Tích hợp tính năng tự động cuộn đến bài active (Auto-scroll to Active Node) để tối ưu trải nghiệm vuốt; nâng cấp nút Đích đến tương tác (Finish Line) kết hợp hiệu ứng pháo hoa Confetti rơi tự do sống động và Modal chúc mừng chiến thắng (Celebration Modal) vinh danh học viên khi hoàn thành.
 
 ### 🚧 Đang thực hiện (In Progress)
 - [Trống]

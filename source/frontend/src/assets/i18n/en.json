@@ -71,5 +71,9 @@
     "NO_VOCABULARY": "This lesson has no vocabulary list yet.",
     "CLICK_TO_PLAY": "Click to play from here",
     "NO_SUBTITLE": "This lesson has no subtitle yet."
+  },
+  "COURSE": {
+    "FINISH_ROADMAP": "Finish Line",
+    "START_ROADMAP": "Start"
   }
 }

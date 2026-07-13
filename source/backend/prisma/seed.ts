@@ -38,99 +38,118 @@ async function main() {
     }
   });
 
-  // 2. Create Lesson Sets
-  const baseballPig = await prisma.lessonSet.create({
+  // Danh sách 19 Lesson Sets của Flow English
+  const flowEnglishSets = [
+    { title: 'Baseball Pig', desc: 'Luyện nghe câu chuyện về chú lợn chơi bóng chày.' },
+    { title: 'Evil English Teacher', desc: 'Thử thách với câu chuyện thầy giáo tiếng Anh đáng sợ.' },
+    { title: 'Fat Man', desc: 'Câu chuyện hài hước về người đàn ông mập mạp muốn giảm cân.' },
+    { title: 'Female Seeks Male', desc: 'Bài học đàm thoại về chủ đề kết bạn bốn phương.' },
+    { title: 'Goats Being Hired', desc: 'Câu chuyện kỳ lạ về những chú dê được thuê dọn cỏ.' },
+    { title: 'Green Peanut Butter', desc: 'Luyện nghe chủ đề ẩm thực độc lạ.' },
+    { title: 'Mama\'s Boys', desc: 'Câu chuyện đàm thoại về những chàng trai bám mẹ.' },
+    { title: 'Man Injured', desc: 'Bài nghe phản xạ về tai nạn hy hữu.' },
+    { title: 'Sick in India', desc: 'Chuyến du lịch đầy thử thách của một vị khách bị bệnh.' },
+    { title: 'Starving Bug', desc: 'Luyện phản xạ về chú bọ hung đói bụng.' },
+    { title: 'Super Cow', desc: 'Câu chuyện về chú bò siêu nhân cứu thế giới.' },
+    { title: 'Eat Your Veggies', desc: 'Bài học khuyến khích ăn rau xanh tốt cho sức khỏe.' },
+    { title: 'Green Tea', desc: 'Tập trung chủ đề đồ uống có lợi và trà xanh.' },
+    { title: 'Lemon Dog Part 1', desc: 'Chú chó chanh phần 1 đầy ngộ nghĩnh.' },
+    { title: 'Lemon Dog Pt 2', desc: 'Chú chó chanh phần 2 tiếp nối câu chuyện.' },
+    { title: 'Mosquito', desc: 'Cuộc chiến hài hước với những chú muỗi phiền toái.' },
+    { title: 'Movie Star', desc: 'Ước mơ trở thành siêu sao điện ảnh.' },
+    { title: 'Roach Vacation', desc: 'Kỳ nghỉ độc lạ của gia đình nhà gián.' },
+    { title: 'Sweet Dreams', desc: 'Luyện nghe phản xạ về giấc mơ ngọt ngào.' }
+  ];
+
+  console.log('Generating 19 Lesson Sets for Flow English...');
+  for (let i = 0; i < flowEnglishSets.length; i++) {
+    const setInfo = flowEnglishSets[i];
+    const lessonSet = await prisma.lessonSet.create({
+      data: {
+        courseId: flowEnglish.id,
+        title: setInfo.title,
+        description: setInfo.desc,
+        requiredDays: 7,
+        orderIndex: i,
+      }
+    });
+
+    // Tạo các bài học mẫu cho từng Set
+    const mainLesson = await prisma.lesson.create({
+      data: {
+        lessonSetId: lessonSet.id,
+        title: `${setInfo.title} - Main Audio`,
+        type: LessonType.MAIN,
+        audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+        orderIndex: 1,
+        durationSeconds: 300
+      }
+    });
+
+    const vocabLesson = await prisma.lesson.create({
+      data: {
+        lessonSetId: lessonSet.id,
+        title: `${setInfo.title} - Vocabulary`,
+        type: LessonType.VOCAB,
+        audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
+        orderIndex: 2,
+        durationSeconds: 240
+      }
+    });
+
+    const miniStoryLesson = await prisma.lesson.create({
+      data: {
+        lessonSetId: lessonSet.id,
+        title: `${setInfo.title} - Mini Story`,
+        type: LessonType.MINI_STORY,
+        audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
+        orderIndex: 3,
+        durationSeconds: 420
+      }
+    });
+
+    // Gieo phụ đề mẫu
+    await prisma.transcript.createMany({
+      data: [
+        { lessonId: mainLesson.id, startTime: 0, endTime: 5, textContent: `This is the main article introduction for ${setInfo.title}.`, orderIndex: 1 },
+        { lessonId: mainLesson.id, startTime: 5, endTime: 15, textContent: 'Listen carefully and repeat out loud.', orderIndex: 2 },
+        { lessonId: vocabLesson.id, startTime: 0, endTime: 10, textContent: 'Learn key vocabulary words and expressions.', orderIndex: 1 },
+        { lessonId: miniStoryLesson.id, startTime: 0, endTime: 5, textContent: `Hello, welcome to the mini story for ${setInfo.title}.`, orderIndex: 1 },
+        { lessonId: miniStoryLesson.id, startTime: 5, endTime: 15, textContent: 'Answer all questions rapidly with a loud voice.', orderIndex: 2 },
+      ]
+    });
+  }
+
+  // 3. Create a fallback set for Original English
+  const originalTeacher = await prisma.lessonSet.create({
     data: {
-      courseId: flowEnglish.id,
-      title: 'Baseball Pig',
-      description: 'Luyện nghe câu chuyện về chú lợn muốn chơi bóng chày.',
+      courseId: originalEnglish.id,
+      title: 'Intro to Original English',
+      description: 'Luyện tập bài học nhập môn của Original Course.',
       requiredDays: 7,
       orderIndex: 0,
     }
   });
 
-  const evilTeacher = await prisma.lessonSet.create({
+  const originalMain = await prisma.lesson.create({
     data: {
-      courseId: originalEnglish.id,
-      title: 'Evil English Teacher',
-      description: 'Câu chuyện hài hước về một thầy giáo tiếng Anh tồi tệ.',
-      requiredDays: 7,
-      orderIndex: 1,
-    }
-  });
-
-  // 3. Create Lessons for Baseball Pig
-  const baseballMain = await prisma.lesson.create({
-    data: {
-      lessonSetId: baseballPig.id,
-      title: 'Baseball Pig - Main Audio',
-      type: LessonType.MAIN,
-      audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
-      orderIndex: 1,
-      durationSeconds: 372
-    }
-  });
-
-  const baseballVocab = await prisma.lesson.create({
-    data: {
-      lessonSetId: baseballPig.id,
-      title: 'Baseball Pig - Vocabulary',
-      type: LessonType.VOCAB,
-      audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
-      orderIndex: 2,
-      durationSeconds: 420
-    }
-  });
-
-  const baseballMiniStory = await prisma.lesson.create({
-    data: {
-      lessonSetId: baseballPig.id,
-      title: 'Baseball Pig - Mini Story',
-      type: LessonType.MINI_STORY,
-      audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
-      orderIndex: 3,
-      durationSeconds: 510
-    }
-  });
-
-  // 4. Create Transcripts for Baseball Pig
-  await prisma.transcript.createMany({
-    data: [
-      { lessonId: baseballMain.id, startTime: 0, endTime: 5, textContent: 'There is a pig. He wants to be a baseball player.', orderIndex: 1 },
-      { lessonId: baseballMain.id, startTime: 5, endTime: 10, textContent: 'Every day, he practices baseball.', orderIndex: 2 },
-      { lessonId: baseballMain.id, startTime: 10, endTime: 15, textContent: 'He practices hitting a baseball.', orderIndex: 3 },
-      { lessonId: baseballMain.id, startTime: 15, endTime: 25, textContent: 'He wants to be a big hitter.', orderIndex: 4 },
-      
-      { lessonId: baseballVocab.id, startTime: 0, endTime: 5, textContent: 'Pig - Con lợn, heo', orderIndex: 1 },
-      { lessonId: baseballVocab.id, startTime: 5, endTime: 10, textContent: 'Baseball - Bóng chày', orderIndex: 2 },
-      { lessonId: baseballVocab.id, startTime: 10, endTime: 15, textContent: 'Practice - Luyện tập', orderIndex: 3 },
-
-      { lessonId: baseballMiniStory.id, startTime: 0, endTime: 5, textContent: 'Is there a dog?', orderIndex: 1 },
-      { lessonId: baseballMiniStory.id, startTime: 5, endTime: 10, textContent: 'No, there isn\'t a dog. There is a pig.', orderIndex: 2 },
-      { lessonId: baseballMiniStory.id, startTime: 10, endTime: 15, textContent: 'What does the pig want to be?', orderIndex: 3 },
-      { lessonId: baseballMiniStory.id, startTime: 15, endTime: 25, textContent: 'He wants to be a baseball player.', orderIndex: 4 },
-    ]
-  });
-
-  // 5. Create Lessons for Evil English Teacher
-  const evilMain = await prisma.lesson.create({
-    data: {
-      lessonSetId: evilTeacher.id,
-      title: 'Evil English Teacher - Main Audio',
+      lessonSetId: originalTeacher.id,
+      title: 'Original Intro - Main Audio',
       type: LessonType.MAIN,
       audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3',
       orderIndex: 1,
-      durationSeconds: 300
+      durationSeconds: 280
     }
   });
 
-  await prisma.transcript.createMany({
-    data: [
-      { lessonId: evilMain.id, startTime: 0, endTime: 5, textContent: 'There is an evil English teacher.', orderIndex: 1 },
-      { lessonId: evilMain.id, startTime: 5, endTime: 10, textContent: 'He is a very bad teacher.', orderIndex: 2 },
-      { lessonId: evilMain.id, startTime: 10, endTime: 15, textContent: 'He comes into his class.', orderIndex: 3 },
-      { lessonId: evilMain.id, startTime: 15, endTime: 25, textContent: 'The students are sitting at their desks, waiting for him.', orderIndex: 4 },
-    ]
+  await prisma.transcript.create({
+    data: {
+      lessonId: originalMain.id,
+      startTime: 0,
+      endTime: 10,
+      textContent: 'Welcome to Original Effortless English. Let\'s begin with the rules.',
+      orderIndex: 1
+    }
   });
 
   console.log('Seeding completed successfully!');

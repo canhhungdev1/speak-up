@@ -19,6 +19,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
   userName = '';
   userInitial = '';
   userAvatar = '';
+  avatarLoadError = false;
   private userSub?: Subscription;
 
   constructor(
@@ -28,6 +29,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.userSub = this.authService.currentUser$.subscribe(user => {
+      this.avatarLoadError = false;
       if (user) {
         this.isAdmin = user.role === 'ADMIN';
         this.userName = user.name || 'Student';
@@ -58,5 +60,9 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
     // Đẩy về trang chủ
     this.router.navigate(['/']);
+  }
+
+  onAvatarError() {
+    this.avatarLoadError = true;
   }
 }

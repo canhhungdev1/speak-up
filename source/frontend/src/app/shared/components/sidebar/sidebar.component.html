@@ -6,10 +6,10 @@
   <!-- Thẻ thông tin người dùng (User Profile Card) -->
   <div class="user-profile-card" *ngIf="userName" routerLink="/profile">
     <div class="avatar-wrapper">
-      <div class="avatar-circle" *ngIf="!userAvatar">
+      <div class="avatar-circle" *ngIf="!userAvatar || avatarLoadError">
         {{ userInitial }}
       </div>
-      <img [src]="userAvatar" alt="User Avatar" class="avatar-image" *ngIf="userAvatar" />
+      <img [src]="userAvatar" alt="User Avatar" class="avatar-image" *ngIf="userAvatar && !avatarLoadError" (error)="onAvatarError()" />
       <span class="status-indicator online"></span>
     </div>
     <div class="profile-info">
