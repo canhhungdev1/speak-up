@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
     .hero { padding: 160px 0 90px 0; }
     .hero-container {
       display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
+      grid-template-columns: 1.2fr 0.8fr;
       gap: 40px;
       align-items: center;
     }
@@ -29,18 +29,24 @@ import { CommonModule } from '@angular/common';
     }
     
     .hero-content h1 {
-      font-size: 68px;
+      font-size: 60px;
       font-weight: 800;
-      line-height: 1.12;
+      line-height: 1.15;
       margin-bottom: 24px;
       color: var(--text-primary);
       letter-spacing: -0.035em;
     }
+
+    .hero-title-line3 {
+      white-space: nowrap;
+      display: inline-block;
+    }
+
     .hero-content p {
       font-size: 16px;
       color: var(--text-secondary);
       margin-bottom: 36px;
-      max-width: 460px;
+      max-width: 480px;
       line-height: 1.6;
       font-weight: 500;
     }
@@ -191,7 +197,8 @@ import { CommonModule } from '@angular/common';
     }
 
     @media (max-width: 1024px) {
-      .hero-content h1 { font-size: 52px; }
+      .hero-content h1 { font-size: 48px; }
+      .hero-title-line3 { white-space: normal; }
       .hero-container { grid-template-columns: 1fr; text-align: center; }
       .hero-content p { margin-left: auto; margin-right: auto; }
       .hero-actions { justify-content: center; }
@@ -203,7 +210,7 @@ import { CommonModule } from '@angular/common';
       <div class="container hero-container">
         <div class="hero-content">
           <div class="badge">Master English Naturally 🚀</div>
-          <h1>Stop Studying<br>Grammar.<br>Start <span class="text-gradient">Speaking</span> English.</h1>
+          <h1>Stop Studying<br>Grammar.<br><span class="hero-title-line3">Start <span class="text-gradient">Speaking</span> English.</span></h1>
           <p>Join thousands of students who have achieved fluency through the Effortless English method. Learn with your ears, not your eyes.</p>
           <div class="hero-actions">
             <button class="btn btn-primary">Go to Dashboard 🚀</button>
