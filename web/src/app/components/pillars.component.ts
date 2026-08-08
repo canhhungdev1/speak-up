@@ -67,13 +67,13 @@ import { CommonModule } from '@angular/common';
         <p class="section-subtitle">Follow our proven roadmap to achieve confident spoken English.</p>
         
         <div class="feature-grid">
-          <!-- Card 1 -->
+          <!-- Card 1: Headphones Icon (Fixed SVG path) -->
           <div class="feature-card">
             <div class="icon-box c1">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M3 14u-1 0 0 1 1-1h2a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-6z"></path>
-                <path d="M18 14a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-6z"></path>
-                <path d="M3 14V11a9 9 0 0 1 18 0v3"></path>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2z"></path>
+                <path d="M16 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-3a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2z"></path>
+                <path d="M2 14v-3a9 9 0 0 1 18 0v3"></path>
               </svg>
             </div>
             <h3>Main Audio Article</h3>
@@ -83,7 +83,7 @@ import { CommonModule } from '@angular/common';
           <!-- Card 2 -->
           <div class="feature-card">
             <div class="icon-box c2">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
                 <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
               </svg>
@@ -95,7 +95,7 @@ import { CommonModule } from '@angular/common';
           <!-- Card 3 (Active) -->
           <div class="feature-card card-active">
             <div class="icon-box c3">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
               </svg>
             </div>
@@ -106,7 +106,7 @@ import { CommonModule } from '@angular/common';
           <!-- Card 4 -->
           <div class="feature-card">
             <div class="icon-box c4">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path>
                 <path d="M21 3v5h-5"></path>
                 <path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path>
