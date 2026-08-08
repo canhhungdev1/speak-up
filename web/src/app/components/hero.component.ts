@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-hero',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   styles: [`
     .hero { padding: 160px 0 90px 0; }
     .hero-container {
@@ -213,7 +214,7 @@ import { CommonModule } from '@angular/common';
           <h1>Stop Studying<br>Grammar.<br><span class="hero-title-line3">Start <span class="text-gradient">Speaking</span> English.</span></h1>
           <p>Join thousands of students who have achieved fluency through the Effortless English method. Learn with your ears, not your eyes.</p>
           <div class="hero-actions">
-            <button class="btn btn-primary">Go to Dashboard 🚀</button>
+            <button class="btn btn-primary" routerLink="/login">Go to Dashboard 🚀</button>
             <button class="btn-watch">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M8 5v14l11-7z"/>

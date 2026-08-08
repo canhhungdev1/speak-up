@@ -1,15 +1,16 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   styles: [],
   template: `
     <nav class="navbar" [class.scrolled]="isScrolled">
       <div class="container navbar-container">
-        <a href="/" class="logo">
+        <a routerLink="/" class="logo">
           Speak<span class="logo-up">Up</span>
         </a>
         
@@ -34,7 +35,7 @@ import { CommonModule } from '@angular/common';
             </svg>
           </button>
           
-          <button class="btn-dashboard">Dashboard 🚀</button>
+          <button class="btn-dashboard" routerLink="/login">Dashboard 🚀</button>
         </div>
       </div>
     </nav>

@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-cta',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   styles: [`
     section { padding: 80px 0 120px 0; }
     .cta-banner {
@@ -46,7 +47,7 @@ import { CommonModule } from '@angular/common';
           <div class="badge-dark">Get Started Today</div>
           <h2>Ready to Speak English<br>Effortlessly?</h2>
           <p>Join thousands of students who have achieved fluency through the Effortless English method. Learn with your ears, not your eyes.</p>
-          <button class="btn btn-light">Go to Dashboard 🚀</button>
+          <button class="btn btn-light" routerLink="/login">Go to Dashboard 🚀</button>
         </div>
       </div>
     </section>
