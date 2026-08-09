@@ -58,6 +58,26 @@ import { RouterModule } from '@angular/router';
       align-items: center;
     }
 
+    .btn-start-hero {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 16px 32px;
+      border-radius: 99px;
+      font-weight: 700;
+      font-size: 16px;
+      color: white;
+      background: var(--primary-color);
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4);
+      transition: all 0.2s ease;
+    }
+    .btn-start-hero:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(99, 102, 241, 0.6);
+    }
+
     .btn-watch {
       display: inline-flex;
       align-items: center;
@@ -210,16 +230,16 @@ import { RouterModule } from '@angular/router';
     <section class="hero">
       <div class="container hero-container">
         <div class="hero-content">
-          <div class="badge">Master English Naturally 🚀</div>
-          <h1>Stop Studying<br>Grammar.<br><span class="hero-title-line3">Start <span class="text-gradient">Speaking</span> English.</span></h1>
-          <p>Join thousands of students who have achieved fluency through the Effortless English method. Learn with your ears, not your eyes.</p>
+          <div class="badge">Nền tảng Luyện phát âm AI 🚀</div>
+          <h1>Làm chủ tiếng Anh.<br><span class="hero-title-line3">Tự tin <span class="text-gradient">Giao tiếp</span> tự nhiên.</span></h1>
+          <p>Luyện phát âm chuẩn xác và phản xạ nói tiếng Anh tự nhiên với phản hồi AI theo thời gian thực.</p>
           <div class="hero-actions">
-            <button class="btn btn-primary" routerLink="/login">Go to Dashboard 🚀</button>
-            <button class="btn-watch">
+            <button class="btn-start-hero" routerLink="/login">Start Free 🚀</button>
+            <button class="btn-watch" routerLink="/login">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M8 5v14l11-7z"/>
               </svg>
-              Watch Demo
+              Khám phá ngay
             </button>
           </div>
         </div>
@@ -242,8 +262,8 @@ import { RouterModule } from '@angular/router';
                 </svg>
               </div>
               <div>
-                <div class="track-title">Dragons (Mini-Story)</div>
-                <div class="track-author">A.J. Hoge</div>
+                <div class="track-title">Phát âm & Phản xạ AI</div>
+                <div class="track-author">SpeakUp Coach</div>
               </div>
             </div>
             
@@ -291,9 +311,8 @@ export class HeroComponent {
     const x = event.clientX - rect.left - rect.width / 2;
     const y = event.clientY - rect.top - rect.height / 2;
 
-    // Calculate rotation angles based on cursor position
-    const rotateX = -(y / (rect.height / 2)) * 18; // max +-18deg
-    const rotateY = (x / (rect.width / 2)) * 18;  // max +-18deg
+    const rotateX = -(y / (rect.height / 2)) * 18;
+    const rotateY = (x / (rect.width / 2)) * 18;
 
     this.cardTransform = `perspective(1200px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.05, 1.05, 1.05)`;
   }

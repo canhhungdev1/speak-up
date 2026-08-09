@@ -6,7 +6,39 @@ import { RouterModule } from '@angular/router';
   selector: 'app-navbar',
   standalone: true,
   imports: [CommonModule, RouterModule],
-  styles: [],
+  styles: [`
+    .btn-login {
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+      padding: 8px 18px;
+      border-radius: 99px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-login:hover {
+      border-color: var(--primary-color);
+      color: var(--primary-color);
+    }
+    .btn-start-free {
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 99px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+      transition: all 0.2s;
+    }
+    .btn-start-free:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+    }
+  `],
   template: `
     <nav class="navbar" [class.scrolled]="isScrolled">
       <div class="container navbar-container">
@@ -15,8 +47,8 @@ import { RouterModule } from '@angular/router';
         </a>
         
         <div class="nav-links">
-          <a href="#method">The Method</a>
-          <a href="#how-it-works">How It Works</a>
+          <a href="#method">Phương pháp</a>
+          <a href="#how-it-works">Cách hoạt động</a>
         </div>
         
         <div class="nav-actions">
@@ -35,7 +67,8 @@ import { RouterModule } from '@angular/router';
             </svg>
           </button>
           
-          <button class="btn-dashboard" routerLink="/login">Dashboard 🚀</button>
+          <button class="btn-login" routerLink="/login">Đăng nhập</button>
+          <button class="btn-start-free" routerLink="/login">Start Free 🚀</button>
         </div>
       </div>
     </nav>

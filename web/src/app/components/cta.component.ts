@@ -32,22 +32,23 @@ import { RouterModule } from '@angular/router';
     p { font-size: 15px; color: rgba(255,255,255,0.8); max-width: 500px; margin: 0 auto 36px; line-height: 1.6; font-weight: 500; }
     
     .btn-light {
-      background: white; color: #0f172a; padding: 16px 32px; font-weight: 700;
+      background: white; color: #0f172a; padding: 16px 32px; font-weight: 700; border-radius: 99px; cursor: pointer; border: none; font-size: 16px;
+      box-shadow: 0 10px 25px rgba(255,255,255,0.2); transition: all 0.2s;
     }
     .btn-light:hover {
       background: #f8fafc;
       transform: translateY(-2px);
-      box-shadow: 0 10px 25px rgba(255,255,255,0.2);
+      box-shadow: 0 14px 35px rgba(255,255,255,0.35);
     }
   `],
   template: `
     <section>
       <div class="container">
         <div class="cta-banner">
-          <div class="badge-dark">Get Started Today</div>
-          <h2>Ready to Speak English<br>Effortlessly?</h2>
-          <p>Join thousands of students who have achieved fluency through the Effortless English method. Learn with your ears, not your eyes.</p>
-          <button class="btn btn-light" routerLink="/login">Go to Dashboard 🚀</button>
+          <div class="badge-dark">Bắt đầu miễn phí ngay hôm nay</div>
+          <h2>Sẵn sàng phát âm tiếng Anh<br>chuẩn xác & tự tin?</h2>
+          <p>Tham gia cùng hàng nghìn học viên đang luyện tập phát âm mỗi ngày cùng trợ lý SpeakUp AI.</p>
+          <button class="btn-light" routerLink="/login">Start Free 🚀</button>
         </div>
       </div>
     </section>
