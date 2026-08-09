@@ -59,6 +59,7 @@
       },
       "dependsOn": ["api:serve"],
       "options": {
+        "port": 4200,
         "proxyConfig": "web/proxy.conf.json"
       }
     },
