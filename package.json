@@ -2,7 +2,13 @@
   "name": "@speak-up/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "start:api": "nx serve api",
+    "start:web": "nx serve web",
+    "start:all": "nx run-many -t serve -p api web",
+    "prisma:generate": "prisma generate",
+    "prisma:studio": "prisma studio"
+  },
   "private": true,
   "devDependencies": {
     "@angular-devkit/core": "~22.0.4",
