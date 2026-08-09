@@ -7,12 +7,13 @@ Chào mừng bạn đến với trung tâm tài liệu chính thức của dự 
 ### [01-architecture/](./01-architecture/) — Kiến trúc hệ thống
 - [`overview.md`](./01-architecture/overview.md): Tổng quan kiến trúc Monorepo (NestJS, Angular, Flutter).
 - [`system-diagram.md`](./01-architecture/system-diagram.md): Biểu đồ hệ thống & tương tác giữa các ứng dụng.
-- [`database-schema.md`](./01-architecture/database-schema.md): Thiết kế Cơ sở Dữ liệu & ERD.
+- [`database-schema.md`](./01-architecture/database-schema.md): Thiết kế Cơ sở Dữ liệu Prisma & ERD.
 
 ### [02-api/](./02-api/) — Thiết kế & Quy chuẩn API
 - [`api-guidelines.md`](./02-api/api-guidelines.md): Chuẩn thiết kế RESTful API, HTTP Status Codes & Error Formatting.
 
 ### [03-features/](./03-features/) — Luồng nghiệp vụ tính năng
+- [`google-authentication.md`](./03-features/google-authentication.md): Luồng Đăng nhập với Google OAuth2 (Google Sign-In).
 - [`speech-evaluation.md`](./03-features/speech-evaluation.md): Luồng xử lý âm thanh và đánh giá phát âm.
 
 ### [04-development/](./04-development/) — Hướng dẫn Lập trình & Setup
