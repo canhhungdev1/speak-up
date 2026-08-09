@@ -1,5 +1,7 @@
 import { Component, OnInit, AfterViewInit, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 
 declare const google: any;
@@ -7,11 +9,14 @@ declare const google: any;
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css',
+  styleUrl: './login.component.css'
 })
 export class LoginComponent implements OnInit, AfterViewInit {
+  email = '';
+  password = '';
+  showPassword = false;
   private readonly googleClientId = '334154088956-iv10ov32isau8o2c0mbt85qt3cf6dgkm.apps.googleusercontent.com';
 
   constructor(
@@ -35,11 +40,12 @@ export class LoginComponent implements OnInit, AfterViewInit {
       const btnContainer = document.getElementById('googleBtnContainer');
       if (btnContainer) {
         google.accounts.id.renderButton(btnContainer, {
-          theme: 'filled_blue',
+          theme: 'outline',
           size: 'large',
-          text: 'signin_with',
-          shape: 'pill',
-          width: 280,
+          text: 'continue_with',
+          shape: 'rectangular',
+          width: 320,
+          locale: 'vi'
         });
       }
     } else {
@@ -53,6 +59,14 @@ export class LoginComponent implements OnInit, AfterViewInit {
         await this.authService.loginWithGoogle(response.credential);
       });
     }
+  }
+
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+  }
+
+  onSubmit(): void {
+    alert(`Đăng nhập với email: ${this.email}`);
   }
 
   onLogout(): void {
