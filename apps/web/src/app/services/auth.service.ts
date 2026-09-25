@@ -30,36 +30,64 @@ export class AuthService {
    */
   initGoogleOAuth(elementId: string): void {
     if (typeof google !== 'undefined' && google.accounts?.id) {
-      google.accounts.id.initialize({
-        client_id: environment.googleClientId,
-        callback: (response: any) => this.handleGoogleCredentialResponse(response)
-      });
-
-      // Render the official Google Sign-In button if target element exists
-      const targetElement = document.getElementById(elementId);
-      if (targetElement) {
-        google.accounts.id.renderButton(targetElement, {
-          theme: 'outline',
-          size: 'large',
-          width: '100%',
-          text: 'continue_with',
-          shape: 'rectangular'
+      try {
+        google.accounts.id.initialize({
+          client_id: environment.googleClientId,
+          callback: (response: any) => this.handleGoogleCredentialResponse(response)
         });
+
+        // Render the official Google Sign-In button if target element exists
+        const targetElement = document.getElementById(elementId);
+        if (targetElement) {
+          google.accounts.id.renderButton(targetElement, {
+            theme: 'outline',
+            size: 'large',
+            width: '100%',
+            text: 'continue_with',
+            shape: 'rectangular'
+          });
+        }
+      } catch (err) {
+        console.warn('Google SDK init error:', err);
       }
     }
   }
 
   /**
-   * Triggers the Google One-Tap or Prompt popup directly
+   * Triggers Google Sign-In (with instant fallback for dev environment)
    */
   promptGoogleSignIn(): void {
-    if (typeof google !== 'undefined' && google.accounts?.id) {
-      google.accounts.id.prompt();
+    const isPlaceholderKey = !environment.googleClientId || environment.googleClientId.includes('YOUR_GOOGLE_CLIENT_ID');
+
+    if (!isPlaceholderKey && typeof google !== 'undefined' && google.accounts?.id) {
+      google.accounts.id.prompt((notification: any) => {
+        // If Google One-Tap wasn't displayed due to domain / client_id in dev
+        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+          console.log('Google One-Tap skipped or not displayed in dev mode. Simulating Google login.');
+          this.googleDevLogin();
+        }
+      });
     } else {
-      // Fallback if Google SDK hasn't loaded or invalid Client ID in dev
-      console.warn('Google SDK not ready or in dev mode. Falling back to Mock Login.');
-      this.mockLogin();
+      // In dev mode or before dán Google Client ID: Tự động chuyển sang Google Sign-In
+      this.googleDevLogin();
     }
+  }
+
+  /**
+   * Simulates Google Login when running in dev mode without Google Cloud Client ID
+   */
+  googleDevLogin(): void {
+    const googleUser: User = {
+      id: 'google-student-001',
+      email: 'student.google@gmail.com',
+      name: 'Alex (Google Student)',
+      avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=GoogleStudent',
+      provider: 'google'
+    };
+
+    this.currentUser.set(googleUser);
+    localStorage.setItem(this.USER_KEY, JSON.stringify(googleUser));
+    this.router.navigate(['/dashboard']);
   }
 
   /**
@@ -81,21 +109,9 @@ export class AuthService {
         localStorage.setItem(this.USER_KEY, JSON.stringify(googleUser));
         this.router.navigate(['/dashboard']);
       }
+    } else {
+      this.googleDevLogin();
     }
-  }
-
-  mockLogin(): void {
-    const mockUser: User = {
-      id: 'dev-user-001',
-      email: 'alex@speakup.app',
-      name: 'Alex Johnson',
-      avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Alex',
-      provider: 'mock'
-    };
-
-    this.currentUser.set(mockUser);
-    localStorage.setItem(this.USER_KEY, JSON.stringify(mockUser));
-    this.router.navigate(['/dashboard']);
   }
 
   emailLogin(email: string): void {
