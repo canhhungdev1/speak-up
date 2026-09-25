@@ -210,15 +210,16 @@ import { ThemeService } from '../../services/theme.service';
       width: 100%;
     }
 
-    /* Left Panel: Branding & Quotes */
+    /* Left Panel: Branding & Quotes (Theme Adaptive) */
     .auth-branding-panel {
-      background: linear-gradient(135deg, #0B0F17 0%, #151D2A 100%);
+      background: linear-gradient(135deg, var(--bg-surface-hover) 0%, var(--bg-main) 100%);
       padding: 100px 60px 80px 60px;
       display: flex;
       flex-direction: column;
       justify-content: center;
       border-right: 1px solid var(--border-color);
-      color: #FFFFFF;
+      color: var(--text-main);
+      transition: background 0.3s ease, color 0.3s ease;
     }
 
     .branding-content {
@@ -232,7 +233,7 @@ import { ThemeService } from '../../services/theme.service';
       font-size: 2rem;
       font-weight: 800;
       letter-spacing: -0.03em;
-      color: #FFFFFF;
+      color: var(--text-main);
       margin-bottom: 40px;
     }
 
@@ -246,21 +247,22 @@ import { ThemeService } from '../../services/theme.service';
       line-height: 1.15;
       letter-spacing: -0.02em;
       margin-bottom: 40px;
-      color: #FFFFFF;
+      color: var(--text-main);
     }
 
     .quote-card {
-      background-color: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-color);
       border-radius: 20px;
       padding: 28px;
-      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow-sm);
+      transition: background-color 0.3s ease, border-color 0.3s ease;
     }
 
     .quote-text {
       font-size: 0.98rem;
       line-height: 1.6;
-      color: #94A3B8;
+      color: var(--text-secondary);
       font-style: italic;
       margin-bottom: 24px;
     }
@@ -287,12 +289,12 @@ import { ThemeService } from '../../services/theme.service';
     .author-name {
       font-size: 0.95rem;
       font-weight: 700;
-      color: #FFFFFF;
+      color: var(--text-main);
     }
 
     .author-role {
       font-size: 0.8rem;
-      color: #64748B;
+      color: var(--text-muted);
     }
 
     /* Right Panel: Form (Full Light & Dark Theme Support) */
