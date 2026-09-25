@@ -4,3 +4,8 @@
 > AI sẽ tự động append nội dung vào đây sau các session làm việc.
 
 ---
+
+## 1. Quy tắc Git Workflow
+- **KHÔNG BÁO GIỜ TỰ Ý PUSH CODE (`git push`)**: Mọi thay đổi mã nguồn chỉ được commit ở nhánh local.
+- **CHỈ CHẠY `git push`** khi người dùng đưa ra yêu cầu trực tiếp ("hãy push code", "push giúp tôi").
+
