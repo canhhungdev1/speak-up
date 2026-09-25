@@ -1,0 +1,132 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String            @id @default(uuid()) @db.Uuid
+  email            String            @unique
+  fullName         String?           @map("full_name")
+  avatarUrl        String?           @map("avatar_url")
+  totalXp          Int               @default(0) @map("total_xp")
+  currentStreak    Int               @default(0) @map("current_streak")
+  lastActiveDate   DateTime?         @map("last_active_date")
+  createdAt        DateTime          @default(now()) @map("created_at")
+  updatedAt        DateTime          @updatedAt @map("updated_at")
+
+  progresses       UserProgress[]
+  activityLogs     ActivityLog[]
+
+  @@map("users")
+}
+
+model Course {
+  id             String   @id @default(uuid()) @db.Uuid
+  slug           String   @unique
+  title          String
+  description    String?
+  thumbnailUrl   String?  @map("thumbnail_url")
+  displayOrder   Int      @default(0) @map("display_order")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  lessons        Lesson[]
+
+  @@map("courses")
+}
+
+model Lesson {
+  id             String   @id @default(uuid()) @db.Uuid
+  courseId       String   @db.Uuid @map("course_id")
+  slug           String   @unique
+  title          String
+  description    String?
+  thumbnailUrl   String?  @map("thumbnail_url")
+  displayOrder   Int      @default(0) @map("display_order")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  course         Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  sections       LessonSection[]
+  vocabularies   LessonVocabulary[]
+  userProgresses UserProgress[]
+
+  @@map("lessons")
+}
+
+enum SectionType {
+  MAIN_ARTICLE
+  VOCABULARY
+  MINI_STORY
+  POV
+  COMMENTARY
+}
+
+model LessonSection {
+  id             String      @id @default(uuid()) @db.Uuid
+  lessonId       String      @db.Uuid @map("lesson_id")
+  sectionType    SectionType @map("section_type")
+  title          String      // VD: "Mini Story A", "Main Article"
+  audioUrl       String?     @map("audio_url")
+  content        String?     @db.Text
+  displayOrder   Int         @default(0) @map("display_order")
+  createdAt      DateTime    @default(now()) @map("created_at")
+
+  lesson         Lesson      @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@map("lesson_sections")
+}
+
+model LessonVocabulary {
+  id               String   @id @default(uuid()) @db.Uuid
+  lessonId         String   @db.Uuid @map("lesson_id")
+  word             String
+  partOfSpeech     String?  @map("part_of_speech")
+  phonetic         String?  // VD: IPA /bæsmən/
+  meaning          String
+  exampleSentence  String?  @db.Text @map("example_sentence")
+  createdAt        DateTime @default(now()) @map("created_at")
+
+  lesson           Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@map("lesson_vocabularies")
+}
+
+enum ProgressStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  COMPLETED
+}
+
+model UserProgress {
+  id                   String         @id @default(uuid()) @db.Uuid
+  userId               String         @db.Uuid @map("user_id")
+  lessonId             String         @db.Uuid @map("lesson_id")
+  status               ProgressStatus @default(NOT_STARTED)
+  completionPercentage Int            @default(0) @map("completion_percentage")
+  lastPlayedAt         DateTime?      @map("last_played_at")
+  createdAt            DateTime       @default(now()) @map("created_at")
+  updatedAt            DateTime       @updatedAt @map("updated_at")
+
+  user                 User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson               Lesson         @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, lessonId])
+  @@map("user_progress")
+}
+
+model ActivityLog {
+  id             String   @id @default(uuid()) @db.Uuid
+  userId         String   @db.Uuid @map("user_id")
+  actionType     String   @map("action_type")
+  xpEarned       Int      @default(0) @map("xp_earned")
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("activity_logs")
+}
