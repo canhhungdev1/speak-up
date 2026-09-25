@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -54,7 +54,7 @@ import { AuthService } from '../../services/auth.service';
             <h2 class="form-title">Welcome back</h2>
             <p class="form-subtitle">Enter your details to access your learning dashboard.</p>
 
-            <!-- 1. Google OAuth Sign-In Button -->
+            <!-- 1. Google OAuth 2.0 Sign-In Button -->
             <button type="button" class="btn-google" (click)="onGoogleSignIn()">
               <svg class="google-icon" viewBox="0 0 24 24" width="20" height="20">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -64,6 +64,9 @@ import { AuthService } from '../../services/auth.service';
               </svg>
               <span>Tiếp tục sử dụng dịch vụ bằng Google</span>
             </button>
+
+            <!-- Container for Native Official Google Sign-In Button -->
+            <div id="googleBtnContainer" class="google-official-btn"></div>
 
             <!-- 2. Quick Dev Mock Login Button -->
             <button type="button" class="btn-dev-mock" (click)="onDevMockLogin()">
@@ -293,12 +296,17 @@ import { AuthService } from '../../services/auth.service';
       color: var(--text-main);
       cursor: pointer;
       transition: all 0.2s ease;
-      margin-bottom: 12px;
+      margin-bottom: 8px;
 
       &:hover {
         background-color: var(--bg-surface-hover);
         border-color: var(--text-muted);
       }
+    }
+
+    .google-official-btn {
+      width: 100%;
+      margin-bottom: 12px;
     }
 
     .btn-dev-mock {
@@ -461,15 +469,20 @@ import { AuthService } from '../../services/auth.service';
     }
   `]
 })
-export class AuthComponent {
+export class AuthComponent implements AfterViewInit {
   private authService = inject(AuthService);
 
   email = '';
   password = '';
   showPassword = signal<boolean>(false);
 
+  ngAfterViewInit(): void {
+    // Initialize Google Identity Services
+    this.authService.initGoogleOAuth('googleBtnContainer');
+  }
+
   onGoogleSignIn(): void {
-    this.authService.googleLogin();
+    this.authService.promptGoogleSignIn();
   }
 
   onDevMockLogin(): void {
