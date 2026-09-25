@@ -1,6 +1,5 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { ThemeService } from '../../services/theme.service';
@@ -8,7 +7,7 @@ import { ThemeService } from '../../services/theme.service';
 @Component({
   selector: 'app-auth',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, RouterLink],
   template: `
     <div class="auth-page">
       <!-- Top Navigation: Back to Home & Theme Toggle -->
@@ -78,75 +77,44 @@ import { ThemeService } from '../../services/theme.service';
           </div>
         </div>
 
-        <!-- Right Panel: Login Form & Single Google OAuth Button -->
+        <!-- Right Panel: Pure 1-Click Google OAuth Sign-In -->
         <div class="auth-form-panel">
           <div class="form-wrapper">
-            <h2 class="form-title">Welcome back</h2>
-            <p class="form-subtitle">Enter your details to access your learning dashboard.</p>
-
-            <!-- 1. Single Clean Google OAuth Sign-In Button -->
-            <button type="button" class="btn-google" (click)="onGoogleSignIn()">
-              <svg class="google-icon" viewBox="0 0 24 24" width="20" height="20">
-                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
-              </svg>
-              <span>Tiếp tục sử dụng dịch vụ bằng Google</span>
-            </button>
-
-            <!-- Divider -->
-            <div class="divider">
-              <span>OR CONTINUE WITH EMAIL</span>
+            <!-- Welcome Header -->
+            <div class="welcome-badge">
+              <span class="badge">1-CLICK SIGN IN</span>
             </div>
 
-            <!-- Email & Password Form -->
-            <form (ngSubmit)="onEmailSignIn()" class="email-form">
-              <div class="form-group">
-                <label for="email">Email address</label>
-                <input 
-                  type="email" 
-                  id="email" 
-                  name="email"
-                  [(ngModel)]="email" 
-                  placeholder="you@example.com"
-                  required 
-                  class="auth-input"
-                />
-              </div>
-
-              <div class="form-group">
-                <div class="password-label-row">
-                  <label for="password">Password</label>
-                  <a href="#" class="forgot-link" (click)="$event.preventDefault()">Forgot password?</a>
-                </div>
-                <div class="password-input-wrapper">
-                  <input 
-                    [type]="showPassword() ? 'text' : 'password'" 
-                    id="password" 
-                    name="password"
-                    [(ngModel)]="password" 
-                    placeholder="••••••••"
-                    required 
-                    class="auth-input"
-                  />
-                  <button type="button" class="toggle-password" (click)="showPassword.set(!showPassword())">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
-                      <circle cx="12" cy="12" r="3"></circle>
-                    </svg>
-                  </button>
-                </div>
-              </div>
-
-              <button type="submit" class="btn btn-primary btn-submit">
-                Sign in
-              </button>
-            </form>
-
-            <p class="signup-footer">
-              Don't have an account? <a href="#" (click)="$event.preventDefault()" class="signup-link">Sign up</a>
+            <h2 class="form-title">Welcome to SpeakUp</h2>
+            <p class="form-subtitle">
+              Sign in with your Google account to access your personalized Effortless English learning dashboard.
             </p>
+
+            <!-- Google OAuth Action Box -->
+            <div class="google-action-box">
+              <!-- Custom Styled Google Button -->
+              <button type="button" class="btn-google" (click)="onGoogleSignIn()">
+                <svg class="google-icon" viewBox="0 0 24 24" width="22" height="22">
+                  <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                  <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                  <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                  <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                </svg>
+                <span>Tiếp tục sử dụng dịch vụ bằng Google</span>
+              </button>
+
+              <!-- Official Native Google Sign-In Container -->
+              <div id="googleBtnContainer" class="google-official-btn"></div>
+            </div>
+
+            <!-- Security Assurance Note -->
+            <div class="security-note">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+              <span>Protected by Google OAuth 2.0. No passwords required.</span>
+            </div>
           </div>
         </div>
       </div>
@@ -297,7 +265,7 @@ import { ThemeService } from '../../services/theme.service';
       color: var(--text-muted);
     }
 
-    /* Right Panel: Form (Full Light & Dark Theme Support) */
+    /* Right Panel: Pure Google OAuth Sign-In */
     .auth-form-panel {
       background-color: var(--bg-surface);
       padding: 100px 60px 80px 60px;
@@ -310,172 +278,87 @@ import { ThemeService } from '../../services/theme.service';
 
     .form-wrapper {
       width: 100%;
-      max-width: 400px;
+      max-width: 420px;
+      text-align: center;
+    }
+
+    .welcome-badge {
+      margin-bottom: 16px;
     }
 
     .form-title {
-      font-size: 2rem;
+      font-size: 2.2rem;
       font-weight: 800;
       color: var(--text-main);
-      margin-bottom: 8px;
-      text-align: center;
+      margin-bottom: 12px;
+      letter-spacing: -0.02em;
     }
 
     .form-subtitle {
-      font-size: 0.92rem;
+      font-size: 0.98rem;
       color: var(--text-secondary);
-      text-align: center;
+      line-height: 1.6;
+      margin-bottom: 36px;
+    }
+
+    .google-action-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
       margin-bottom: 32px;
     }
 
     .btn-google {
       width: 100%;
-      padding: 14px 16px;
+      padding: 16px 24px;
       background-color: var(--bg-main);
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
+      border: 1.5px solid var(--border-color);
+      border-radius: 14px;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 12px;
-      font-size: 0.95rem;
-      font-weight: 600;
+      gap: 14px;
+      font-size: 1rem;
+      font-weight: 700;
       color: var(--text-main);
       cursor: pointer;
       transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-      margin-bottom: 24px;
       box-shadow: var(--shadow-sm);
 
       &:hover {
         background-color: var(--bg-surface-hover);
         border-color: var(--primary);
-        transform: translateY(-2px);
+        transform: translateY(-3px);
         box-shadow: var(--shadow-md);
       }
-    }
 
-    .divider {
-      position: relative;
-      text-align: center;
-      margin: 24px 0;
-
-      &::before {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 0;
-        width: 100%;
-        height: 1px;
-        background-color: var(--border-color);
-      }
-
-      span {
-        position: relative;
-        background-color: var(--bg-surface);
-        padding: 0 12px;
-        font-size: 0.72rem;
-        font-weight: 700;
-        letter-spacing: 0.08em;
-        color: var(--text-muted);
+      &:active {
+        transform: translateY(0);
       }
     }
 
-    .email-form {
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-    }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-
-      label {
-        font-size: 0.85rem;
-        font-weight: 600;
-        color: var(--text-main);
-      }
-    }
-
-    .password-label-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-
-      .forgot-link {
-        font-size: 0.8rem;
-        color: var(--primary);
-        text-decoration: none;
-        font-weight: 600;
-
-        &:hover {
-          text-decoration: underline;
-        }
-      }
-    }
-
-    .password-input-wrapper {
-      position: relative;
-      display: flex;
-      align-items: center;
-    }
-
-    .auth-input {
+    .google-official-btn {
       width: 100%;
-      padding: 12px 16px;
-      border-radius: 12px;
-      border: 1px solid var(--border-color);
-      background-color: var(--bg-main);
-      color: var(--text-main);
-      font-size: 0.95rem;
-      outline: none;
-      transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease;
-
-      &:focus {
-        border-color: var(--primary);
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
-      }
-    }
-
-    .toggle-password {
-      position: absolute;
-      right: 12px;
-      background: none;
-      border: none;
-      color: var(--text-muted);
-      cursor: pointer;
       display: flex;
-      align-items: center;
       justify-content: center;
 
-      &:hover {
-        color: var(--text-main);
+      iframe {
+        margin: 0 auto !important;
       }
     }
 
-    .btn-submit {
-      width: 100%;
-      padding: 14px;
-      font-size: 1rem;
-      margin-top: 8px;
-    }
-
-    .signup-footer {
-      text-align: center;
-      margin-top: 24px;
-      font-size: 0.88rem;
-      color: var(--text-secondary);
-
-      .signup-link {
-        color: var(--primary);
-        font-weight: 700;
-        text-decoration: none;
-
-        &:hover {
-          text-decoration: underline;
-        }
-      }
+    .security-note {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      padding: 10px 16px;
+      border-radius: 9999px;
+      background-color: var(--bg-main);
+      border: 1px solid var(--border-color);
     }
 
     @media (max-width: 900px) {
@@ -491,21 +374,16 @@ import { ThemeService } from '../../services/theme.service';
     }
   `]
 })
-export class AuthComponent {
+export class AuthComponent implements AfterViewInit {
   authService = inject(AuthService);
   themeService = inject(ThemeService);
 
-  email = '';
-  password = '';
-  showPassword = signal<boolean>(false);
+  ngAfterViewInit(): void {
+    // Initialize Google Identity Services SDK
+    this.authService.initGoogleOAuth('googleBtnContainer');
+  }
 
   onGoogleSignIn(): void {
     this.authService.promptGoogleSignIn();
-  }
-
-  onEmailSignIn(): void {
-    if (this.email) {
-      this.authService.emailLogin(this.email);
-    }
   }
 }

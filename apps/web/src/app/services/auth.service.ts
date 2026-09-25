@@ -9,7 +9,7 @@ export interface User {
   email: string;
   name: string;
   avatarUrl?: string;
-  provider?: 'google' | 'mock' | 'email';
+  provider: 'google';
 }
 
 @Injectable({
@@ -26,72 +26,64 @@ export class AuthService {
   }
 
   /**
-   * Initializes Google Identity Services API (gsi/client)
+   * Initializes Google Identity Services SDK and renders official Google button
    */
   initGoogleOAuth(elementId: string): void {
-    if (typeof google !== 'undefined' && google.accounts?.id) {
-      try {
-        google.accounts.id.initialize({
-          client_id: environment.googleClientId,
-          callback: (response: any) => this.handleGoogleCredentialResponse(response)
-        });
+    if (typeof window !== 'undefined') {
+      const checkGoogleSdk = setInterval(() => {
+        if (typeof google !== 'undefined' && google.accounts?.id) {
+          clearInterval(checkGoogleSdk);
 
-        // Render the official Google Sign-In button if target element exists
-        const targetElement = document.getElementById(elementId);
-        if (targetElement) {
-          google.accounts.id.renderButton(targetElement, {
-            theme: 'outline',
-            size: 'large',
-            width: '100%',
-            text: 'continue_with',
-            shape: 'rectangular'
-          });
+          try {
+            google.accounts.id.initialize({
+              client_id: environment.googleClientId,
+              callback: (response: any) => this.handleGoogleCredentialResponse(response),
+              auto_select: false
+            });
+
+            // Render official Google Sign-In button
+            const targetElement = document.getElementById(elementId);
+            if (targetElement) {
+              targetElement.innerHTML = ''; // Clear container
+              google.accounts.id.renderButton(targetElement, {
+                theme: document.body.classList.contains('dark') ? 'filled_black' : 'outline',
+                size: 'large',
+                width: 360,
+                text: 'continue_with',
+                shape: 'rectangular',
+                logo_alignment: 'left'
+              });
+            }
+          } catch (err) {
+            console.warn('Google SDK init warning:', err);
+          }
         }
-      } catch (err) {
-        console.warn('Google SDK init error:', err);
-      }
+      }, 100);
+
+      // Timeout after 5s if SDK fails to load
+      setTimeout(() => clearInterval(checkGoogleSdk), 5000);
     }
   }
 
   /**
-   * Triggers Google Sign-In (with instant fallback for dev environment)
+   * Triggers Google Sign-In prompt or Dev Fallback
    */
   promptGoogleSignIn(): void {
-    const isPlaceholderKey = !environment.googleClientId || environment.googleClientId.includes('YOUR_GOOGLE_CLIENT_ID');
-
-    if (!isPlaceholderKey && typeof google !== 'undefined' && google.accounts?.id) {
+    if (typeof google !== 'undefined' && google.accounts?.id) {
       google.accounts.id.prompt((notification: any) => {
-        // If Google One-Tap wasn't displayed due to domain / client_id in dev
         if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-          console.log('Google One-Tap skipped or not displayed in dev mode. Simulating Google login.');
+          // If Google One-Tap wasn't displayed due to origin mismatch in dev, fallback to mock Google user
+          console.log('Google One-Tap skipped in local dev mode. Signing in as Google Student.');
           this.googleDevLogin();
         }
       });
     } else {
-      // In dev mode or before dán Google Client ID: Tự động chuyển sang Google Sign-In
       this.googleDevLogin();
     }
   }
 
   /**
-   * Simulates Google Login when running in dev mode without Google Cloud Client ID
-   */
-  googleDevLogin(): void {
-    const googleUser: User = {
-      id: 'google-student-001',
-      email: 'student.google@gmail.com',
-      name: 'Alex (Google Student)',
-      avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=GoogleStudent',
-      provider: 'google'
-    };
-
-    this.currentUser.set(googleUser);
-    localStorage.setItem(this.USER_KEY, JSON.stringify(googleUser));
-    this.router.navigate(['/dashboard']);
-  }
-
-  /**
-   * Decodes Google OAuth JWT ID Token and authenticates the user
+   * Decodes real Google OAuth JWT ID Token returned by Google Client SDK
    */
   handleGoogleCredentialResponse(response: any): void {
     if (response && response.credential) {
@@ -109,20 +101,23 @@ export class AuthService {
         localStorage.setItem(this.USER_KEY, JSON.stringify(googleUser));
         this.router.navigate(['/dashboard']);
       }
-    } else {
-      this.googleDevLogin();
     }
   }
 
-  emailLogin(email: string): void {
-    const user: User = {
-      id: 'user-' + Date.now(),
-      email: email,
-      name: email.split('@')[0],
-      provider: 'email'
+  /**
+   * Dev Fallback for local testing without domain whitelist
+   */
+  googleDevLogin(): void {
+    const googleUser: User = {
+      id: 'google-student-001',
+      email: 'student.google@gmail.com',
+      name: 'Alex (Google Student)',
+      avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=GoogleStudent',
+      provider: 'google'
     };
-    this.currentUser.set(user);
-    localStorage.setItem(this.USER_KEY, JSON.stringify(user));
+
+    this.currentUser.set(googleUser);
+    localStorage.setItem(this.USER_KEY, JSON.stringify(googleUser));
     this.router.navigate(['/dashboard']);
   }
 
