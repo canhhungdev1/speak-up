@@ -1,4 +1,4 @@
-import { Component, inject, AfterViewInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
@@ -10,6 +10,9 @@ import { ThemeService } from '../../services/theme.service';
   imports: [CommonModule, RouterLink],
   template: `
     <div class="auth-page">
+      <!-- Background Ambient Glow -->
+      <div class="ambient-glow"></div>
+
       <!-- Top Navigation: Back to Home & Theme Toggle -->
       <div class="auth-top-bar container">
         <a routerLink="/" class="back-link">
@@ -77,12 +80,22 @@ import { ThemeService } from '../../services/theme.service';
           </div>
         </div>
 
-        <!-- Right Panel: Pure 1-Click Google OAuth Sign-In -->
+        <!-- Right Panel: Premium Glassmorphism Google Sign-In Card -->
         <div class="auth-form-panel">
-          <div class="form-wrapper">
+          <div class="auth-card">
+            <!-- Brand Logo for Mobile/Form -->
+            <div class="card-logo-wrapper">
+              <a routerLink="/" class="logo">
+                <span class="logo-text">Speak<span class="logo-accent">Up</span></span>
+              </a>
+            </div>
+
             <!-- Welcome Header -->
             <div class="welcome-badge">
-              <span class="badge">1-CLICK SIGN IN</span>
+              <span class="badge">
+                <span class="badge-dot"></span>
+                1-CLICK AUTHENTICATION
+              </span>
             </div>
 
             <h2 class="form-title">Welcome to SpeakUp</h2>
@@ -90,26 +103,24 @@ import { ThemeService } from '../../services/theme.service';
               Sign in with your Google account to access your personalized Effortless English learning dashboard.
             </p>
 
-            <!-- Google OAuth Action Box -->
+            <!-- Single Premium Google OAuth Button -->
             <div class="google-action-box">
-              <!-- Custom Styled Google Button -->
-              <button type="button" class="btn-google" (click)="onGoogleSignIn()">
-                <svg class="google-icon" viewBox="0 0 24 24" width="22" height="22">
-                  <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                  <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                  <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-                  <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
-                </svg>
-                <span>Tiếp tục sử dụng dịch vụ bằng Google</span>
+              <button type="button" class="btn-google-primary" (click)="onGoogleSignIn()">
+                <div class="google-icon-box">
+                  <svg class="google-icon" viewBox="0 0 24 24" width="22" height="22">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                  </svg>
+                </div>
+                <span class="btn-text">Tiếp tục sử dụng dịch vụ bằng Google</span>
               </button>
-
-              <!-- Official Native Google Sign-In Container -->
-              <div id="googleBtnContainer" class="google-official-btn"></div>
             </div>
 
             <!-- Security Assurance Note -->
             <div class="security-note">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                 <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
               </svg>
@@ -128,7 +139,20 @@ import { ThemeService } from '../../services/theme.service';
       display: flex;
       flex-direction: column;
       position: relative;
+      overflow: hidden;
       transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .ambient-glow {
+      position: absolute;
+      top: -20%;
+      right: 15%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.12) 0%, rgba(16, 185, 129, 0.06) 50%, transparent 70%);
+      filter: blur(60px);
+      pointer-events: none;
+      z-index: 1;
     }
 
     .auth-top-bar {
@@ -176,9 +200,11 @@ import { ThemeService } from '../../services/theme.service';
       grid-template-columns: 1fr 1fr;
       min-height: 100vh;
       width: 100%;
+      position: relative;
+      z-index: 2;
     }
 
-    /* Left Panel: Branding & Quotes (Theme Adaptive) */
+    /* Left Panel: Branding & Quotes */
     .auth-branding-panel {
       background: linear-gradient(135deg, var(--bg-surface-hover) 0%, var(--bg-main) 100%);
       padding: 100px 60px 80px 60px;
@@ -191,7 +217,7 @@ import { ThemeService } from '../../services/theme.service';
     }
 
     .branding-content {
-      max-width: 500px;
+      max-width: 480px;
       margin: 0 auto;
     }
 
@@ -210,11 +236,11 @@ import { ThemeService } from '../../services/theme.service';
     }
 
     .branding-title {
-      font-size: clamp(2.2rem, 4vw, 3.2rem);
+      font-size: clamp(2.2rem, 3.8vw, 3.2rem);
       font-weight: 800;
       line-height: 1.15;
-      letter-spacing: -0.02em;
-      margin-bottom: 40px;
+      letter-spacing: -0.03em;
+      margin-bottom: 36px;
       color: var(--text-main);
     }
 
@@ -265,100 +291,122 @@ import { ThemeService } from '../../services/theme.service';
       color: var(--text-muted);
     }
 
-    /* Right Panel: Pure Google OAuth Sign-In */
+    /* Right Panel: Premium Form Card */
     .auth-form-panel {
-      background-color: var(--bg-surface);
-      padding: 100px 60px 80px 60px;
+      padding: 100px 40px 80px 40px;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      transition: background-color 0.3s ease;
     }
 
-    .form-wrapper {
+    .auth-card {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 28px;
+      padding: 48px 40px;
       width: 100%;
-      max-width: 420px;
+      max-width: 440px;
+      box-shadow: var(--shadow-lg);
       text-align: center;
+      transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card-logo-wrapper {
+      display: none;
+      margin-bottom: 24px;
     }
 
     .welcome-badge {
-      margin-bottom: 16px;
+      margin-bottom: 20px;
+    }
+
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: var(--primary);
+      display: inline-block;
+      margin-right: 4px;
+      animation: pulse 2s infinite;
     }
 
     .form-title {
-      font-size: 2.2rem;
+      font-size: 2.1rem;
       font-weight: 800;
       color: var(--text-main);
       margin-bottom: 12px;
-      letter-spacing: -0.02em;
+      letter-spacing: -0.025em;
     }
 
     .form-subtitle {
-      font-size: 0.98rem;
+      font-size: 0.95rem;
       color: var(--text-secondary);
       line-height: 1.6;
       margin-bottom: 36px;
     }
 
     .google-action-box {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 32px;
+      margin-bottom: 28px;
     }
 
-    .btn-google {
+    .btn-google-primary {
       width: 100%;
-      padding: 16px 24px;
-      background-color: var(--bg-main);
+      padding: 14px 20px;
+      background-color: var(--bg-surface);
       border: 1.5px solid var(--border-color);
-      border-radius: 14px;
+      border-radius: 16px;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 14px;
-      font-size: 1rem;
-      font-weight: 700;
-      color: var(--text-main);
       cursor: pointer;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
       transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: var(--shadow-sm);
 
       &:hover {
         background-color: var(--bg-surface-hover);
         border-color: var(--primary);
         transform: translateY(-3px);
-        box-shadow: var(--shadow-md);
+        box-shadow: 0 8px 25px rgba(59, 130, 246, 0.2);
       }
 
       &:active {
-        transform: translateY(0);
+        transform: translateY(-1px);
       }
     }
 
-    .google-official-btn {
-      width: 100%;
+    .google-icon-box {
       display: flex;
+      align-items: center;
       justify-content: center;
+    }
 
-      iframe {
-        margin: 0 auto !important;
-      }
+    .btn-text {
+      font-size: 0.98rem;
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: -0.01em;
     }
 
     .security-note {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 8px;
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       color: var(--text-muted);
       font-weight: 500;
       padding: 10px 16px;
       border-radius: 9999px;
       background-color: var(--bg-main);
       border: 1px solid var(--border-color);
+      width: 100%;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.3); }
     }
 
     @media (max-width: 900px) {
@@ -368,20 +416,21 @@ import { ThemeService } from '../../services/theme.service';
       .auth-branding-panel {
         display: none;
       }
+      .card-logo-wrapper {
+        display: block;
+      }
       .auth-form-panel {
-        padding: 100px 24px 40px 24px;
+        padding: 100px 20px 40px 20px;
+      }
+      .auth-card {
+        padding: 36px 24px;
       }
     }
   `]
 })
-export class AuthComponent implements AfterViewInit {
+export class AuthComponent {
   authService = inject(AuthService);
   themeService = inject(ThemeService);
-
-  ngAfterViewInit(): void {
-    // Initialize Google Identity Services SDK
-    this.authService.initGoogleOAuth('googleBtnContainer');
-  }
 
   onGoogleSignIn(): void {
     this.authService.promptGoogleSignIn();
