@@ -10,6 +10,7 @@ export interface User {
   name: string;
   avatarUrl?: string;
   provider: 'google';
+  accessToken?: string;
 }
 
 @Injectable({
@@ -60,7 +61,7 @@ export class AuthService {
         }
       }, 100);
 
-      // Timeout after 5s if SDK fails to load
+      // Timeout after 5s
       setTimeout(() => clearInterval(checkGoogleSdk), 5000);
     }
   }
@@ -69,11 +70,12 @@ export class AuthService {
    * Triggers Google Sign-In prompt or Dev Fallback
    */
   promptGoogleSignIn(): void {
-    if (typeof google !== 'undefined' && google.accounts?.id) {
+    const isPlaceholderKey = !environment.googleClientId || environment.googleClientId.includes('YOUR_GOOGLE_CLIENT_ID');
+
+    if (!isPlaceholderKey && typeof google !== 'undefined' && google.accounts?.id) {
       google.accounts.id.prompt((notification: any) => {
         if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-          // If Google One-Tap wasn't displayed due to origin mismatch in dev, fallback to mock Google user
-          console.log('Google One-Tap skipped in local dev mode. Signing in as Google Student.');
+          console.log('Google One-Tap skipped or not displayed in dev mode. Simulating Google login.');
           this.googleDevLogin();
         }
       });
@@ -83,9 +85,9 @@ export class AuthService {
   }
 
   /**
-   * Decodes real Google OAuth JWT ID Token returned by Google Client SDK
+   * Decodes Google OAuth JWT ID Token, syncs with backend, and navigates to /dashboard
    */
-  handleGoogleCredentialResponse(response: any): void {
+  async handleGoogleCredentialResponse(response: any): Promise<void> {
     if (response && response.credential) {
       const payload = this.decodeJwtPayload(response.credential);
       if (payload) {
@@ -97,10 +99,29 @@ export class AuthService {
           provider: 'google'
         };
 
+        // Attempt Backend API verification if available
+        try {
+          const apiRes = await fetch(`${environment.apiUrl}/auth/google`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ idToken: response.credential })
+          });
+          if (apiRes.ok) {
+            const data = await apiRes.json();
+            if (data?.accessToken) {
+              googleUser.accessToken = data.accessToken;
+            }
+          }
+        } catch {
+          // Backend offline during local dev — graceful client fallback
+        }
+
         this.currentUser.set(googleUser);
         localStorage.setItem(this.USER_KEY, JSON.stringify(googleUser));
         this.router.navigate(['/dashboard']);
       }
+    } else {
+      this.googleDevLogin();
     }
   }
 
