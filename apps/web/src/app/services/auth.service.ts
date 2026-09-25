@@ -27,7 +27,7 @@ export class AuthService {
   }
 
   /**
-   * Initializes Google Identity Services SDK and renders official Google button
+   * Initializes Google Identity Services SDK and renders official Google button container
    */
   initGoogleOAuth(elementId: string): void {
     if (typeof window !== 'undefined') {
@@ -42,10 +42,9 @@ export class AuthService {
               auto_select: false
             });
 
-            // Render official Google Sign-In button
             const targetElement = document.getElementById(elementId);
             if (targetElement) {
-              targetElement.innerHTML = ''; // Clear container
+              targetElement.innerHTML = '';
               google.accounts.id.renderButton(targetElement, {
                 theme: document.body.classList.contains('dark') ? 'filled_black' : 'outline',
                 size: 'large',
@@ -61,33 +60,80 @@ export class AuthService {
         }
       }, 100);
 
-      // Timeout after 5s
       setTimeout(() => clearInterval(checkGoogleSdk), 5000);
     }
   }
 
   /**
-   * Triggers Google Sign-In prompt or Dev Fallback
+   * Triggers real Google OAuth 2.0 Account Chooser Popup Window (accounts.google.com)
    */
   promptGoogleSignIn(): void {
-    const isPlaceholderKey = !environment.googleClientId || environment.googleClientId.includes('YOUR_GOOGLE_CLIENT_ID');
+    if (typeof google !== 'undefined' && google.accounts?.oauth2) {
+      try {
+        const client = google.accounts.oauth2.initTokenClient({
+          client_id: environment.googleClientId,
+          scope: 'email profile openid',
+          callback: async (tokenResponse: any) => {
+            if (tokenResponse && tokenResponse.access_token) {
+              await this.fetchAndLoginGoogleProfile(tokenResponse.access_token);
+            }
+          }
+        });
+        client.requestAccessToken();
+        return;
+      } catch (e) {
+        console.warn('initTokenClient failed, falling back to OAuth redirect:', e);
+      }
+    }
 
-    if (!isPlaceholderKey && typeof google !== 'undefined' && google.accounts?.id) {
-      google.accounts.id.prompt((notification: any) => {
-        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-          console.log('Google One-Tap skipped or not displayed in dev mode. Simulating Google login.');
-          this.googleDevLogin();
-        }
-      });
-    } else {
-      this.googleDevLogin();
+    // Direct Google OAuth 2.0 popup/redirect fallback
+    const redirectUri = window.location.origin + '/login';
+    const googleOAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
+      `client_id=${encodeURIComponent(environment.googleClientId)}` +
+      `&redirect_uri=${encodeURIComponent(redirectUri)}` +
+      `&response_type=token` +
+      `&scope=${encodeURIComponent('email profile openid')}`;
+
+    // Open Google Login popup window
+    const popup = window.open(googleOAuthUrl, 'GoogleSignInPopup', 'width=500,height=600');
+    if (!popup) {
+      window.location.href = googleOAuthUrl;
     }
   }
 
   /**
-   * Decodes Google OAuth JWT ID Token, syncs with backend, and navigates to /dashboard
+   * Fetches real user profile (email, name, picture) using Google OAuth Access Token
    */
-  async handleGoogleCredentialResponse(response: any): Promise<void> {
+  private async fetchAndLoginGoogleProfile(accessToken: string): Promise<void> {
+    try {
+      const response = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+        headers: { Authorization: `Bearer ${accessToken}` }
+      });
+
+      if (response.ok) {
+        const profile = await response.json();
+        const googleUser: User = {
+          id: profile.sub || 'google-' + Date.now(),
+          email: profile.email,
+          name: profile.name || profile.given_name || profile.email.split('@')[0],
+          avatarUrl: profile.picture,
+          provider: 'google',
+          accessToken: accessToken
+        };
+
+        this.currentUser.set(googleUser);
+        localStorage.setItem(this.USER_KEY, JSON.stringify(googleUser));
+        this.router.navigate(['/dashboard']);
+      }
+    } catch (e) {
+      console.error('Failed to fetch Google UserInfo', e);
+    }
+  }
+
+  /**
+   * Decodes Google OAuth JWT ID Token returned by Google Client SDK
+   */
+  handleGoogleCredentialResponse(response: any): void {
     if (response && response.credential) {
       const payload = this.decodeJwtPayload(response.credential);
       if (payload) {
@@ -99,47 +145,11 @@ export class AuthService {
           provider: 'google'
         };
 
-        // Attempt Backend API verification if available
-        try {
-          const apiRes = await fetch(`${environment.apiUrl}/auth/google`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ idToken: response.credential })
-          });
-          if (apiRes.ok) {
-            const data = await apiRes.json();
-            if (data?.accessToken) {
-              googleUser.accessToken = data.accessToken;
-            }
-          }
-        } catch {
-          // Backend offline during local dev — graceful client fallback
-        }
-
         this.currentUser.set(googleUser);
         localStorage.setItem(this.USER_KEY, JSON.stringify(googleUser));
         this.router.navigate(['/dashboard']);
       }
-    } else {
-      this.googleDevLogin();
     }
-  }
-
-  /**
-   * Dev Fallback for local testing without domain whitelist
-   */
-  googleDevLogin(): void {
-    const googleUser: User = {
-      id: 'google-student-001',
-      email: 'student.google@gmail.com',
-      name: 'Alex (Google Student)',
-      avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=GoogleStudent',
-      provider: 'google'
-    };
-
-    this.currentUser.set(googleUser);
-    localStorage.setItem(this.USER_KEY, JSON.stringify(googleUser));
-    this.router.navigate(['/dashboard']);
   }
 
   logout(): void {
