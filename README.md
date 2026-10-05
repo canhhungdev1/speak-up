@@ -40,6 +40,8 @@ cp .env.example .env
 
 ## 🚀 Hướng dẫn khởi chạy dự án (Getting Started)
 
+> 🧪 **Xem cẩm nang tự kiểm tra và nghiệm thu chi tiết từng bước:** [docs/guides/verification-guide.md](docs/guides/verification-guide.md)
+
 Dự án hỗ trợ **2 chế độ khởi chạy** tùy theo nhu cầu của bạn:
 
 ### 🌟 Cách 1: Chế độ phát triển lai — Hybrid Dev Mode *(Khuyên dùng khi đang code)*
