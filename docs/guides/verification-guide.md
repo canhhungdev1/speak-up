@@ -13,6 +13,9 @@
 - [ ] **RabbitMQ Dashboard:** Đăng nhập thành công tại `http://localhost:15672`.
 - [ ] **Backend NestJS:** Gọi `http://localhost:3000/` trả về `Hello World!`.
 - [ ] **Frontend Angular:** Truy cập `http://localhost:8888/` hiển thị Landing Page đầy đủ.
+- [ ] **Redis Caching (Cache-Aside):** Lần 1 `DATABASE (Origin)`, lần 2 `CACHE (Redis)`.
+- [ ] **Redis Cache Invalidation:** Gọi `DELETE /api/v1/lessons/cache` xóa key `speakup:lessons:all`.
+- [ ] **Redis Rate Limiting (Chống Spam):** Gọi 6 lần liên tiếp, lần thứ 6 nhận lỗi `429 Too Many Requests`.
 
 ---
 
@@ -161,6 +164,64 @@ Khi bạn muốn kiểm tra xem toàn bộ Backend khi chạy trong Docker có k
   docker compose logs -f api
   ```
   *(Thấy dòng: `[NestApplication] Nest application successfully started` là chuẩn xác).*
+
+---
+
+## 5. Kiểm tra Nghiệm Thu Bước 2: Redis Caching & Rate Limiting
+
+### 5.1. Kiểm tra Cache-Aside Pattern (Lần 1 Miss -> Lần 2 Hit)
+* **Lần 1: Gọi API khi chưa có cache**
+  ```powershell
+  curl.exe http://localhost:3000/api/v1/lessons
+  ```
+  **Dấu hiệu ĐÚNG:** JSON trả về có `"source": "DATABASE (Origin)"` và `"responseTimeMs": 60-80ms`.
+
+* **Lần 2: Gọi API ngay sau đó (trong vòng 60 giây)**
+  ```powershell
+  curl.exe http://localhost:3000/api/v1/lessons
+  ```
+  **Dấu hiệu ĐÚNG:** JSON trả về có `"source": "CACHE (Redis)"` và `"responseTimeMs": 1-10ms` siêu tốc!
+
+* **Kiểm tra trực tiếp key nằm trong container Redis:**
+  ```powershell
+  docker exec -it speakup-redis redis-cli -a speakup_redis_secret keys "*"
+  ```
+  **Dấu hiệu ĐÚNG:** Xuất hiện key `speakup:lessons:all`.
+
+* **Xem thời gian sống (TTL) của cache đang đếm ngược:**
+  ```powershell
+  docker exec -it speakup-redis redis-cli -a speakup_redis_secret ttl speakup:lessons:all
+  ```
+  **Dấu hiệu ĐÚNG:** Trả về một con số đếm ngược từ 60 về 0 (ví dụ `45`, `30`...).
+
+---
+
+### 5.2. Kiểm tra Xóa Cache (Cache Invalidation)
+* **Gửi lệnh DELETE để hủy cache:**
+  ```powershell
+  curl.exe -X DELETE http://localhost:3000/api/v1/lessons/cache
+  ```
+  **Dấu hiệu ĐÚNG:** Nhận được thông báo:
+  ```json
+  {"success":true,"message":"Đã xóa cache \"speakup:lessons:all\" thành công khỏi Redis!"}
+  ```
+* Gọi lại `curl.exe http://localhost:3000/api/v1/lessons` sẽ thấy quay lại `"source": "DATABASE (Origin)"` rồi được nạp lại vào Redis.
+
+---
+
+### 5.3. Kiểm tra Chống Spam (Rate Limiting HTTP 429)
+Endpoint `POST http://localhost:3000/api/v1/lessons/test-rate-limit` giới hạn tối đa 5 request trong 60 giây.
+
+* **Chạy vòng lặp test 6 lần liên tiếp trong PowerShell:**
+  ```powershell
+  1..6 | ForEach-Object { $res = curl.exe -s -w " | HTTP %{http_code}" -X POST http://localhost:3000/api/v1/lessons/test-rate-limit; Write-Host "Lan ${_} : $res" }
+  ```
+* **Dấu hiệu ĐÚNG:**
+  - **Lần 1 đến 5:** Trả về mã **`HTTP 200`** thành công.
+  - **Lần 6:** Bị chặn đứng ngay lập tức với mã **`HTTP 429`**:
+    ```json
+    {"statusCode":429,"error":"Too Many Requests","message":"Bạn đã gửi quá nhiều yêu cầu. Giới hạn là 5 lượt mỗi 60 giây. Vui lòng thử lại sau ... giây."} | HTTP 429
+    ```
 
 ---
 
