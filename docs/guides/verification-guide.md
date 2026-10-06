@@ -16,6 +16,8 @@
 - [ ] **Redis Caching (Cache-Aside):** Lần 1 `DATABASE (Origin)`, lần 2 `CACHE (Redis)`.
 - [ ] **Redis Cache Invalidation:** Gọi `DELETE /api/v1/lessons/cache` xóa key `speakup:lessons:all`.
 - [ ] **Redis Rate Limiting (Chống Spam):** Gọi 6 lần liên tiếp, lần thứ 6 nhận lỗi `429 Too Many Requests`.
+- [ ] **RabbitMQ Async Worker:** Gọi `POST /api/v1/waitlist` phản hồi <30ms, Worker gửi mail ngầm sau 1.5s.
+- [ ] **RabbitMQ Dead Letter Queue (DLQ):** Gửi email chứa `@error.com`, message tự động chuyển sang queue lỗi an toàn.
 
 ---
 
@@ -222,6 +224,61 @@ Endpoint `POST http://localhost:3000/api/v1/lessons/test-rate-limit` giới hạ
     ```json
     {"statusCode":429,"error":"Too Many Requests","message":"Bạn đã gửi quá nhiều yêu cầu. Giới hạn là 5 lượt mỗi 60 giây. Vui lòng thử lại sau ... giây."} | HTTP 429
     ```
+
+---
+
+## 6. Kiểm tra Nghiệm Thu Bước 3: RabbitMQ Event-Driven & Dead Letter Queue (DLQ)
+
+### 6.1. Kiểm tra Xử lý Bất đồng bộ (Async Waitlist Email Worker)
+* **Gửi request đăng ký Waitlist:**
+  ```powershell
+  $body = '{"email":"alex.student@gmail.com","fullName":"Alex Nguyen"}'; Invoke-RestMethod -Uri "http://localhost:3000/api/v1/waitlist" -Method Post -ContentType "application/json" -Body $body | ConvertTo-Json
+  ```
+* **Dấu hiệu ĐÚNG ở phía Client:**
+  - Nhận phản hồi **`HTTP 201 Created`** ngay lập tức trong vòng **chưa đầy 30ms** (`"processingTimeMs": 20-30`, `"asyncProcessing": true`).
+* **Dấu hiệu ĐÚNG ở phía Server (Xem log container `speakup-api`):**
+  ```powershell
+  docker compose logs --tail 15 api
+  ```
+  Nhìn thấy chuỗi xử lý hậu trường:
+  ```text
+  LOG [WaitlistService] 💾 [Database] Đã lưu thông tin đăng ký: alex.student@gmail.com
+  LOG [WaitlistService] 📤 [Producer -> RabbitMQ] Đã bắn event "waitlist.registered" vào Exchange "speakup.exchange"
+  LOG [WaitlistEmailConsumer] 📥 [RabbitMQ Consumer] Đã nhận message từ Queue "speakup_waitlist_email_queue"
+  LOG [WaitlistEmailConsumer] ⏳ Đang kết nối SMTP gửi email chào mừng...
+  LOG [WaitlistEmailConsumer] ✅ [RabbitMQ Consumer HOÀN TẤT] Đã gửi email chào mừng thành công tới "Alex Nguyen <alex.student@gmail.com>"!
+  ```
+
+---
+
+### 6.2. Kiểm tra Trực quan trên RabbitMQ Dashboard
+1. Truy cập **`http://localhost:15672`** (User: `admin` | Pass: `admin123`).
+2. Vào thẻ **Exchanges**:
+   - Thấy xuất hiện **`speakup.exchange`** (Topic Exchange) và **`speakup.dlx`** (Dead Letter Exchange).
+3. Vào thẻ **Queues**:
+   - Thấy xuất hiện **`speakup_waitlist_email_queue`** (có 1 consumer lắng nghe).
+   - Thấy xuất hiện **`speakup_waitlist_email_dlq`** (hàng đợi thư chết).
+
+---
+
+### 6.3. Kiểm tra Cơ chế Dead Letter Queue (DLQ) khi xảy ra Lỗi
+Hệ thống được thiết kế: Nếu email có đuôi `@error.com`, Worker sẽ giả lập lỗi sập SMTP và từ chối nhận thư (`Nack`). RabbitMQ sẽ tự động chuyển thư vào "Hòm thư chết" (DLQ).
+
+* **Gửi request với email giả lập lỗi:**
+  ```powershell
+  $body = '{"email":"baduser@error.com","fullName":"Error Tester"}'; Invoke-RestMethod -Uri "http://localhost:3000/api/v1/waitlist" -Method Post -ContentType "application/json" -Body $body | ConvertTo-Json
+  ```
+* **Dấu hiệu ĐÚNG khi xem log:**
+  ```powershell
+  docker compose logs --tail 15 api
+  ```
+  Nhìn thấy thông báo chuyển sang DLQ:
+  ```text
+  ERROR [WaitlistEmailConsumer] ❌ [Simulated Error] Máy chủ gửi mail bị lỗi với địa chỉ: baduser@error.com! Đang đẩy vào Dead Letter Queue (DLQ)...
+  WARN  [WaitlistDlqConsumer] 🚨 [DEAD LETTER QUEUE (DLQ) PHÁT HIỆN LỖI] Bức thư gửi tới "baduser@error.com" bị từ chối!
+  WARN  [WaitlistDlqConsumer]    ➔ Nội dung thư lỗi được lưu trữ an toàn trong Queue "speakup_waitlist_email_dlq" để xem xét và xử lý lại sau.
+  ```
+  *(Message không bị mất, và hệ thống không bị crash!)*
 
 ---
 

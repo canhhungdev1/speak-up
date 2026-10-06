@@ -4,6 +4,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { RedisModule } from './infrastructure/redis/redis.module';
 import { LessonsModule } from './modules/lessons/lessons.module';
+import { WaitlistModule } from './modules/waitlist/waitlist.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { LessonsModule } from './modules/lessons/lessons.module';
     }),
     RedisModule,
     LessonsModule,
+    WaitlistModule,
   ],
   controllers: [AppController],
   providers: [AppService],
