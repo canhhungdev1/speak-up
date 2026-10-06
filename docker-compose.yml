@@ -95,6 +95,22 @@ services:
     networks:
       - speakup-network
 
+  # ----------------------------------------------------------------------------
+  # 5. Angular Frontend Web (Nginx Web Server & Reverse Proxy Gateway)
+  # ----------------------------------------------------------------------------
+  web:
+    build:
+      context: ./apps/web
+      dockerfile: Dockerfile
+    container_name: speakup-web
+    restart: unless-stopped
+    ports:
+      - "${WEB_PORT:-8080}:80"
+    depends_on:
+      - api
+    networks:
+      - speakup-network
+
 
 # ------------------------------------------------------------------------------
 # Persistent Volumes & Network Definitions

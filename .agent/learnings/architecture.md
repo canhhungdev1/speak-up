@@ -44,3 +44,20 @@
   - Khi consumer từ chối message (`new Nack(false)` do lỗi máy chủ gửi mail), RabbitMQ tự động đẩy message sang `speakup_waitlist_email_dlq`.
   - `WaitlistDlqConsumer` tiếp nhận message lỗi để phân tích và lên lịch retry, đảm bảo tính chịu lỗi (Fault tolerance) và không bao giờ mất mát dữ liệu.
 
+---
+
+## 4. NGINX Reverse Proxy, API Gateway & SPA Routing Architecture (2026-10-06)
+
+### Quyết định kỹ thuật:
+- **Cổng vào hệ thống tập trung (Single Entry Point):**
+  - Sử dụng NGINX Alpine làm reverse proxy và web server đứng đầu hệ thống tại cổng `8080` (tránh xung đột cổng 80 của Windows IIS/HTTP.sys).
+- **Định tuyến URL (Routing Strategy):**
+  - `location /api/`: Tự động chuyển tiếp (reverse proxy) toàn bộ HTTP request sang container `http://api:3000`. Che giấu cổng nội bộ của backend và triệt tiêu 100% lỗi CORS giữa frontend và backend.
+  - `location /`: Phục vụ các file tĩnh của Angular SPA với cơ chế fallback `try_files $uri $uri/ /index.html;`, ngăn ngừa hoàn toàn lỗi `404 Not Found` khi người dùng F5 tải lại các route con (`/dashboard`, `/lessons`...).
+- **Tối ưu hóa hiệu năng & Băng thông (Web Optimization):**
+  - Kích hoạt nén Gzip (`gzip on`, `gzip_types ...`) cho JSON, HTML, CSS, JavaScript, giúp giảm tới 70% dung lượng truyền tải.
+  - Cấu hình Cache-Control dài hạn (`max-age=31536000, immutable`) cho các tài nguyên tĩnh đã băm tên file (assets hashing).
+- **Multi-Stage Dockerfile cho Frontend (`apps/web`):**
+  - *Stage 1 (Builder):* `node:20-alpine`, `npm ci`, biên dịch production bundle qua `ng build` ra thư mục `dist/web/browser`.
+  - *Stage 2 (Runner):* `nginx:alpine` siêu nhẹ (~25MB), copy mã nguồn tĩnh đã build và file cấu hình `nginx.conf`.
+

@@ -91,12 +91,13 @@ docker compose logs -f api
 
 ## 🌐 Danh mục Cổng truy cập & Tài khoản mặc định
 
-| Dịch vụ | Cổng truy cập (Host) | URL / Địa chỉ | Tài khoản mặc định |
+| Dịch vụ | Cổng truy cập (Host) | URL / Địa chỉ | Chức năng / Tài khoản |
 | :--- | :--- | :--- | :--- |
-| **Frontend Web** | `8888` | `http://localhost:8888` | - |
-| **Backend REST API** | `3000` | `http://localhost:3000` | - |
+| **🌐 Nginx Gateway & Web** | **`8080`** | **`http://localhost:8080`** | **Cổng chính:** Phục vụ Web Angular & Reverse Proxy tới API `/api/*` |
+| **Backend REST API** | `3000` | `http://localhost:3000` | Cổng API trực tiếp (giao tiếp nội bộ / dev) |
+| **Frontend Dev (Host)** | `8888` | `http://localhost:8888` | Khi chạy `npm start` ở máy host |
 | **RabbitMQ Web Dashboard** | `15672` | `http://localhost:15672` | User: `admin`<br/>Pass: `admin123` |
-| **RabbitMQ AMQP** | `5672` | `localhost:5672` | User: `admin`<br/>Pass: `admin123` |
+| **RabbitMQ AMQP** | `5672` | `localhost:5672` | Giao tiếp message broker |
 | **Redis Server** | `6379` | `localhost:6379` | Pass: `speakup_redis_secret` |
 | **PostgreSQL Database** | `5432` | `localhost:5432` | User: `postgres`<br/>Pass: `postgres`<br/>DB: `speakup_db` |
 

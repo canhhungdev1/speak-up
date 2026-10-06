@@ -18,6 +18,9 @@
 - [ ] **Redis Rate Limiting (Chống Spam):** Gọi 6 lần liên tiếp, lần thứ 6 nhận lỗi `429 Too Many Requests`.
 - [ ] **RabbitMQ Async Worker:** Gọi `POST /api/v1/waitlist` phản hồi <30ms, Worker gửi mail ngầm sau 1.5s.
 - [ ] **RabbitMQ Dead Letter Queue (DLQ):** Gửi email chứa `@error.com`, message tự động chuyển sang queue lỗi an toàn.
+- [ ] **Nginx Web Server:** Mở `http://localhost:8080/` hiển thị Angular Web với nén Gzip.
+- [ ] **Nginx Reverse Proxy API:** Gọi `http://localhost:8080/api/v1/lessons` tự động chuyển tiếp về NestJS API.
+- [ ] **Nginx SPA Fallback:** Truy cập đường dẫn con `http://localhost:8080/dashboard` không bao giờ bị lỗi 404.
 
 ---
 
@@ -279,6 +282,59 @@ Hệ thống được thiết kế: Nếu email có đuôi `@error.com`, Worker 
   WARN  [WaitlistDlqConsumer]    ➔ Nội dung thư lỗi được lưu trữ an toàn trong Queue "speakup_waitlist_email_dlq" để xem xét và xử lý lại sau.
   ```
   *(Message không bị mất, và hệ thống không bị crash!)*
+
+---
+
+## 7. Kiểm tra Nghiệm Thu Bước 4: NGINX Web Server & API Gateway
+
+### 7.1. Kiểm tra Truy cập Web tĩnh qua Nginx (Port 8080)
+* **Thao tác:** Mở trình duyệt Web truy cập: **`http://localhost:8080/`**
+* **Dấu hiệu ĐÚNG:**
+  - Trang web **SpeakUp** hiển thị đầy đủ, giao diện mượt mà.
+  - Bấm thử nút đổi giao diện Light/Dark Mode hoạt động bình thường.
+  - Kiểm tra Header phản hồi:
+    ```powershell
+    curl.exe -I http://localhost:8080/
+    ```
+    Thấy dòng: `Server: nginx/...` và `HTTP/1.1 200 OK`.
+
+---
+
+### 7.2. Kiểm tra Reverse Proxy cho API (Gọi API qua cổng Nginx)
+Thay vì gọi cổng `3000` của backend, bạn gọi thẳng qua cổng `8080` của Nginx:
+
+* **Lệnh chạy:**
+  ```powershell
+  curl.exe -s http://localhost:8080/api/v1/lessons
+  ```
+* **Dấu hiệu ĐÚNG:**
+  - Nhận về trọn vẹn JSON danh sách bài học tiếng Anh từ NestJS API.
+  - Gọi lần 2 sẽ thấy `"source": "CACHE (Redis)"` với thời gian phản hồi **1ms**.
+  - **Ý nghĩa:** Nginx đã tự động chuyển tiếp ngầm request sang `http://api:3000/api/v1/lessons` mà người dùng bên ngoài không cần biết cổng 3000 tồn tại!
+
+---
+
+### 7.3. Kiểm tra Single Page Application (SPA) Routing Fallback
+Trong các ứng dụng Single Page App (Angular/React), khi người dùng truy cập trực tiếp vào một đường dẫn con như `/dashboard` rồi bấm F5:
+
+* **Lệnh kiểm tra:**
+  ```powershell
+  curl.exe -I http://localhost:8080/dashboard
+  ```
+* **Dấu hiệu ĐÚNG:**
+  - Trả về mã **`HTTP/1.1 200 OK`** (không phải lỗi `404 Not Found`).
+  - Nginx đã áp dụng luật `try_files $uri $uri/ /index.html;` chuyển quyền điều hướng cho Angular Router.
+
+---
+
+### 7.4. Kiểm tra Nén Gzip & Cache Header cho file tĩnh
+* **Lệnh kiểm tra:**
+  ```powershell
+  curl.exe -H "Accept-Encoding: gzip" -I http://localhost:8080/
+  ```
+* **Dấu hiệu ĐÚNG:**
+  - Xuất hiện header: `Vary: Accept-Encoding` (và `Content-Encoding: gzip` khi tải file css/js).
+  - Tối ưu tải trang web nhanh gấp 3 lần và tiết kiệm băng thông.
 
 ---
 
