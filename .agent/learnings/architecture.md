@@ -29,3 +29,18 @@
   - Tự xây dựng `RateLimitGuard` và decorator `@RateLimit({ limit, ttlSeconds })`.
   - Sử dụng cơ chế Redis atomic `INCR` và `EXPIRE` theo IP người gọi (`ratelimit:{ip}:{path}`).
   - Trả về mã lỗi chuẩn RESTful `HTTP 429 Too Many Requests` và các headers `X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Reset`.
+
+---
+
+## 3. RabbitMQ Event-Driven & Dead Letter Queue Architecture (2026-10-06)
+
+### Quyết định kỹ thuật:
+- **RabbitMQ Broker Integration:** Tích hợp thư viện `@golevelup/nestjs-rabbitmq` với RabbitMQ 3 Management. Tự động khởi tạo `Topic Exchange` (`speakup.exchange`) và `Dead Letter Exchange` (`speakup.dlx`).
+- **Asynchronous Producer-Consumer Pattern:**
+  - `POST /api/v1/waitlist` đóng vai trò Producer: lưu database trong ~2ms, publish event `waitlist.registered` vào Exchange, và phản hồi `201 Created` ngay lập tức cho client (< 30ms).
+  - `WaitlistEmailConsumer` đăng ký queue `speakup_waitlist_email_queue`, xử lý tác vụ gửi email chào mừng và tài liệu Effortless English ngầm (mô phỏng 1.5s) mà không chặn luồng HTTP.
+- **Dead Letter Queue (DLQ) Resilience:**
+  - Cấu hình queue options: `deadLetterExchange: 'speakup.dlx'`, `deadLetterRoutingKey: 'dlx.waitlist.email'`.
+  - Khi consumer từ chối message (`new Nack(false)` do lỗi máy chủ gửi mail), RabbitMQ tự động đẩy message sang `speakup_waitlist_email_dlq`.
+  - `WaitlistDlqConsumer` tiếp nhận message lỗi để phân tích và lên lịch retry, đảm bảo tính chịu lỗi (Fault tolerance) và không bao giờ mất mát dữ liệu.
+
