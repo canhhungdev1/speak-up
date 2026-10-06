@@ -61,3 +61,24 @@
   - *Stage 1 (Builder):* `node:20-alpine`, `npm ci`, biên dịch production bundle qua `ng build` ra thư mục `dist/web/browser`.
   - *Stage 2 (Runner):* `nginx:alpine` siêu nhẹ (~25MB), copy mã nguồn tĩnh đã build và file cấu hình `nginx.conf`.
 
+---
+
+## 5. PostgreSQL, Prisma ORM & Event-Driven Welcome Flow Architecture (2026-10-06)
+
+### Quyết định kỹ thuật:
+- **Prisma ORM & PostgreSQL Mapping:**
+  - Sử dụng **Prisma 6** làm ORM chính kết nối cơ sở dữ liệu PostgreSQL 16 container.
+  - Tuân thủ quy tắc quy ước đặt tên (Naming Conventions):
+    - Database level: Tên bảng và tên cột lưu bằng `snake_case` (`users`, `avatar_url`, `created_at`, `updated_at`) thông qua `@map` và `@@map`.
+    - Application level: Thuộc tính trong TypeScript và Prisma Client dùng `camelCase` (`avatarUrl`, `createdAt`, `updatedAt`).
+- **3-Tier Architecture & Data Transfer Objects (DTO):**
+  - **Controller:** Tiếp nhận HTTP Request `POST /api/v1/auth/google`, validate qua `GoogleLoginDto` (sử dụng `class-validator`), ủy thác cho Service.
+  - **Service:** Chứa nghiệp vụ phân nhánh (New User vs Existing User), giao tiếp DB qua `PrismaService` và dispatch RabbitMQ event.
+  - **Data Protection:** Ánh xạ Model DB sang `UserProfileDto`, ngăn chặn rò rỉ các trường nhạy cảm ra ngoài API response.
+- **Event-Driven Welcome Email Flow:**
+  - **Người dùng mới (First-time Login):** Lưu thông tin vào DB $\rightarrow$ Bắn sự kiện `user.welcome` vào RabbitMQ Exchange `speakup.exchange` $\rightarrow$ `UserEmailConsumer` tiêu thụ message từ queue `speakup_user_welcome_queue` và gửi email chào mừng bất đồng bộ.
+  - **Người dùng cũ (Returning User):** Truy vấn DB thấy tài khoản đã tồn tại $\rightarrow$ Trả về `200 OK` đăng nhập ngay lập tức, hoàn toàn không kích hoạt lại RabbitMQ event gửi mail.
+- **Global Exception Filter:**
+  - Tích hợp `AllExceptionsFilter` bao quát toàn bộ lỗi runtime và HTTP exception, trả về format JSON đồng nhất (`statusCode`, `timestamp`, `path`, `error`).
+
+

@@ -9,6 +9,8 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
+ENV NODE_TLS_REJECT_UNAUTHORIZED=0
+
 # Copy dependency specifications first to leverage Docker layer caching
 COPY package*.json ./
 
@@ -16,6 +18,7 @@ RUN npm ci
 
 # Copy source code and build
 COPY . .
+RUN npx prisma generate
 RUN npm run build
 
 # Remove development dependencies to keep only production modules
@@ -36,6 +39,7 @@ RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 # Chỉ copy những tài nguyên cần thiết từ builder stage
 COPY --from=builder --chown=appuser:appgroup /app/package*.json ./
 COPY --from=builder --chown=appuser:appgroup /app/node_modules ./node_modules
+COPY --from=builder --chown=appuser:appgroup /app/prisma ./prisma
 COPY --from=builder --chown=appuser:appgroup /app/dist ./dist
 
 USER appuser

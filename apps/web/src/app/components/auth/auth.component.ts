@@ -469,7 +469,7 @@ export class AuthComponent {
   showPassword = signal<boolean>(false);
 
   onGoogleSignIn(): void {
-    this.authService.googleLogin();
+    this.authService.googleLogin(this.email || undefined);
   }
 
   onDevMockLogin(): void {
