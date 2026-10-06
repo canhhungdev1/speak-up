@@ -11,44 +11,44 @@ Hệ thống **SPEAK-UP** được thiết kế theo mô hình **Containerized M
 ### 1.1. Sơ đồ Kiến trúc Tổng thể (System Diagram)
 
 ```mermaid
-graph TD
+flowchart TD
     Client["👤 Người dùng (Trình duyệt Web)"]
     
-    subgraph Host_Environment ["🖥️ Docker Host (Mạng speakup-network)"]
-        subgraph Gateway_Tier ["🌐 Cổng vào & Web Server"]
+    subgraph Host_Environment ["Docker Host (Mạng speakup-network)"]
+        subgraph Gateway_Tier ["Cổng vào & Web Server"]
             Nginx["NGINX Reverse Proxy (Port 8080)<br/>• Gzip Compression<br/>• Static Asset Caching<br/>• API Routing & Triệt tiêu CORS"]
         end
         
-        subgraph Presentation_Tier ["🎨 Lớp Giao diện (Frontend)"]
-            Angular["Angular 19 SPA (Container: speakup-web)<br/>• Standalone Components<br/>• Angular Signals State Management<br/>• HttpClient Module"]
+        subgraph Presentation_Tier ["Lớp Giao diện (Frontend)"]
+            Angular["Angular 19 SPA (speakup-web)<br/>• Standalone Components<br/>• Angular Signals State Management<br/>• HttpClient Module"]
         end
 
-        subgraph Application_Tier ["🚀 Lớp Ứng dụng (Backend API)"]
-            NestAPI["NestJS API (Container: speakup-api:3000)<br/>• 3-Tier Layered Architecture<br/>• Global Exception Filter<br/>• DTO Validation & Transformation<br/>• Producer & Consumer Workers"]
+        subgraph Application_Tier ["Lớp Ứng dụng (Backend API)"]
+            NestAPI["NestJS API (speakup-api:3000)<br/>• 3-Tier Layered Architecture<br/>• Global Exception Filter<br/>• DTO Validation & Transformation<br/>• Producer & Consumer Workers"]
         end
 
-        subgraph In_Memory_Tier ["⚡ Lớp Bộ nhớ Đệm (Cache & Security)"]
-            Redis["Redis 7 Alpine (Container: speakup-redis:6379)<br/>• Cache-Aside Pattern (TTL 60s)<br/>• Atomic Rate Limiting (INCR + EXPIRE)<br/>• Tốc độ phản hồi < 10ms"]
+        subgraph In_Memory_Tier ["Lớp Bộ nhớ Đệm (Cache & Security)"]
+            Redis["Redis 7 Alpine (speakup-redis:6379)<br/>• Cache-Aside Pattern (TTL 60s)<br/>• Atomic Rate Limiting (INCR + EXPIRE)<br/>• Tốc độ phản hồi < 10ms"]
         end
 
-        subgraph Messaging_Tier ["🐰 Lớp Hàng đợi Bất đồng bộ (Message Broker)"]
-            RabbitMQ["RabbitMQ 3 Management (Container: speakup-rabbitmq:5672/15672)<br/>• Topic Exchange (speakup.exchange)<br/>• Dead Letter Exchange (speakup.dlx)<br/>• Queues: user_welcome, waitlist_email, DLQ"]
+        subgraph Messaging_Tier ["Lớp Hàng đợi Bất đồng bộ (Message Broker)"]
+            RabbitMQ["RabbitMQ 3 (speakup-rabbitmq:5672/15672)<br/>• Topic Exchange: speakup.exchange<br/>• Dead Letter Exchange: speakup.dlx<br/>• Queues: user_welcome, waitlist_email, DLQ"]
         end
 
-        subgraph Persistence_Tier ["🐘 Lớp Cơ sở Dữ liệu Quan hệ"]
-            Postgres["PostgreSQL 16 Alpine (Container: speakup-postgres:5432)<br/>• Prisma ORM 6 Engine<br/>• Bảng users (snake_case columns)<br/>• ACID Transactions & Data Persistence"]
+        subgraph Persistence_Tier ["Lớp Cơ sở Dữ liệu Quan hệ"]
+            Postgres["PostgreSQL 16 (speakup-postgres:5432)<br/>• Prisma ORM 6 Engine<br/>• Bảng users (snake_case columns)<br/>• ACID Transactions & Persistence"]
         end
     end
 
     %% Luồng tương tác
-    Client -->|HTTP Request| Nginx
-    Nginx -->|Route '/' - Tải SPA & Assets| Angular
-    Nginx -->|Route '/api/*' - Reverse Proxy| NestAPI
+    Client -->|"HTTP Request"| Nginx
+    Nginx -->|"Route: / (Tải SPA & Assets)"| Angular
+    Nginx -->|"Route: /api/* (Reverse Proxy)"| NestAPI
     
-    NestAPI <-->|1. Kiểm tra / Lưu Cache & Rate Limit| Redis
-    NestAPI <-->|2. Truy vấn / Ghi dữ liệu ORM| Postgres
-    NestAPI -->|3. Publish Events (user.welcome, waitlist.registered)| RabbitMQ
-    RabbitMQ -->|4. Push Message tới Consumers (Workers ngầm)| NestAPI
+    NestAPI <-->|"1. Kiểm tra & Lưu Cache, Rate Limit"| Redis
+    NestAPI <-->|"2. Truy vấn & Ghi dữ liệu ORM"| Postgres
+    NestAPI -->|"3. Publish Events: user.welcome, waitlist.registered"| RabbitMQ
+    RabbitMQ -->|"4. Push Message tới Consumers ngầm"| NestAPI
 ```
 
 ---
