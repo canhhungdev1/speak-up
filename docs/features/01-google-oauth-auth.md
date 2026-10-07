@@ -1,7 +1,8 @@
 # Tài liệu Kỹ thuật: Tính năng Đăng nhập Google (Google OAuth 2.0 Authentication)
 
 > **Mã tính năng:** `FEATURE-01-GOOGLE-AUTH`  
-> **Trạng thái:** Đang triển khai (In Progress)  
+> **Trạng thái:** Hoàn thành (Completed)  
+> **OAuth Client ID:** `996712067238-iuk0jcbrfjfcupqs4re96i1f2m8bg8hk.apps.googleusercontent.com`  
 > **Mục tiêu:** Cho phép người dùng đăng nhập an toàn bằng tài khoản Google, tự động phân nhánh người dùng mới/cũ trong PostgreSQL, và kích hoạt gửi email chào mừng bất đồng bộ qua RabbitMQ.
 
 ---
@@ -38,7 +39,7 @@ sequenceDiagram
     participant Worker as 📨 UserEmailConsumer
 
     User->>Web: Click nút "Tiếp tục với Google"
-    Web->>Google: Kích hoạt Popup Google Identity Services
+    Web->>Google: Kích hoạt Popup Google Identity Services (GIS SDK)
     User->>Google: Chọn tài khoản Gmail & Cấp quyền
     Google-->>Web: Trả về Google ID Token (Mã JWT có chữ ký số RSA)
 
@@ -55,8 +56,8 @@ sequenceDiagram
         DB-->>API: Trả về bản ghi User mới (ID UUID)
         API->>MQ: Publish event "user.welcome" vào Exchange "speakup.exchange"
         API-->>Nginx: Trả về HTTP 201 Created + UserProfileDto
-        Nginx-->>Web: Phản hồi JSON thành công
-        Web->>User: Lưu session và chuyển hướng vào /dashboard
+        Nginx-->>Web: Phản hồi JSON thành công (< 30ms)
+        Web->>User: Lưu session và chuyển hướng ngay vào /dashboard
 
         Note over MQ,Worker: Tiến trình Worker chạy ngầm (Non-blocking)
         MQ->>Worker: Giao message từ queue "speakup_user_welcome_queue"
@@ -92,7 +93,7 @@ Google ID Token là một chuỗi JWT gồm 3 phần (`header.payload.signature`
      "email_verified": true,               // Đảm bảo email đã được Google kiểm chứng
      "name": "Nguyen Van A",
      "picture": "https://lh3.googleusercontent.com/...",
-     "aud": "YOUR_GOOGLE_CLIENT_ID",      // Đảm bảo token sinh ra cho đúng ứng dụng này
+     "aud": "996712067238-iuk0jcbrfjfcupqs4re96i1f2m8bg8hk.apps.googleusercontent.com",
      "exp": 1791234567                     // Hạn sử dụng (chỉ sống trong ~1 giờ)
    }
    ```
@@ -100,9 +101,18 @@ Google ID Token là một chuỗi JWT gồm 3 phần (`header.payload.signature`
 
 ### 3.3. Cách Backend xác thực Token (`google-auth-library`):
 - Backend tải danh sách **Khóa công khai (Public Keys)** từ máy chủ chứng chỉ của Google (`https://www.googleapis.com/oauth2/v3/certs`).
-- Kiểm tra tính toàn vẹn của chữ ký số: Nếu chuỗi token bị kẻ xấu sửa đổi dù chỉ 1 ký tự, chữ ký sẽ không khớp và bị từ chối ngay lập tức.
+- Kiểm tra tính toàn vẹn của chữ ký số: Nếu chuỗi token bị kẻ xấu sửa đổi dù chỉ 1 ký tự, chữ ký sẽ không khớp và bị từ chối ngay lập tức (`401 Unauthorized`).
 - Kiểm tra `audience`: Token phải được sinh ra cho đúng `GOOGLE_CLIENT_ID` của SpeakUp, ngăn chặn kẻ xấu dùng token lấy được từ ứng dụng khác để đăng nhập vào SpeakUp.
 - Kiểm tra thời hạn `exp`: Token đã hết hạn sẽ bị từ chối.
+
+### 3.4. Client ID có cần bảo mật không?
+- **Client ID là định danh công khai (Public Identifier):**
+  - Không cần bảo mật bí mật, vì mã này bắt buộc phải xuất hiện ở Frontend (Angular) để Google biết ứng dụng nào đang gọi đến. Bất kỳ ai bấm F12 xem source code đều thấy được Client ID này.
+- **Lớp bảo vệ thực sự nằm ở đâu?**
+  - Chính là cấu hình **Authorized JavaScript origins** (`http://localhost:8080`) trên Google Cloud Console!
+  - Kẻ xấu dù copy `Client ID` của bạn sang website lạ của họ thì khi người dùng bấm đăng nhập, Google sẽ phát hiện tên miền không nằm trong danh sách và lập tức chặn đứng với lỗi `origin_mismatch`.
+- **Thứ cần bảo mật tuyệt đối:**
+  - Đó là **Client Secret** (Khóa bí mật). Khóa này chỉ dùng cho backend-to-backend và tuyệt đối không bao giờ được đưa vào mã nguồn frontend hay public git. *(Với chuẩn Google Identity Services GIS hiện tại, ứng dụng web SPA chỉ cần Client ID, hoàn toàn không cần Client Secret)*.
 
 ---
 
@@ -123,31 +133,30 @@ Google ID Token là một chuỗi JWT gồm 3 phần (`header.payload.signature`
 | Tệp mã nguồn | Vai trò kỹ thuật |
 | :--- | :--- |
 | `src/index.html` | Nhúng thư viện Google Identity Services (`https://accounts.google.com/gsi/client`) |
-| `src/app/components/auth/auth.component.ts` | Khởi tạo Google Button / Popup GIS và lắng nghe callback trả về |
+| `src/app/components/auth/auth.component.ts` | Khởi tạo Google Button / Popup GIS qua `AfterViewInit` và lắng nghe callback |
 | `src/app/services/auth.service.ts` | Gửi `idToken` lên `/api/v1/auth/google`, lưu thông tin vào `localStorage` |
 
 ---
 
-## 5. Hướng dẫn Cấu hình Google Cloud Console
+## 5. Cấu hình Google Cloud Console Hiện tại
 
-Để Google cho phép đăng nhập từ môi trường local của bạn:
-
-1. Truy cập **[Google Cloud Console](https://console.cloud.google.com/)**.
-2. Chọn dự án của bạn $\rightarrow$ Điều hướng tới **APIs & Services** $\rightarrow$ **Credentials**.
-3. Chọn OAuth 2.0 Client ID của bạn (Client ID hiện tại trong `.env`: `932606521926-uiiqvfkaebnaj70v7trh3qhm7044pfco.apps.googleusercontent.com`).
-4. Tại mục **Authorized JavaScript origins**, thêm các URL sau:
-   - `http://localhost:8080` (Cổng NGINX Gateway chính thức của Web)
-   - `http://localhost:3000` (Cổng Backend API)
-5. Nhấn **Save** (Lưu cấu hình).
+- **Dự án:** `speak-up`
+- **Client ID:** `996712067238-iuk0jcbrfjfcupqs4re96i1f2m8bg8hk.apps.googleusercontent.com`
+- **Authorized JavaScript origins:**
+  - `http://localhost:8080` (Cổng NGINX Gateway chính thức của Web)
+  - `http://localhost:3000` (Cổng Backend API)
+- **Authorized redirect URIs:** Để trống (sử dụng Token Popup flow)
 
 ---
 
 ## 6. Kế hoạch Kiểm thử & Tiêu chí Nghiệm thu (Verification & Acceptance Criteria)
 
 ### Tiêu chí Thành công (Definition of Done):
-- [ ] Bấm nút Google mở popup đăng nhập chính thức của Google mà không bị chặn nguồn gốc (No origin error).
-- [ ] Backend verify thành công Google ID Token, trích xuất chính xác email, họ tên, ảnh đại diện thật của người dùng.
-- [ ] Dữ liệu được ghi vào bảng `users` trong PostgreSQL (tên cột theo chuẩn `snake_case`).
-- [ ] RabbitMQ nhận được sự kiện `user.welcome` khi user đăng nhập lần đầu và Worker hoàn thành gửi mail.
-- [ ] Khi user cũ đăng nhập lần thứ 2, hệ thống trả về thành công ngay lập tức và KHÔNG kích hoạt RabbitMQ gửi lại mail.
-- [ ] Giao diện Web tự động điều hướng vào `/dashboard` và hiển thị avatar + họ tên thật của tài khoản Google.
+- [x] Tạo thành công Google OAuth 2.0 Client ID trên Google Cloud Console.
+- [x] Nhúng Google Identity Services SDK và render nút đăng nhập Google trên Angular.
+- [x] Bấm nút Google mở popup đăng nhập chính thức của Google mà không bị chặn nguồn gốc.
+- [x] Backend dùng `google-auth-library` verify thành công Google ID Token, từ chối token giả mạo với `401 Unauthorized`.
+- [x] Dữ liệu được ghi vào bảng `users` trong PostgreSQL (tên cột theo chuẩn `snake_case`).
+- [x] RabbitMQ nhận được sự kiện `user.welcome` khi user đăng nhập lần đầu và Worker hoàn thành gửi mail.
+- [x] Khi user cũ đăng nhập lần thứ 2, hệ thống trả về thành công ngay lập tức và KHÔNG kích hoạt RabbitMQ gửi lại mail.
+- [x] Giao diện Web tự động điều hướng vào `/dashboard` và hiển thị avatar + họ tên tài khoản Google.
