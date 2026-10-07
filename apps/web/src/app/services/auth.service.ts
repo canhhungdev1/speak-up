@@ -40,7 +40,35 @@ export class AuthService {
   }
 
   /**
-   * Đăng nhập / Đăng ký tài khoản bằng Google OAuth
+   * Đăng nhập chuẩn bằng Google ID Token (Google Identity Services)
+   * Gửi chuỗi JWT đã được Google ký số lên Backend để verify
+   */
+  async googleLoginWithIdToken(idToken: string): Promise<AuthApiResponse | null> {
+    this.isLoading.set(true);
+    this.lastAuthNotice.set(null);
+
+    try {
+      const response = await firstValueFrom(
+        this.http.post<AuthApiResponse>('/api/v1/auth/google', { idToken })
+      );
+
+      this.currentUser.set(response.user);
+      localStorage.setItem(this.USER_KEY, JSON.stringify(response.user));
+      this.lastAuthNotice.set(response.message);
+
+      this.router.navigate(['/dashboard']);
+      return response;
+    } catch (error) {
+      console.error('Đăng nhập Google bằng ID Token thất bại:', error);
+      this.lastAuthNotice.set('Xác thực tài khoản Google thất bại. Vui lòng thử lại!');
+      return null;
+    } finally {
+      this.isLoading.set(false);
+    }
+  }
+
+  /**
+   * Đăng nhập / Đăng ký tài khoản bằng Google OAuth (Dev Mode / Fallback)
    * Gọi backend API: POST /api/v1/auth/google
    * Backend sẽ kiểm tra database PostgreSQL:
    * - Nếu user mới: lưu DB & kích hoạt RabbitMQ gửi welcome email ngầm

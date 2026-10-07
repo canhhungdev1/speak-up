@@ -1,9 +1,13 @@
-import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsEmail, IsOptional, IsString } from 'class-validator';
 
 export class GoogleLoginDto {
+  @IsString({ message: 'Google ID Token phải là chuỗi' })
+  @IsOptional()
+  idToken?: string;
+
   @IsEmail({}, { message: 'Email không đúng định dạng' })
-  @IsNotEmpty({ message: 'Email không được để trống' })
-  email: string;
+  @IsOptional()
+  email?: string;
 
   @IsString()
   @IsOptional()
