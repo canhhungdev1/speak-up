@@ -26,7 +26,7 @@ export class AuthService {
   ) {
     this.googleClientId = this.configService.get<string>(
       'GOOGLE_CLIENT_ID',
-      '932606521926-uiiqvfkaebnaj70v7trh3qhm7044pfco.apps.googleusercontent.com',
+      '996712067238-iuk0jcbrfjfcupqs4re96i1f2m8bg8hk.apps.googleusercontent.com',
     );
     this.googleClient = new OAuth2Client(this.googleClientId);
   }
